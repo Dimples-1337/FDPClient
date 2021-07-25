@@ -10,6 +10,7 @@ import net.ccbluex.liquidbounce.ui.client.hud.element.Element
 import net.ccbluex.liquidbounce.ui.client.hud.element.ElementInfo
 import net.ccbluex.liquidbounce.ui.client.hud.element.Side
 import net.ccbluex.liquidbounce.value.ListValue
+import net.minecraft.block.material.Material
 import net.minecraft.client.renderer.GlStateManager
 import org.lwjgl.opengl.GL11
 
@@ -27,14 +28,15 @@ class Armor(x: Double = -8.0, y: Double = 57.0, scale: Float = 1F,
     /**
      * Draw element
      */
-    override fun drawElement(partialTicks: Float): Border {
+    override fun drawElement(): Border {
         if (mc.playerController.isNotCreative) {
             GL11.glPushMatrix()
 
             val renderItem = mc.renderItem
+            val isInsideWater = mc.thePlayer.isInsideOfMaterial(Material.water)
 
             var x = 1
-            var y = 0
+            var y = if (isInsideWater) -10 else 0
 
             val mode = modeValue.get()
 
