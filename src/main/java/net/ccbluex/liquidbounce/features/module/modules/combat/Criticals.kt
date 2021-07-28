@@ -28,12 +28,12 @@ import net.minecraft.stats.StatList
 @ModuleInfo(name = "Criticals", description = "Automatically deals critical hits.", category = ModuleCategory.COMBAT)
 class Criticals : Module() {
 
-    val modeValue = ListValue("Mode", arrayOf("Packet", "NCPPacket", "Hypixel", "Hypixel2", "Hypixel3", "AACPacket", "AAC4Hover1", "AAC4Hover2", "AAC4.3.11OldHYT", "NoGround", "Visual", "RedeSkySmartGround", "RedeSkyLowHop", "Hop", "TPHop", "FakeCollide", "TPCollide", "Jump", "LowJump", "Hover1", "Hover2", "Mineplex", "More", "TestMinemora"), "packet")
+    val modeValue = ListValue("Mode", arrayOf("Packet", "NCPPacket", "Hypixel", "Hypixel2", "Hypixel3", "AACPacket", "AAC4Hover", "AAC4Hover2", "AAC4.3.11OldHYT", "NoGround", "Fake", "RedeSkySmartGround", "RedeSkyLowHop", "Hop", "TPHop", "FakeCollide", "TPCollide", "Jump", "LowJump", "Hover", "Hover2", "Mineplex", "More", "TestMinemora"), "packet")
     val delayValue = IntegerValue("Delay", 0, 0, 500)
     private val hurtTimeValue = IntegerValue("HurtTime", 10, 0, 10)
     private val lookValue = BoolValue("UseC06Packet", false)
     private val debugValue = BoolValue("DebugMessage", false)
-    private val rsNofallValue = BoolValue("RedeNofall",true)
+    private val rsNofallValue = BoolValue("RedeskyNoFall",true)
 
     val msTimer = MSTimer()
 
@@ -235,7 +235,7 @@ class Criticals : Module() {
                     mc.thePlayer.setPosition(x, y + 0.01, z)
                 }
 
-                "visual" -> mc.thePlayer.onCriticalHit(entity)
+                "fake" -> mc.thePlayer.onCriticalHit(entity)
                 "jump" -> mc.thePlayer.motionY = 0.42
                 "lowjump" -> mc.thePlayer.motionY = 0.3425
                 "redeskylowhop" -> mc.thePlayer.motionY = 0.35
@@ -252,7 +252,7 @@ class Criticals : Module() {
         if (packet is C03PacketPlayer){
             when (modeValue.get().toLowerCase()) {
                 "noground" -> packet.onGround = false
-                "hover1" -> {
+                "hover" -> {
                     if(mc.thePlayer.onGround && LiquidBounce.combatManager.inCombat && (packet is C04PacketPlayerPosition || packet is C06PacketPlayerPosLook)){
                         packet.onGround=false
                         jState++
@@ -270,7 +270,7 @@ class Criticals : Module() {
                         }
                     }
                 }
-                "aac4hover1" -> {
+                "aac4hover" -> {
                     if(mc.thePlayer.onGround && !aacLastState) {
                         packet.onGround = mc.thePlayer.onGround
                         aacLastState = mc.thePlayer.onGround
@@ -327,7 +327,7 @@ class Criticals : Module() {
         }
         if(packet is S0BPacketAnimation &&debugValue.get()){
             if(packet.animationType==4&&packet.entityID==target){
-                chat("CRIT")
+                chat("Critical hit dealt!")
             }
         }
     }
