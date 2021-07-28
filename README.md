@@ -1,4 +1,4 @@
-# FDPClient
+ FDPClient
 [![State-of-the-art Shitcode](https://img.shields.io/static/v1?label=State-of-the-art&message=Shitcode&color=7B5804)](https://github.com/trekhleb/state-of-the-art-shitcode)
 ![GitHub commit activity](https://img.shields.io/github/commit-activity/w/UnlegitMC/FDPClient)
 ![GitHub code size in bytes](https://img.shields.io/github/languages/code-size/UnlegitMC/FDPClient)
@@ -6,9 +6,10 @@
 ![Minecraft](https://img.shields.io/badge/game-Minecraft-brightgreen)  
 A free mixin-based injection hacked-client for Minecraft using Minecraft Forge based on LiquidBounce.
 
-Website: https://fdp.liulihaocai.pw/
-Latest: github-actions
+Website: https://fdp.liulihaocai.pw/  
+Latest: [github-actions](htpps://github.com/UnlegitMC/FDPClient/actions)  
 Discord: https://discord.gg/dJtjF7swH9
+
 ## Issues
 If you notice any bugs or missing features, you can let us know by opening an issue [here](https://github.com/UnlegitMC/FDPClient/issues).
 
