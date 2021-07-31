@@ -35,8 +35,8 @@ class Velocity : Module() {
      */
     private val horizontalValue = FloatValue("Horizontal", 0F, 0F, 1F)
     private val verticalValue = FloatValue("Vertical", 0F, 0F, 1F)
-    private val modeValue = ListValue("Mode", arrayOf("Simple", "AACPush", "AACZero", "AAC4Reduce", "AAC5Reduce", "Redesky1", "Redesky2", "AAC5.2.0",
-            "HuaYuTing", "TestRedesky",
+    private val modeValue = ListValue("Mode", arrayOf("Simple", "AACPush", "AACZero", "AAC4Reduce", "AAC5Reduce", "Redesky", "Redesky2", "AAC5.2.0",
+            "HuaYuTing", "RedeskyTest",
             "Reverse", "SmoothReverse", "Jump", "Phase", "PacketPhase", "Glitch", "Legit"), "Simple")
 
     // Reverse
@@ -47,16 +47,16 @@ class Velocity : Module() {
     private val aacPushXZReducerValue = FloatValue("AACPushXZReducer", 2F, 1F, 3F)
     private val aacPushYReducerValue = BoolValue("AACPushYReducer", true)
 
-    // phase
+    // Phase
     private val phaseHeightValue = FloatValue("PhaseHeight",0.5F,0F,1F)
     private val phaseOnlyGround = BoolValue("PhaseOnlyGround",true)
 
-    // legit
+    // Legit
     private val legitStrafeValue = BoolValue("LegitStrafe",false)
     private val legitFaceValue = BoolValue("LegitFace",true)
 
     private val rspAlwaysValue = BoolValue("RedeskyAlwaysReduce",true)
-    private val rspDengerValue = BoolValue("RedeskyOnlyDanger",false)
+    private val rspDengerValue = BoolValue("RedeskyOnlyInDanger",false)
 
     /**
      * VALUES
@@ -142,7 +142,7 @@ class Velocity : Module() {
                 }
             }
             
-            "testredesky" -> {
+            "redeskytest" -> {
                 if (mc.thePlayer.hurtTime>0 && velocityInput){
                     velocityInput = false
                     mc.netHandler.addToSendQueue(C03PacketPlayer.C04PacketPlayerPosition(mc.thePlayer.posX,1.7976931348623157E+308,mc.thePlayer.posZ,false))
@@ -260,7 +260,7 @@ class Velocity : Module() {
                     packet.motionZ = 0
                 }
                 
-                "testredesky" -> {
+                "redeskytest" -> {
                     event.cancelEvent()
                     velocityInput = true
                 }
@@ -309,7 +309,7 @@ class Velocity : Module() {
                     if(redeCount>12) redeCount -= 5
                 }
 
-                "redesky1" -> {
+                "redesky" -> {
                     if(packet.getMotionX()==0&&packet.getMotionZ()==0){ // ignore horizonal velocity
                         return
                     }
