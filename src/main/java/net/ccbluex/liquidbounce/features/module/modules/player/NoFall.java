@@ -30,7 +30,7 @@ import java.util.TimerTask;
 // TODO: phase mode bypass matrix
 @ModuleInfo(name = "NoFall", category = ModuleCategory.PLAYER)
 public class NoFall extends Module {
-    public final ListValue modeValue = new ListValue("Mode", new String[]{"SpoofGround", "NoGround", "Packet", "OldAAC", "LAAC", "AAC3.3.11", "AAC3.3.15", "AACv4", "AAC5.0.14", "Spartan", "CubeCraft", "Hypixel", "Phase", "Verus", "HypixelNew", "HypixelAnother"}, "SpoofGround");
+    public final ListValue modeValue = new ListValue("Mode", new String[]{"SpoofGround", "NoGround", "Packet", "OldAAC", "LAAC", "AAC3.3.11", "AAC3.3.15", "AAC4", "AAC5.0.14", "Spartan", "CubeCraft", "Hypixel", "Phase", "Verus", "HypixelNew", "HypixelAnother"}, "SpoofGround");
 
     private final IntegerValue phaseOffsetValue = new IntegerValue("PhaseOffset",1,0,5);
 
