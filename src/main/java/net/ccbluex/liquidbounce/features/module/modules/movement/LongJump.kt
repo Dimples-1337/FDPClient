@@ -23,21 +23,21 @@ import net.minecraft.util.EnumFacing
 
 @ModuleInfo(name = "LongJump", category = ModuleCategory.MOVEMENT, autoDisable = EnumAutoDisableType.FLAG)
 class LongJump : Module() {
-    private val modeValue = ListValue("Mode", arrayOf("NCP", "AACv1", "AACv2", "AACv3", "Mineplex", "Mineplex2", "Mineplex3", "RedeSkyTest", "RedeSky", "RedeSky2", "RedeSky3", "BlocksMC", "BlocksMC2", "HYT4v4", "Custom"), "NCP")
+    private val modeValue = ListValue("Mode", arrayOf("NCP", "AACv1", "AACv2", "AACv3", "Mineplex", "Mineplex2", "Mineplex3", "RedeskyTest", "Redesky", "Redesky2", "Redesky3", "BlocksMC", "BlocksMC2", "HYT4v4", "Custom"), "NCP")
     private val ncpBoostValue = FloatValue("NCPBoost", 4.25f, 1f, 10f)
 
     // redesky
-    private val rsJumpMovementValue = FloatValue("RedeSkyJumpMovement",0.13F,0.05F,0.25F)
-    private val rsMotionYValue = FloatValue("RedeSkyMotionY",0.81F,0.05F,1F)
-    private val rsMoveReducerValue = BoolValue("RedeSkyMovementReducer", true)
-    private val rsReduceMovementValue = FloatValue("RedeSkyReduceMovement",0.08F,0.05F,0.25F)
-    private val rsMotYReducerValue = BoolValue("RedeSkyMotionYReducer", true)
-    private val rsReduceYMotionValue = FloatValue("RedeSkyReduceYMotion",0.15F,0.01F,0.20F)
-    private val rsUseTimerValue = BoolValue("RedeSkyTimer", true)
-    private val rsTimerValue = FloatValue("RedeSkyTimer",0.30F,0.1F,1F)
+    private val rsJumpMovementValue = FloatValue("RedeskyJumpMovement",0.13F,0.05F,0.25F)
+    private val rsMotionYValue = FloatValue("RedeskyMotionY",0.81F,0.05F,1F)
+    private val rsMoveReducerValue = BoolValue("RedeskyMovementReducer", true)
+    private val rsReduceMovementValue = FloatValue("RedeskyReduceMovement",0.08F,0.05F,0.25F)
+    private val rsMotYReducerValue = BoolValue("RedeskyMotionYReducer", true)
+    private val rsReduceYMotionValue = FloatValue("RedeskyReduceYMotion",0.15F,0.01F,0.20F)
+    private val rsUseTimerValue = BoolValue("RedeskyTimer", true)
+    private val rsTimerValue = FloatValue("RedeskyTimer",0.30F,0.1F,1F)
     // redesky2
-    private val rs2AirSpeedValue = FloatValue("RedeSky2AirSpeed",0.1F,0.05F,0.25F)
-    private val rs2MinAirSpeedValue = FloatValue("RedeSky2MinAirSpeed",0.08F,0.05F,0.25F)
+    private val rs2AirSpeedValue = FloatValue("Redesky2AirSpeed",0.1F,0.05F,0.25F)
+    private val rs2MinAirSpeedValue = FloatValue("Redesky2MinAirSpeed",0.08F,0.05F,0.25F)
     private val rs2ReduceAirSpeedValue = FloatValue("RedeSky2ReduceAirSpeed",0.16F,0.05F,0.25F)
     private val rs2AirSpeedReducerValue = BoolValue("RedeSky2AirSpeedReducer", true)
     private val rs2YMotionValue = FloatValue("RedeSky2YMotion",0.08F,0.01F,0.20F)
