@@ -113,6 +113,8 @@ class Scaffold : Module() {
 
     // Game
     private val timerValue = FloatValue("Timer", 1f, 0.1f, 5f)
+    private val motionspeedstatus = BoolValue("MotionSpeedSet", false)
+    private val motionspeed = FloatValue("MotionSpeedValue", 0.1f, 0.05f, 1f)
     private val speedModifierValue = FloatValue("SpeedModifier", 1f, 0f, 2f)
 
     // Tower
@@ -241,7 +243,7 @@ class Scaffold : Module() {
         //if(tolleyStayTick>100) tolleyStayTick=100
         if(towerStatus && towerModeValue.get().toLowerCase()!="aac3.3.9" && towerModeValue.get().toLowerCase()!="aac4.4constant" && towerModeValue.get().toLowerCase()!="aac4jump") mc.timer.timerSpeed = towerTimerValue.get()
         if(!towerStatus) mc.timer.timerSpeed = timerValue.get()
-        if (towerStatus) {
+        if (towerStatus || mc.thePlayer.isCollidedHorizontally) {
             canSameY = false
             lastGroundY = mc.thePlayer.posY.toInt()
         } else {
@@ -373,6 +375,7 @@ class Scaffold : Module() {
         val eventState = event.eventState
         towerStatus = false;
         // Tower
+        if(motionspeedstatus.get()) MovementUtils.setMotion(motionspeed.get().toDouble())
         towerStatus = (!stopWhenBlockAbove.get() || BlockUtils.getBlock(BlockPos(mc.thePlayer.posX, mc.thePlayer.posY + 2, mc.thePlayer.posZ)) is BlockAir)
         if(towerStatus) {
             //further checks
