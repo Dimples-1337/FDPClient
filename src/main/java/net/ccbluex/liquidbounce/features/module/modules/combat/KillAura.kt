@@ -167,7 +167,7 @@ class KillAura : Module() {
     private val limitedMultiTargetsValue = IntegerValue("LimitedMultiTargets", 0, 0, 50)
 
     // Visuals
-    private val markValue = ListValue("Mark", arrayOf("Liquid","FDP","Block","Jello","None"),"FDP")
+    private val markValue = ListValue("Mark", arrayOf("LiquidBounce", "FDP", "Block", "Jello", "None"),"FDP")
     private val fakeSharpValue = BoolValue("FakeSharp", true)
 
     /**
@@ -230,7 +230,7 @@ class KillAura : Module() {
 
         if (!event.isPre()) {
             // AutoBlock
-            if (!autoBlockValue.get().equals("off",true) && discoveredTargets.isNotEmpty() && (!autoBlockPacketValue.get().equals("AfterAttack",true)||discoveredTargets.filter { mc.thePlayer.getDistanceToEntityBox(it)>maxRange }.isNotEmpty()) && canBlock) {
+            if (!autoBlockValue.get().equals("Off",true) && discoveredTargets.isNotEmpty() && (!autoBlockPacketValue.get().equals("AfterAttack",true)||discoveredTargets.filter { mc.thePlayer.getDistanceToEntityBox(it)>maxRange }.isNotEmpty()) && canBlock) {
                 val target=discoveredTargets[0]
                 if(mc.thePlayer.getDistanceToEntityBox(target) < autoBlockRangeValue.get())
                     startBlocking(target, interactAutoBlockValue.get() && (mc.thePlayer.getDistanceToEntityBox(target)<maxRange))
@@ -386,7 +386,7 @@ class KillAura : Module() {
         }
 
         when(markValue.get().toLowerCase()){
-            "liquid" -> {
+            "liquidbounce" -> {
                 discoveredTargets.forEach {
                     RenderUtils.drawPlatform(it, if (it.hurtTime<=0) Color(37, 126, 255, 170) else Color(255, 0, 0, 170))
                 }
