@@ -70,7 +70,7 @@ class Scaffold : Module() {
     private val autoBlockValue = ListValue("AutoBlock", arrayOf("Spoof", "LiteSpoof", "Switch", "OFF"), "LiteSpoof")
 
     // Basic stuff
-    private val sprintValue = ListValue("Sprint", arrayOf("Always", "Dynamic", "OnGround", "OffGround", "OFF"), "Always")
+    private val sprintValue = ListValue("Sprint", arrayOf("Always", "Dynamic", "Air", "Ground", "Off"), "Dynamic")
     private val swingValue = ListValue("Swing", arrayOf("Normal", "Packet", "None"), "Normal")
     private val searchValue = BoolValue("Search", true)
     private val downValue = BoolValue("Down", true)
@@ -926,8 +926,8 @@ class Scaffold : Module() {
     val canSprint: Boolean
         get() = when(sprintValue.get().toLowerCase()) {
             "always","dynamic" -> true
-            "onground" -> mc.thePlayer.onGround
-            "offground" -> !mc.thePlayer.onGround
+            "ground" -> mc.thePlayer.onGround
+            "air" -> !mc.thePlayer.onGround
             else -> false
         }
 
