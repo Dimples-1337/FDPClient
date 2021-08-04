@@ -28,7 +28,7 @@ import net.minecraft.stats.StatList
 @ModuleInfo(name = "Criticals", category = ModuleCategory.COMBAT)
 class Criticals : Module() {
 
-    val modeValue = ListValue("Mode", arrayOf("Packet", "NCPPacket", "Hypixel", "Hypixel2","Hypixel3","Minis", "AACPacket", "AAC4Hover", "AAC4Hover2", "AAC4.3.11OldHYT", "NoGround", "Visual", "RedeSkySmartGround", "RedeSkyLowHop", "Hop", "TPHop", "FakeCollide", "TPCollide", "Jump", "LowJump", "Hover", "Hover2", "Mineplex", "More", "MinemoraTest"), "Packet")
+    val modeValue = ListValue("Mode", arrayOf("Packet", "NCPPacket", "Hypixel", "Hypixel2", "Hypixel3", "Minis", "AACPacket", "AAC4Hover", "AAC4Hover2", "AAC4.3.11OldHYT", "NoGround", "Visual", "Redesky", "RedeskyLowHop", "Hop", "TPHop", "FakeCollide", "TPCollide", "Jump", "LowJump", "Hover", "Hover2", "Mineplex", "More", "MinemoraTest"), "Packet")
     val delayValue = IntegerValue("Delay", 0, 0, 500)
     private val hurtTimeValue = IntegerValue("HurtTime", 10, 0, 10)
     private val lookValue = BoolValue("UseC06Packet", false)
@@ -309,7 +309,7 @@ class Criticals : Module() {
                         }
                     }
                 }
-                "redeskysmartground" -> {
+                "redesky" -> {
                     if(rsNofallValue.get()&&mc.thePlayer.fallDistance>0){
                         packet.onGround=true
                         return
