@@ -167,7 +167,7 @@ class KillAura : Module() {
     private val limitedMultiTargetsValue = IntegerValue("LimitedMultiTargets", 0, 0, 50)
 
     // Visuals
-    private val markValue = ListValue("Mark", arrayOf("LiquidBounce", "FDP", "Block", "Jello", "None"),"FDP")
+    private val markValue = ListValue("Mark", arrayOf("LiquidBounce", "FDPClient", "Block", "Jello", "None"),"FDPClient")
     private val fakeSharpValue = BoolValue("FakeSharp", true)
 
     /**
@@ -399,7 +399,7 @@ class KillAura : Module() {
                     it.entityBoundingBox=bb
                 }
             }
-            "fdp" -> {
+            "fdpclient" -> {
                 val drawTime = (System.currentTimeMillis() % 1500).toInt()
                 val drawMode=drawTime>750
                 var drawPercent=drawTime/750.0
