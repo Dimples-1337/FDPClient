@@ -27,7 +27,7 @@ import net.ccbluex.liquidbounce.ui.client.hud.HUD
 import net.ccbluex.liquidbounce.ui.client.keybind.KeyBindManager
 import net.ccbluex.liquidbounce.ui.font.Fonts
 import net.ccbluex.liquidbounce.ui.i18n.LanguageManager
-import net.ccbluex.liquidbounce.ui.other.TipSoundManager
+import net.ccbluex.liquidbounce.ui.sound.TipSoundManager
 import net.ccbluex.liquidbounce.utils.ClientUtils
 import net.ccbluex.liquidbounce.utils.InventoryUtils
 import net.ccbluex.liquidbounce.utils.RotationUtils
@@ -78,6 +78,7 @@ object LiquidBounce {
     var website = "null"
     var updateMessage="Press \"Download\" button to download the latest version!"
     var displayedUpdateScreen=false
+    val blockedServers=mutableListOf<String>()
 
     // Menu Background
     var background: ResourceLocation? = null
@@ -117,6 +118,11 @@ object LiquidBounce {
             updatelog = jsonObj.getAsJsonArray("updatelog")
             if(jsonObj.has("updatemsg"))
                 updateMessage=jsonObj.get("updatemsg").asString
+
+            if(jsonObj.has("blockedServers"))
+                jsonObj.get("blockedServers").asJsonArray.forEach {
+                    blockedServers.add(it.asString)
+                }
 
             if(latestVersion== CLIENT_VERSION || !enableUpdateAlert)
                 latestVersion = ""
