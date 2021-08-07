@@ -10,11 +10,11 @@ class AAC4Inf : SpeedMode("AAC4Inf") {
         if (mc.thePlayer.onGround) {
             mc.thePlayer.jump();
             mc.thePlayer.speedInAir = 0.02F;
-            mc.timer.timerSpeed = 1.00F;
+            mc.timer.timerSpeed = 0.99F;
         }
-        if (mc.thePlayer.fallDistance > 0.7 && mc.thePlayer.fallDistance < 1.3) {
+        if (mc.thePlayer.fallDistance > 0.8 && mc.thePlayer.fallDistance < 1.4) {
             mc.thePlayer.speedInAir = 0.02F;
-            mc.timer.timerSpeed = 1.08F;
+            mc.timer.timerSpeed = 1.02F;
         }
     }
 
