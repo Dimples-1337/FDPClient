@@ -13,6 +13,7 @@ import net.ccbluex.liquidbounce.features.module.ModuleInfo
 import net.ccbluex.liquidbounce.file.FileManager
 import net.ccbluex.liquidbounce.ui.client.hud.element.elements.Notification
 import net.ccbluex.liquidbounce.ui.client.hud.element.elements.NotifyType
+import net.ccbluex.liquidbounce.utils.FileUtils
 import net.ccbluex.liquidbounce.utils.misc.RandomUtils
 import net.ccbluex.liquidbounce.value.BoolValue
 import net.ccbluex.liquidbounce.value.ListValue
@@ -23,7 +24,7 @@ import java.nio.charset.StandardCharsets
 
 @ModuleInfo(name = "KillInsults", category = ModuleCategory.MISC)
 object KillInsults : Module() {
-    var abuseWords = mutableListOf<String>()
+    var insultWords = mutableListOf<String>()
     private var target: EntityPlayer? = null
 
     val modeValue = ListValue(
@@ -34,7 +35,7 @@ object KillInsults : Module() {
         ), "RawWords"
     )
     private val waterMarkValue = BoolValue("WaterMark", true)
-    val abuseFile=File(LiquidBounce.fileManager.dir, "insult.json")
+    val insultFile=File(LiquidBounce.fileManager.dir, "insult.json")
 
     init {
         loadFile()
@@ -42,29 +43,27 @@ object KillInsults : Module() {
 
     fun loadFile(){
         fun convertJson(){
-            abuseWords.clear()
-            abuseWords.addAll(IOUtils.toString(FileInputStream(abuseFile),"utf-8").split("\n")
+            insultWords.clear()
+            insultWords.addAll(IOUtils.toString(FileInputStream(insultFile),"utf-8").split("\n")
                 .filter { it.isNotBlank() })
-            val writer = BufferedWriter(OutputStreamWriter(FileOutputStream(abuseFile), StandardCharsets.UTF_8))
+            val writer = BufferedWriter(OutputStreamWriter(FileOutputStream(insultFile), StandardCharsets.UTF_8))
             val json=JsonArray()
-            abuseWords.map { JsonPrimitive(it) }.forEach(json::add)
+            insultWords.map { JsonPrimitive(it) }.forEach(json::add)
             writer.write(FileManager.PRETTY_GSON.toJson(json))
             writer.close()
         }
 
         try {
             //check file exists
-            if(!abuseFile.exists()){
-                val fos = FileOutputStream(abuseFile)
-                IOUtils.copy(KillInsults::class.java.classLoader.getResourceAsStream("assets/minecraft/fdpclient/misc/insult.json"), fos)
-                fos.close()
+            if(!insultFile.exists()){
+                FileUtils.unpackFile(insultFile, "assets/minecraft/fdpclient/misc/insult.json")
             }
             //read it
-            val json=JsonParser().parse(IOUtils.toString(FileInputStream(abuseFile),"utf-8"))
+            val json=JsonParser().parse(IOUtils.toString(FileInputStream(insultFile),"utf-8"))
             if(json.isJsonArray){
-                abuseWords.clear()
+                insultWords.clear()
                 json.asJsonArray.forEach{
-                    abuseWords.add(it.asString)
+                    insultWords.add(it.asString)
                 }
             }else{
                 // not jsonArray convert it to jsonArray
@@ -84,7 +83,7 @@ object KillInsults : Module() {
         get() = modeValue.get()
 
     fun getRandomOne():String{
-        return abuseWords[RandomUtils.nextInt(0, abuseWords.size-1)]
+        return insultWords[RandomUtils.nextInt(0, insultWords.size-1)]
     }
 
     @EventTarget
@@ -101,20 +100,20 @@ object KillInsults : Module() {
             LiquidBounce.hud.addNotification(Notification("Killed","Killed $name.", NotifyType.INFO))
             when (modeValue.get().toLowerCase()) {
                 "clear" -> {
-                    sendAbuseWords("L $name",name)
+                    sendInsultWords("L $name",name)
                 }
                 "withwords" -> {
-                    sendAbuseWords("L $name " + getRandomOne(),name)
+                    sendInsultWords("L $name " + getRandomOne(),name)
                 }
                 "rawwords" -> {
-                    sendAbuseWords(getRandomOne(),name)
+                    sendInsultWords(getRandomOne(),name)
                 }
             }
             target = null
         }
     }
 
-    private fun sendAbuseWords(msg: String,name: String) {
+    private fun sendInsultWords(msg: String, name: String) {
         var message = msg.replace("%name%",name)
         if (waterMarkValue.get()) {
             message = "[FDPClient] $message"
