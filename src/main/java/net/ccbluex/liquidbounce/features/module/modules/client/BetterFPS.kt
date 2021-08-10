@@ -5,11 +5,10 @@
  */
 package net.ccbluex.liquidbounce.features.module.modules.client
 
-import net.ccbluex.liquidbounce.features.betterfps.mathalgo.*
+import net.ccbluex.liquidbounce.features.module.modules.client.mathalgo.*
 import net.ccbluex.liquidbounce.features.module.Module
 import net.ccbluex.liquidbounce.features.module.ModuleCategory
 import net.ccbluex.liquidbounce.features.module.ModuleInfo
-import net.ccbluex.liquidbounce.injection.forge.mixins.math.MixinMathHelper
 import net.ccbluex.liquidbounce.value.ListValue
 
 @ModuleInfo(name = "BetterFPS", category = ModuleCategory.CLIENT, array = false, canEnable = false)

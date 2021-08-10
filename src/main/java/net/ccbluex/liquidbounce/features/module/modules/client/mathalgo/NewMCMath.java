@@ -1,4 +1,4 @@
-package net.ccbluex.liquidbounce.features.betterfps.mathalgo;
+package net.ccbluex.liquidbounce.features.module.modules.client.mathalgo;
 
 import net.ccbluex.liquidbounce.utils.misc.MiscUtils;
 
