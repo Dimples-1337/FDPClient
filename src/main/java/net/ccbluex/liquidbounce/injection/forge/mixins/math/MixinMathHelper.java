@@ -14,19 +14,9 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
-import java.util.function.Consumer;
-
 @Mixin(MathHelper.class)
 public class MixinMathHelper {
     private static BetterFPS betterFPS = null;
-
-    private static final float[] SIN_TABLE = make(new float[65536], (e) ->
-    {
-        for (int i = 0; i < e.length; ++i)
-        {
-            e[i] = (float) Math.sin(i * Math.PI * 2.0 / 65536.0);
-        }
-    });
     
     @Inject(method = "sin", at = @At("HEAD"), cancellable = true)
     private static void sin(float value, CallbackInfoReturnable<Float> callbackInfoReturnable){
@@ -47,11 +37,11 @@ public class MixinMathHelper {
                 break;
             }
             case "rivensfull": {
-                callbackInfoReturnable.setReturnValue(core.getRivens_full().sin(value));
+                callbackInfoReturnable.setReturnValue(core.getRivensFull().sin(value));
                 break;
             }
             case "rivenshalf": {
-                callbackInfoReturnable.setReturnValue(core.getRivens_half().sin(value));
+                callbackInfoReturnable.setReturnValue(core.getRivensHalf().sin(value));
                 break;
             }
             case "rivens": {
@@ -63,7 +53,7 @@ public class MixinMathHelper {
                 break;
             }
             case "1.16": {
-                callbackInfoReturnable.setReturnValue(SIN_TABLE[(int)(value * 10430.378F) & 65535]);
+                callbackInfoReturnable.setReturnValue(core.getNewMC().sin(value));
                 break;
             }
         }
@@ -87,11 +77,11 @@ public class MixinMathHelper {
                 break;
             }
             case "rivensfull": {
-                callbackInfoReturnable.setReturnValue(core.getRivens_full().cos(value));
+                callbackInfoReturnable.setReturnValue(core.getRivensFull().cos(value));
                 break;
             }
             case "rivenshalf": {
-                callbackInfoReturnable.setReturnValue(core.getRivens_half().cos(value));
+                callbackInfoReturnable.setReturnValue(core.getRivensHalf().cos(value));
                 break;
             }
             case "rivens": {
@@ -103,14 +93,9 @@ public class MixinMathHelper {
                 break;
             }
             case "1.16": {
-                callbackInfoReturnable.setReturnValue(SIN_TABLE[(int)(value * 10430.378F + 16384.0F) & 65535]);
+                callbackInfoReturnable.setReturnValue(core.getNewMC().cos(value));
                 break;
             }
         }
-    }
-    
-    private static <T> T make(T object, Consumer<T> consumer) {
-        consumer.accept(object);
-        return object;
     }
 }
