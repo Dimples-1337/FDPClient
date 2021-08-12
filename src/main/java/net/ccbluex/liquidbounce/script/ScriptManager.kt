@@ -6,14 +6,17 @@
 package net.ccbluex.liquidbounce.script
 
 import net.ccbluex.liquidbounce.LiquidBounce
+import net.ccbluex.liquidbounce.script.kotlin.KotlinScript
+import net.ccbluex.liquidbounce.script.kotlin.KotlinScriptDependency
 import net.ccbluex.liquidbounce.utils.ClientUtils
 import java.io.File
+import javax.swing.JOptionPane
 
 class ScriptManager {
 
     val scripts = mutableListOf<Script>()
 
-    val ktScripts = mutableListOf<KtScript>()
+    val kotlinScripts = mutableListOf<KotlinScript>()
 
     val scriptsFolder = File(LiquidBounce.fileManager.dir, "scripts")
 
@@ -57,8 +60,14 @@ class ScriptManager {
      */
     fun loadKtScript(scriptFile : File) {
         try {
-            ktScripts.add(KtScript(scriptFile))
+            // prepare scripting runtime
+            KotlinScriptDependency.check()
+            // load script
+            kotlinScripts.add(KotlinScript(scriptFile))
             ClientUtils.getLogger().info("[ScriptAPI] Successfully loaded kotlin script '${scriptFile.name}'.")
+        } catch (t : NoSuchFieldError){
+            JOptionPane.showMessageDialog(null, "If this error first appear, try restart your minecraft." +
+                    "and if this error appears many times, try disable \"file complete check\"/\"文件完整性检查\"", "KotlinScript Loaded Failed", JOptionPane.ERROR_MESSAGE)
         } catch(t : Throwable) {
             ClientUtils.getLogger().error("[ScriptAPI] Failed to load kotlin script '${scriptFile.name}'.", t)
         }
