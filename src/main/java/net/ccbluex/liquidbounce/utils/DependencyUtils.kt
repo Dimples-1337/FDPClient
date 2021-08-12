@@ -1,6 +1,9 @@
 package net.ccbluex.liquidbounce.utils
 
 import net.ccbluex.liquidbounce.LiquidBounce
+import net.minecraft.launchwrapper.LaunchClassLoader
+import net.minecraftforge.fml.common.Loader
+import net.minecraftforge.fml.common.ModClassLoader
 import java.io.File
 import java.net.URL
 import java.net.URLClassLoader
@@ -46,9 +49,7 @@ object DependencyUtils {
     }
 
     private fun loadJarClasses(file: File){
-        val urlClassLoader = ClassLoader.getSystemClassLoader() as URLClassLoader
-        val method = URLClassLoader::class.java.getDeclaredMethod("addURL", URL::class.java)
-        method.isAccessible = true
-        method.invoke(urlClassLoader, file.toURI().toURL())
+        val classLoader=Loader.instance().modClassLoader
+        classLoader.addFile(file)
     }
 }
