@@ -32,21 +32,21 @@ object DependencyUtils {
         return URL("${if(repo.endsWith("/")){repo}else{"$repo/"}}${groupID.replace(".","/")}/$artifactID/$version/$artifactID-$version.jar")
     }
 
-    fun replaceMcDependency(groupID: String, artifactID: String, url: URL, fileStr: String){
-        val file=File(cacheDir, fileStr)
-        val loader=ClassLoader.getSystemClassLoader() as URLClassLoader
-        loader.urLs.forEach {
-            if(it.path.contains("/${groupID.replace(".","/")}/$artifactID/")){
-                if(!file.exists())
-                    FileUtils.downloadFile(file, url)
-
-                Files.copy(file.toPath(), File(it.path).toPath(), StandardCopyOption.REPLACE_EXISTING)
-
-                loadJarClasses(file)
-                return@forEach
-            }
-        }
-    }
+//    fun replaceMcDependency(groupID: String, artifactID: String, url: URL, fileStr: String){
+//        val file=File(cacheDir, fileStr)
+//        val loader=ClassLoader.getSystemClassLoader() as URLClassLoader
+//        loader.urLs.forEach {
+//            if(it.path.contains("/${groupID.replace(".","/")}/$artifactID/")){
+//                if(!file.exists())
+//                    FileUtils.downloadFile(file, url)
+//
+//                Files.copy(file.toPath(), File(it.path).toPath(), StandardCopyOption.REPLACE_EXISTING)
+//
+//                loadJarClasses(file)
+//                return@forEach
+//            }
+//        }
+//    }
 
     private fun loadJarClasses(file: File){
         val classLoader=Loader.instance().modClassLoader

@@ -65,10 +65,10 @@ class ScriptManager {
             // load script
             kotlinScripts.add(KotlinScript(scriptFile))
             ClientUtils.getLogger().info("[ScriptAPI] Successfully loaded kotlin script '${scriptFile.name}'.")
-        } catch (t : NoSuchFieldError){
+        } /*catch (t : NoSuchFieldError){
             JOptionPane.showMessageDialog(null, "If this error first appear, try restart your minecraft." +
                     "and if this error appears many times, try disable \"file complete check\"/\"文件完整性检查\"", "KotlinScript Loaded Failed", JOptionPane.ERROR_MESSAGE)
-        } catch(t : Throwable) {
+        } */catch(t : Throwable) {
             ClientUtils.getLogger().error("[ScriptAPI] Failed to load kotlin script '${scriptFile.name}'.", t)
         }
     }

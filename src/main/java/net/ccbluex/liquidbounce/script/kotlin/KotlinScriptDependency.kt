@@ -11,10 +11,11 @@ object KotlinScriptDependency {
             return
 
         // replace minecraft dependency
-        DependencyUtils.replaceMcDependency("net.java.dev.jna","jna",
-            DependencyUtils.getMavenDependencyURL("net.java.dev.jna","jna","5.8.0", DependencyUtils.MAVEN_CENTRAL), "jna-5.8.0.jar")
-        DependencyUtils.replaceMcDependency("net.java.dev.jna","platform",
-            DependencyUtils.getMavenDependencyURL("net.java.dev.jna","jna-platform","5.8.0", DependencyUtils.MAVEN_CENTRAL), "jna-platform-5.8.0.jar")
+        // LMAO THIS IS USELESS BUT WILL CAUSE A EXCEPTION
+//        DependencyUtils.replaceMcDependency("net.java.dev.jna","jna",
+//            DependencyUtils.getMavenDependencyURL("net.java.dev.jna","jna","5.8.0", DependencyUtils.MAVEN_CENTRAL), "jna-5.8.0.jar")
+//        DependencyUtils.replaceMcDependency("net.java.dev.jna","platform",
+//            DependencyUtils.getMavenDependencyURL("net.java.dev.jna","jna-platform","5.8.0", DependencyUtils.MAVEN_CENTRAL), "jna-platform-5.8.0.jar")
 
         // load normal dependencies
         DependencyUtils.loadMavenDependency("org.jetbrains.kotlin", "kotlin-reflect", "1.3.72")
