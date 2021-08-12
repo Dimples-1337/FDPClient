@@ -87,6 +87,7 @@ class KillAura : Module() {
             if (i < newValue) set(i)
         }
     }
+    private val switchDelayValue = IntegerValue("SwitchDelay", 300, 0, 1000)
     private val discoverRangeValue = FloatValue("DiscoverRange", 6f, 0f, 15f)
     private val rangeSprintReducementValue = FloatValue("RangeSprintReducement", 0f, 0f, 0.4f)
 
@@ -176,6 +177,7 @@ class KillAura : Module() {
 
     // Target
     var target: EntityLivingBase? = null
+    private val switchTimer = MSTimer()
     private val markTimer=MSTimer()
     private var currentTarget: EntityLivingBase? = null
     private var hitable = false
@@ -566,8 +568,12 @@ class KillAura : Module() {
                         attackEntity(entity)
                 }
             }
-
-            if(targetModeValue.get().equals("Switch", true)){
+            
+            if(switchTimer.hasTimePassed(switchDelayValue.get().toLong()) || targetModeValue.get().equals("Switch", true)){
+                if (switchDelay.hasTimePassed(switchDelayValue.get().toLong())) {
+                if (switchDelayValue.get() != 0) {
+                    prevTargetEntities.add(currentTarget!!.entityId)
+                    switchDelay.reset()
                 switchCount++
                 if(switchCount>=switchChangeValue.get()){
                     switchCount=0
@@ -575,6 +581,7 @@ class KillAura : Module() {
                 }
             }else{
                 prevTargetEntities.add(if (aacValue.get()) target!!.entityId else currentTarget!!.entityId)
+                switchTimer.reset()
             }
 
             if (target == currentTarget)
