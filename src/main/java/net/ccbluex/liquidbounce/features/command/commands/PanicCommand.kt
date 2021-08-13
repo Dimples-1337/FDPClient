@@ -8,8 +8,19 @@ package net.ccbluex.liquidbounce.features.command.commands
 import net.ccbluex.liquidbounce.LiquidBounce
 import net.ccbluex.liquidbounce.features.command.Command
 import net.ccbluex.liquidbounce.features.module.ModuleCategory
+import net.ccbluex.liquidbounce.utils.misc.StringUtils
 
 class PanicCommand : Command("panic", emptyArray()) {
+    private val selections: Array<String>
+
+    init {
+        val list=mutableListOf<String>()
+        list.add("all")
+        list.add("norender")
+        list.addAll(ModuleCategory.values().map { it.configName.toLowerCase() })
+        selections=list.toTypedArray()
+    }
+
     /**
      * Execute commands with provided [args]
      */
@@ -27,7 +38,7 @@ class PanicCommand : Command("panic", emptyArray()) {
                 }
 
                 else -> {
-                    val categories = ModuleCategory.values().filter { it.displayName.equals(args[1], true) }
+                    val categories = ModuleCategory.values().filter { it.configName.equals(args[1], true) }
 
                     if (categories.isEmpty()) {
                         chat("Category ${args[1]} not found")
@@ -40,7 +51,7 @@ class PanicCommand : Command("panic", emptyArray()) {
                 }
             }
         } else {
-            chatSyntax("panic <all/nonrender/combat/player/movement/render/world/misc/exploit/client>")
+            chatSyntax("panic <${StringUtils.toCompleteString(selections)}>")
             return
         }
 
@@ -54,8 +65,7 @@ class PanicCommand : Command("panic", emptyArray()) {
         if (args.isEmpty()) return emptyList()
 
         return when (args.size) {
-            1 -> listOf("all", "nonrender", "combat", "player", "movement", "render", "world", "misc", "exploit", "client")
-                .filter { it.startsWith(args[0], true) }
+            1 -> selections.filter { it.startsWith(args[0], true) }
             else -> emptyList()
         }
     }
