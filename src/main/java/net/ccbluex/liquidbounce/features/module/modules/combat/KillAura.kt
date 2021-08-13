@@ -75,7 +75,7 @@ class KillAura : Module() {
     private val hurtTimeValue = IntegerValue("HurtTime", 10, 0, 10)
 
     // Range
-    val rangeValue = object : FloatValue("Range", 3.7f, 1f, 8f) {
+    val rangeValue = object : FloatValue("Range", 4.7f, 1f, 8f) {
         override fun onChanged(oldValue: Float, newValue: Float) {
             val i = discoverRangeValue.get()
             if (i < newValue) set(i)
