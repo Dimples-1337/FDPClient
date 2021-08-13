@@ -89,6 +89,7 @@ class KillAura : Module() {
     }
     private val discoverRangeValue = FloatValue("DiscoverRange", 6f, 0f, 15f)
     private val rangeSprintReducementValue = FloatValue("RangeSprintReducement", 0f, 0f, 0.4f)
+    private val circleRadiusValue = FloatValue("CircleRadius", 1.0F,0.5F, 3.0F)
 
     // Modes
     private val priorityValue = ListValue("Priority", arrayOf("Health", "Distance", "Direction", "LivingTime", "Armor"), "Distance")
