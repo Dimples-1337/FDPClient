@@ -163,7 +163,7 @@ class KillAura : Module() {
     private val fakeSwingValue = BoolValue("FakeSwing", true).displayable { failRateValue.get()!=0f }
     private val noInventoryAttackValue = BoolValue("NoInvAttack", false)
     private val noInventoryDelayValue = IntegerValue("NoInvDelay", 200, 0, 500)
-    private val switchDelayValue = IntegerValue("SwitchDelay",300 ,1, 2000).displayable { targetModeValue.get().equals("Switch",true) }
+    private val switchDelayValue = IntegerValue("SwitchDelay",250 ,1, 1000).displayable { targetModeValue.get().equals("Switch",true) }
     private val limitedMultiTargetsValue = IntegerValue("LimitedMultiTargets", 0, 0, 50).displayable { targetModeValue.get().equals("Multi",true) }
 
     // Visuals
