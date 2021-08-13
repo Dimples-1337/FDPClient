@@ -366,113 +366,6 @@ class KillAura : Module() {
     }
     
     /**
-     *
-     * Render2D Event
-     *
-     */
-    @EventTarget
-    fun onRender2D(event: Render2DEvent) {
-        if (showTargetValue.get()) {
-            val sr2 = ScaledResolution(mc)
-            if (target != null) {
-                GL11.glColor4f(1.0f, 1.0f, 1.0f, 1.0f)
-//                FontManager..drawStringWithShadow(target!!.name, (sr2.scaledWidth / 2 - FontManager.Chinese18.getStringWidth(target!!.name) / 2).toFloat(), (sr2.scaledHeight / 2 - 40).toFloat(), 16777215)
-                FontManager.Chinese18.drawStringWithShadow(target!!.name, (sr2.scaledWidth / 2 - FontManager.Chinese18.getStringWidth(target!!.name) / 2).toFloat(), (sr2.scaledHeight / 2 - 40).toFloat(), 16777215)
-                mc.textureManager.bindTexture(ResourceLocation("textures/gui/icons.png"))
-                var i2 = 0
-                var i3 = 0
-                while (i2 < target!!.maxHealth / 2) {
-                    mc.ingameGUI.drawTexturedModalRect(((sr2.scaledWidth / 2) - target!!.maxHealth / 2.0f * 10.0f / 2.0f + (i2 * 10)).toInt(), (sr2.scaledHeight / 2 - 20), 16, 0, 9, 9);
-                    ++i2
-                }
-                i2 = 0
-                while (i2 < target!!.health / 2.0){
-                    mc.ingameGUI.drawTexturedModalRect(((sr2.scaledWidth / 2) - target!!.maxHealth / 2.0f * 10.0f / 2.0f + (i2 * 10)).toInt(), (sr2.scaledHeight / 2 - 20), 52, 0, 9, 9);
-                    ++i2
-                }
-                while (i3 < 20 / 2.0f) {
-                    mc.ingameGUI.drawTexturedModalRect(((sr2.scaledWidth / 2) - target!!.maxHealth / 2.0f * 10.0f / 2.0f + (i3 * 10)).toInt(), (sr2.scaledHeight / 2 - 30), 16, 9, 9, 9);
-                    ++i3;
-                }
-                i3 = 0;
-                while (i3 < target!!.totalArmorValue / 2.0f) {
-                    mc.ingameGUI.drawTexturedModalRect(((sr2.scaledWidth / 2) - target!!.maxHealth / 2.0f * 10.0f / 2.0f + (i3 * 10)).toInt(), (sr2.scaledHeight / 2 - 30), 34, 9, 9, 9);
-                    ++i3;
-               }
-           }
-       }
-   }
-
-   private fun renderESP() {
-        if (markEntity!=null){
-            if(markTimer.hasTimePassed(500) || markEntity!!.isDead){
-                markEntity=null
-                return
-            }
-            //can mark
-            val drawTime = (System.currentTimeMillis() % 2000).toInt()
-            val drawMode=drawTime>1000
-            var drawPercent=drawTime/1000F
-            //true when goes up
-            if(!drawMode){
-                drawPercent=1-drawPercent
-            }else{
-                drawPercent-=1
-            }
-            val points = mutableListOf<Vec3>()
-            val bb=markEntity!!.entityBoundingBox
-            val radius=bb.maxX-bb.minX
-            val height=bb.maxY-bb.minY
-            val posX = markEntity!!.lastTickPosX + (markEntity!!.posX - markEntity!!.lastTickPosX) * mc.timer.renderPartialTicks
-            var posY = markEntity!!.lastTickPosY + (markEntity!!.posY - markEntity!!.lastTickPosY) * mc.timer.renderPartialTicks
-            if(drawMode){
-                posY-=0.5
-            }else{
-                posY+=0.5
-            }
-            val posZ = markEntity!!.lastTickPosZ + (markEntity!!.posZ - markEntity!!.lastTickPosZ) * mc.timer.renderPartialTicks
-            for(i in 0..360 step 7){
-                points.add(Vec3(posX - sin(i * Math.PI / 180F) * radius,posY+height*drawPercent,posZ + cos(i * Math.PI / 180F) * radius))
-            }
-            points.add(points[0])
-            //draw
-            mc.entityRenderer.disableLightmap()
-            GL11.glPushMatrix()
-            GL11.glDisable(GL11.GL_TEXTURE_2D)
-            GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA)
-            GL11.glEnable(GL11.GL_LINE_SMOOTH)
-            GL11.glEnable(GL11.GL_BLEND)
-            GL11.glDisable(GL11.GL_DEPTH_TEST)
-            GL11.glBegin(GL11.GL_LINE_STRIP)
-            for(i in 0..20) {
-                var moveFace=(height/60F)*i
-                if(drawMode){
-                    moveFace=-moveFace
-                }
-                val firstPoint=points[0]
-                GL11.glVertex3d(
-                    firstPoint.xCoord - mc.renderManager.viewerPosX, firstPoint.yCoord - moveFace - mc.renderManager.viewerPosY,
-                    firstPoint.zCoord - mc.renderManager.viewerPosZ
-                )
-                GL11.glColor4f(1F, 1F, 1F, 0.7F*(i/20F))
-                for (vec3 in points) {
-                    GL11.glVertex3d(
-                        vec3.xCoord - mc.renderManager.viewerPosX, vec3.yCoord - moveFace - mc.renderManager.viewerPosY,
-                        vec3.zCoord - mc.renderManager.viewerPosZ
-                    )
-                }
-                GL11.glColor4f(0F,0F,0F,0F)
-            }
-            GL11.glEnd()
-            GL11.glEnable(GL11.GL_DEPTH_TEST)
-            GL11.glDisable(GL11.GL_LINE_SMOOTH)
-            GL11.glDisable(GL11.GL_BLEND)
-            GL11.glEnable(GL11.GL_TEXTURE_2D)
-            GL11.glPopMatrix()
-        }
-    }
-
-    /**
      * Render event
      */
     @EventTarget
@@ -513,6 +406,7 @@ class KillAura : Module() {
                     RenderUtils.drawEntityBox(it, if (it.hurtTime<=0) Color.GREEN else Color.RED, true, true, 4f)
                     it.entityBoundingBox=bb
                 }
+            }
             "Circle" -> {
                     if (espAnimation > target!!.eyeHeight + 0.4 || espAnimation < 0) {
                         isUp = !isUp
@@ -531,7 +425,8 @@ class KillAura : Module() {
             "Plat" -> RenderUtils.drawPlatform(
                     target!!,
                     if (hitable) Color(37, 126, 255, 70) else Color(255, 0, 0, 70)
-                )
+                }
+            }
             "fdp" -> {
                 val drawTime = (System.currentTimeMillis() % 1500).toInt()
                 val drawMode=drawTime>750
