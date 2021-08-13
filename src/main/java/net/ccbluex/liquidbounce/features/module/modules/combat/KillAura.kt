@@ -89,6 +89,7 @@ class KillAura : Module() {
     }
     private val discoverRangeValue = FloatValue("DiscoverRange", 6f, 0f, 15f)
     private val rangeSprintReducementValue = FloatValue("RangeSprintReducement", 0f, 0f, 0.4f)
+    private val circleRadiusValue = FloatValue("CircleRadius", 1.0F,0.5F, 3.0F)
 
     // Modes
     private val priorityValue = ListValue("Priority", arrayOf("Health", "Distance", "Direction", "LivingTime", "Armor"), "Distance")
@@ -163,11 +164,11 @@ class KillAura : Module() {
     private val fakeSwingValue = BoolValue("FakeSwing", true).displayable { failRateValue.get()!=0f }
     private val noInventoryAttackValue = BoolValue("NoInvAttack", false)
     private val noInventoryDelayValue = IntegerValue("NoInvDelay", 200, 0, 500)
-    private val switchDelayValue = IntegerValue("SwitchDelay",300 ,1, 2000).displayable { targetModeValue.get().equals("Switch",true) }
+    private val switchDelayValue = IntegerValue("SwitchDelay",250 ,1, 1000).displayable { targetModeValue.get().equals("Switch",true) }
     private val limitedMultiTargetsValue = IntegerValue("LimitedMultiTargets", 0, 0, 50).displayable { targetModeValue.get().equals("Multi",true) }
 
     // Visuals
-    private val markValue = ListValue("Mark", arrayOf("Liquid","FDP","Block","Jello","None"),"FDP")
+    private val markValue = ListValue("Mark", arrayOf("Liquid","FDP","Block","Circle","Plat","Jello","None"),"FDP")
     private val fakeSharpValue = BoolValue("FakeSharp", true)
 
     /**
@@ -363,6 +364,113 @@ class KillAura : Module() {
             }
         }
     }
+    
+    /**
+     *
+     * Render2D Event
+     *
+     */
+    @EventTarget
+    fun onRender2D(event: Render2DEvent) {
+        if (showTargetValue.get()) {
+            val sr2 = ScaledResolution(mc)
+            if (target != null) {
+                GL11.glColor4f(1.0f, 1.0f, 1.0f, 1.0f)
+//                FontManager..drawStringWithShadow(target!!.name, (sr2.scaledWidth / 2 - FontManager.Chinese18.getStringWidth(target!!.name) / 2).toFloat(), (sr2.scaledHeight / 2 - 40).toFloat(), 16777215)
+                FontManager.Chinese18.drawStringWithShadow(target!!.name, (sr2.scaledWidth / 2 - FontManager.Chinese18.getStringWidth(target!!.name) / 2).toFloat(), (sr2.scaledHeight / 2 - 40).toFloat(), 16777215)
+                mc.textureManager.bindTexture(ResourceLocation("textures/gui/icons.png"))
+                var i2 = 0
+                var i3 = 0
+                while (i2 < target!!.maxHealth / 2) {
+                    mc.ingameGUI.drawTexturedModalRect(((sr2.scaledWidth / 2) - target!!.maxHealth / 2.0f * 10.0f / 2.0f + (i2 * 10)).toInt(), (sr2.scaledHeight / 2 - 20), 16, 0, 9, 9);
+                    ++i2
+                }
+                i2 = 0
+                while (i2 < target!!.health / 2.0){
+                    mc.ingameGUI.drawTexturedModalRect(((sr2.scaledWidth / 2) - target!!.maxHealth / 2.0f * 10.0f / 2.0f + (i2 * 10)).toInt(), (sr2.scaledHeight / 2 - 20), 52, 0, 9, 9);
+                    ++i2
+                }
+                while (i3 < 20 / 2.0f) {
+                    mc.ingameGUI.drawTexturedModalRect(((sr2.scaledWidth / 2) - target!!.maxHealth / 2.0f * 10.0f / 2.0f + (i3 * 10)).toInt(), (sr2.scaledHeight / 2 - 30), 16, 9, 9, 9);
+                    ++i3;
+                }
+                i3 = 0;
+                while (i3 < target!!.totalArmorValue / 2.0f) {
+                    mc.ingameGUI.drawTexturedModalRect(((sr2.scaledWidth / 2) - target!!.maxHealth / 2.0f * 10.0f / 2.0f + (i3 * 10)).toInt(), (sr2.scaledHeight / 2 - 30), 34, 9, 9, 9);
+                    ++i3;
+               }
+           }
+       }
+   }
+
+   private fun renderESP() {
+        if (markEntity!=null){
+            if(markTimer.hasTimePassed(500) || markEntity!!.isDead){
+                markEntity=null
+                return
+            }
+            //can mark
+            val drawTime = (System.currentTimeMillis() % 2000).toInt()
+            val drawMode=drawTime>1000
+            var drawPercent=drawTime/1000F
+            //true when goes up
+            if(!drawMode){
+                drawPercent=1-drawPercent
+            }else{
+                drawPercent-=1
+            }
+            val points = mutableListOf<Vec3>()
+            val bb=markEntity!!.entityBoundingBox
+            val radius=bb.maxX-bb.minX
+            val height=bb.maxY-bb.minY
+            val posX = markEntity!!.lastTickPosX + (markEntity!!.posX - markEntity!!.lastTickPosX) * mc.timer.renderPartialTicks
+            var posY = markEntity!!.lastTickPosY + (markEntity!!.posY - markEntity!!.lastTickPosY) * mc.timer.renderPartialTicks
+            if(drawMode){
+                posY-=0.5
+            }else{
+                posY+=0.5
+            }
+            val posZ = markEntity!!.lastTickPosZ + (markEntity!!.posZ - markEntity!!.lastTickPosZ) * mc.timer.renderPartialTicks
+            for(i in 0..360 step 7){
+                points.add(Vec3(posX - sin(i * Math.PI / 180F) * radius,posY+height*drawPercent,posZ + cos(i * Math.PI / 180F) * radius))
+            }
+            points.add(points[0])
+            //draw
+            mc.entityRenderer.disableLightmap()
+            GL11.glPushMatrix()
+            GL11.glDisable(GL11.GL_TEXTURE_2D)
+            GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA)
+            GL11.glEnable(GL11.GL_LINE_SMOOTH)
+            GL11.glEnable(GL11.GL_BLEND)
+            GL11.glDisable(GL11.GL_DEPTH_TEST)
+            GL11.glBegin(GL11.GL_LINE_STRIP)
+            for(i in 0..20) {
+                var moveFace=(height/60F)*i
+                if(drawMode){
+                    moveFace=-moveFace
+                }
+                val firstPoint=points[0]
+                GL11.glVertex3d(
+                    firstPoint.xCoord - mc.renderManager.viewerPosX, firstPoint.yCoord - moveFace - mc.renderManager.viewerPosY,
+                    firstPoint.zCoord - mc.renderManager.viewerPosZ
+                )
+                GL11.glColor4f(1F, 1F, 1F, 0.7F*(i/20F))
+                for (vec3 in points) {
+                    GL11.glVertex3d(
+                        vec3.xCoord - mc.renderManager.viewerPosX, vec3.yCoord - moveFace - mc.renderManager.viewerPosY,
+                        vec3.zCoord - mc.renderManager.viewerPosZ
+                    )
+                }
+                GL11.glColor4f(0F,0F,0F,0F)
+            }
+            GL11.glEnd()
+            GL11.glEnable(GL11.GL_DEPTH_TEST)
+            GL11.glDisable(GL11.GL_LINE_SMOOTH)
+            GL11.glDisable(GL11.GL_BLEND)
+            GL11.glEnable(GL11.GL_TEXTURE_2D)
+            GL11.glPopMatrix()
+        }
+    }
 
     /**
      * Render event
@@ -383,7 +491,15 @@ class KillAura : Module() {
             attackTimer.reset()
             attackDelay = TimeUtils.randomClickDelay(minCPS.get(), maxCPS.get())
         }
-
+      
+        if (noInventoryAttackValue.get() && (mc.currentScreen is GuiContainer ||
+                        System.currentTimeMillis() - containerOpen < noInventoryDelayValue.get())) {
+            target = null
+            currentTarget = null
+            hitable = false
+            if (mc.currentScreen is GuiContainer) containerOpen = System.currentTimeMillis()
+            return
+        }
         when(markValue.get().toLowerCase()){
             "liquid" -> {
                 discoveredTargets.forEach {
@@ -397,7 +513,25 @@ class KillAura : Module() {
                     RenderUtils.drawEntityBox(it, if (it.hurtTime<=0) Color.GREEN else Color.RED, true, true, 4f)
                     it.entityBoundingBox=bb
                 }
+            "Circle" -> {
+                    if (espAnimation > target!!.eyeHeight + 0.4 || espAnimation < 0) {
+                        isUp = !isUp
+                    }
+                    if (isUp) {
+                        espAnimation += 0.05 * 60 / Minecraft.getDebugFPS()
+                    } else {
+                        espAnimation -= 0.05 * 60 / Minecraft.getDebugFPS()
+                    }
+                    if (isUp) {
+                        esp(target!!, event.partialTicks, circleRadiusValue.get())
+                    } else {
+                        esp(target!!, event.partialTicks, circleRadiusValue.get())
+                }
             }
+            "Plat" -> RenderUtils.drawPlatform(
+                    target!!,
+                    if (hitable) Color(37, 126, 255, 70) else Color(255, 0, 0, 70)
+                )
             "fdp" -> {
                 val drawTime = (System.currentTimeMillis() % 1500).toInt()
                 val drawMode=drawTime>750
@@ -515,6 +649,12 @@ class KillAura : Module() {
             }
         }
     }
+        if (currentTarget != null && attackTimer.hasTimePassed(attackDelay) &&
+                currentTarget!!.hurtTime <= hurtTimeValue.get()) {
+            clicks++
+            attackTimer.reset()
+        }
+    }
 
     /**
      * Handle entity move
@@ -539,6 +679,7 @@ class KillAura : Module() {
         // Settings
         val failRate = failRateValue.get()
         val swing = swingValue.get()
+        val multi = targetModeValue.get().equals("Multi", ignoreCase = true)
         val openInventory = aacValue.get() && mc.currentScreen is GuiInventory
         val failHit = failRate > 0 && Random().nextInt(100) <= failRate
 
