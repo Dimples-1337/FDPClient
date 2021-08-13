@@ -46,7 +46,7 @@ import kotlin.math.cos
 import kotlin.math.max
 import kotlin.math.sin
 
-@ModuleInfo(name = "KillAura", category = ModuleCategory.COMBAT, keyBind = Keyboard.KEY_R)
+@ModuleInfo(name = "Aura",description = ".", category = ModuleCategory.COMBAT, keyBind = Keyboard.KEY_R)
 class KillAura : Module() {
 
     /**
@@ -87,13 +87,15 @@ class KillAura : Module() {
             if (i < newValue) set(i)
         }
     }
-    private val switchDelayValue = IntegerValue("SwitchDelay", 300, 0, 1000)
     private val discoverRangeValue = FloatValue("DiscoverRange", 6f, 0f, 15f)
     private val rangeSprintReducementValue = FloatValue("RangeSprintReducement", 0f, 0f, 0.4f)
 
     // Modes
     private val priorityValue = ListValue("Priority", arrayOf("Health", "Distance", "Direction", "LivingTime", "Armor"), "Distance")
     private val targetModeValue = ListValue("TargetMode", arrayOf("Single", "Switch", "Multi"), "Single")
+
+    // Switch
+    private val switchDelayValue = IntegerValue("Delay",300 ,1, 2000)
 
     // Bypass
     private val swingValue = ListValue("Swing", arrayOf("Normal", "Packet", "None"), "Normal")
@@ -164,7 +166,6 @@ class KillAura : Module() {
     private val fakeSwingValue = BoolValue("FakeSwing", true)
     private val noInventoryAttackValue = BoolValue("NoInvAttack", false)
     private val noInventoryDelayValue = IntegerValue("NoInvDelay", 200, 0, 500)
-    private val switchChangeValue = IntegerValue("SwitchChangeAtkTimes", 1, 1, 7)
     private val limitedMultiTargetsValue = IntegerValue("LimitedMultiTargets", 0, 0, 50)
 
     // Visuals
@@ -177,7 +178,6 @@ class KillAura : Module() {
 
     // Target
     var target: EntityLivingBase? = null
-    private val switchTimer = MSTimer()
     private val markTimer=MSTimer()
     private var currentTarget: EntityLivingBase? = null
     private var hitable = false
@@ -187,6 +187,7 @@ class KillAura : Module() {
 
     // Attack delay
     private val attackTimer = MSTimer()
+    private val switchDelay = MSTimer()
     private var attackDelay = 0L
     private var clicks = 0
     private var switchCount = 0
@@ -237,7 +238,7 @@ class KillAura : Module() {
                 if(mc.thePlayer.getDistanceToEntityBox(target) < autoBlockRangeValue.get())
                     startBlocking(target, interactAutoBlockValue.get() && (mc.thePlayer.getDistanceToEntityBox(target)<maxRange))
             }
-            
+
             target ?: return
             currentTarget ?: return
 
@@ -263,7 +264,7 @@ class KillAura : Module() {
      */
     @EventTarget
     fun onStrafe(event: StrafeEvent) {
-        if (rotationStrafeValue.get().equals("Off", true) && !mc.thePlayer.isRiding || LiquidBounce.moduleManager[Scaffold::class.java].state)
+        if (rotationStrafeValue.get().equals("Off", true) && !mc.thePlayer.isRiding || LiquidBounce.moduleManager[Scaffold::class.java]!!.state)
             return
 
         update()
@@ -397,7 +398,7 @@ class KillAura : Module() {
                 discoveredTargets.forEach {
                     val bb=it.entityBoundingBox
                     it.entityBoundingBox=bb.expand(0.2,0.2,0.2)
-                    RenderUtils.drawEntityBox(it, if (it.hurtTime<=0) Color.GREEN else Color.RED, true, true, 4f)
+                    RenderUtils.drawEntityBox(it, if (it.hurtTime<=0) Color.GREEN else Color.RED, true)
                     it.entityBoundingBox=bb
                 }
             }
@@ -568,25 +569,16 @@ class KillAura : Module() {
                         attackEntity(entity)
                 }
             }
-            
-            if(switchTimer.hasTimePassed(switchDelayValue.get().toLong()) || targetModeValue.get().equals("Switch", true)){
-                if (switchDelay.hasTimePassed(switchDelayValue.get().toLong())) {
+            if (target == currentTarget)
+                target = null
+            if (switchDelay.hasTimePassed(switchDelayValue.get().toLong())) {
                 if (switchDelayValue.get() != 0) {
                     prevTargetEntities.add(currentTarget!!.entityId)
                     switchDelay.reset()
-                switchCount++
-                if(switchCount>=switchChangeValue.get()){
-                    switchCount=0
-                    prevTargetEntities.add(if (aacValue.get()) target!!.entityId else currentTarget!!.entityId)
                 }
-            }else{
-                prevTargetEntities.add(if (aacValue.get()) target!!.entityId else currentTarget!!.entityId)
-                switchTimer.reset()
             }
-
-            if (target == currentTarget)
-                target = null
         }
+
 
         // Open inventory
         if (openInventory)
@@ -647,7 +639,7 @@ class KillAura : Module() {
             // Set target to current entity
             if(mc.thePlayer.getDistanceToEntityBox(entity) < maxRange)
                 target = entity
-            
+
             return
         }
     }
@@ -694,10 +686,6 @@ class KillAura : Module() {
         val criticals = LiquidBounce.moduleManager[Criticals::class.java]
 
         for (i in 0..2) {
-            // Critical Effect
-            if (mc.thePlayer.fallDistance > 0F && !mc.thePlayer.onGround && !mc.thePlayer.isOnLadder && !mc.thePlayer.isInWater && !mc.thePlayer.isPotionActive(Potion.blindness) && mc.thePlayer.ridingEntity == null || criticals.state && criticals.msTimer.hasTimePassed(criticals.delayValue.get().toLong()) && !mc.thePlayer.isInWater && !mc.thePlayer.isInLava && !mc.thePlayer.isInWeb)
-                mc.thePlayer.onCriticalHit(target)
-
             // Enchant Effect
             if (EnchantmentHelper.getModifierForCreature(mc.thePlayer.heldItem, target!!.creatureAttribute) > 0.0f || fakeSharpValue.get())
                 mc.thePlayer.onEnchantmentCritical(target)
@@ -842,6 +830,6 @@ class KillAura : Module() {
     /**
      * HUD Tag
      */
-    override val tag: String
-        get() = targetModeValue.get()
+    override val tag: String?
+        get() =  targetModeValue.get() + " - " + priorityValue.get()
 }
