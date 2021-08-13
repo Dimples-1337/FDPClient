@@ -94,9 +94,6 @@ class KillAura : Module() {
     private val priorityValue = ListValue("Priority", arrayOf("Health", "Distance", "Direction", "LivingTime", "Armor"), "Distance")
     private val targetModeValue = ListValue("TargetMode", arrayOf("Single", "Switch", "Multi"), "Single")
 
-    // Switch
-    private val switchDelayValue = IntegerValue("Delay",300 ,1, 2000)
-    
     // Bypass
     private val swingValue = ListValue("Swing", arrayOf("Normal", "Packet", "None"), "Normal")
     private val keepSprintValue = BoolValue("KeepSprint", true)
@@ -166,7 +163,7 @@ class KillAura : Module() {
     private val fakeSwingValue = BoolValue("FakeSwing", true)
     private val noInventoryAttackValue = BoolValue("NoInvAttack", false)
     private val noInventoryDelayValue = IntegerValue("NoInvDelay", 200, 0, 500)
-    private val switchChangeValue = IntegerValue("SwitchChangeAtkTimes", 1, 1, 7)
+    private val switchDelayValue = IntegerValue("SwitchDelay",300 ,1, 2000)
     private val limitedMultiTargetsValue = IntegerValue("LimitedMultiTargets", 0, 0, 50)
 
     // Visuals
@@ -180,7 +177,6 @@ class KillAura : Module() {
     // Target
     var target: EntityLivingBase? = null
     private val markTimer=MSTimer()
-    private val switchTimer = MSTimer()
     private var currentTarget: EntityLivingBase? = null
     private var hitable = false
     private val prevTargetEntities = mutableListOf<Int>()
@@ -189,10 +185,9 @@ class KillAura : Module() {
 
     // Attack delay
     private val attackTimer = MSTimer()
-    private val switchDelay = MSTimer()
+    private val switchTimer = MSTimer()
     private var attackDelay = 0L
     private var clicks = 0
-    private var switchCount = 0
 
     // Container Delay
     private var containerOpen = -1L
@@ -220,7 +215,6 @@ class KillAura : Module() {
         prevTargetEntities.clear()
         attackTimer.reset()
         clicks = 0
-        switchCount = 0
 
         stopBlocking()
     }
@@ -571,19 +565,14 @@ class KillAura : Module() {
                         attackEntity(entity)
                 }
             }
-            if(switchTimer.hasTimePassed(switchDelayValue.get().toLong()) || targetModeValue.get().equals("Switch", true)){
-                if (switchDelay.hasTimePassed(switchDelayValue.get().toLong())) {
-                if (switchDelayValue.get() != 0) {
-                    prevTargetEntities.add(currentTarget!!.entityId)
-                    switchDelay.reset()
-                switchCount++
-                if(switchCount>=switchChangeValue.get()){
-                    switchCount=0
+
+            if(targetModeValue.get().equals("Switch", true)){
+                if(switchTimer.hasTimePassed(switchDelayValue.get().toLong())){
                     prevTargetEntities.add(if (aacValue.get()) target!!.entityId else currentTarget!!.entityId)
+                    switchTimer.reset()
                 }
             }else{
                 prevTargetEntities.add(if (aacValue.get()) target!!.entityId else currentTarget!!.entityId)
-                switchTimer.reset()
             }
 
             if (target == currentTarget)
@@ -845,5 +834,8 @@ class KillAura : Module() {
      * HUD Tag
      */
     override val tag: String
-        get() =  targetModeValue.get() + " - " + priorityValue.get()
+        get() = "${minCPS.get()}-${maxCPS.get()}, " +
+                "$maxRange${if(!autoBlockValue.get().equals("Off",true)){"-${autoBlockRangeValue.get()}"}else{""}}-${discoverRangeValue.get()}, " +
+                "${if(targetModeValue.get().equals("Switch",true)){ "SW" }else{targetModeValue.get().substring(0,1).toUpperCase()}}, " +
+                priorityValue.get().substring(0,1).toUpperCase()
 }
