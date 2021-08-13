@@ -46,7 +46,7 @@ import kotlin.math.cos
 import kotlin.math.max
 import kotlin.math.sin
 
-@ModuleInfo(name = "Aura",description = ".", category = ModuleCategory.COMBAT, keyBind = Keyboard.KEY_R)
+@ModuleInfo(name = "KillAura", category = ModuleCategory.COMBAT, keyBind = Keyboard.KEY_R)
 class KillAura : Module() {
 
     /**
