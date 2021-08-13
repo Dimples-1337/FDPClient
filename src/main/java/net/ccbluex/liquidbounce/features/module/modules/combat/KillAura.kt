@@ -95,7 +95,7 @@ class KillAura : Module() {
     private val targetModeValue = ListValue("TargetMode", arrayOf("Single", "Switch", "Multi"), "Single")
 
     // Switch
-    private val switchDelayValue = IntegerValue("Delay",300 ,1, 2000)
+    private val switchDelayValue = IntegerValue("Delay",300 ,0, 1000)
 
     // Bypass
     private val swingValue = ListValue("Swing", arrayOf("Normal", "Packet", "None"), "Normal")
