@@ -578,6 +578,15 @@ class KillAura : Module() {
                     switchDelay.reset()
                 }
             }
+            if(targetModeValue.get().equals("Switch", true)){
+                switchCount++
+                if(switchCount>=switchChangeValue.get()){
+                    switchCount=0
+                    prevTargetEntities.add(if (aacValue.get()) target!!.entityId else currentTarget!!.entityId)
+                }
+            }else{
+                prevTargetEntities.add(if (aacValue.get()) target!!.entityId else currentTarget!!.entityId)
+            }
         }
 
 
