@@ -399,7 +399,7 @@ class KillAura : Module() {
                 discoveredTargets.forEach {
                     val bb=it.entityBoundingBox
                     it.entityBoundingBox=bb.expand(0.2,0.2,0.2)
-                    RenderUtils.drawEntityBox(it, if (it.hurtTime<=0) Color.GREEN else Color.RED, true)
+                    RenderUtils.drawEntityBox(it, if (it.hurtTime<=0) Color.GREEN else Color.RED, true, true, 4f)
                     it.entityBoundingBox=bb
                 }
             }
