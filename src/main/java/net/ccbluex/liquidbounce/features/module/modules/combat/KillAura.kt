@@ -94,6 +94,9 @@ class KillAura : Module() {
     private val priorityValue = ListValue("Priority", arrayOf("Health", "Distance", "Direction", "LivingTime", "Armor"), "Distance")
     private val targetModeValue = ListValue("TargetMode", arrayOf("Single", "Switch", "Multi"), "Single")
 
+    // Switch
+    private val switchDelayValue = IntegerValue("Delay",300 ,1, 2000)
+    
     // Bypass
     private val swingValue = ListValue("Swing", arrayOf("Normal", "Packet", "None"), "Normal")
     private val keepSprintValue = BoolValue("KeepSprint", true)
@@ -177,6 +180,7 @@ class KillAura : Module() {
     // Target
     var target: EntityLivingBase? = null
     private val markTimer=MSTimer()
+    private val switchTimer = MSTimer()
     private var currentTarget: EntityLivingBase? = null
     private var hitable = false
     private val prevTargetEntities = mutableListOf<Int>()
@@ -185,6 +189,7 @@ class KillAura : Module() {
 
     // Attack delay
     private val attackTimer = MSTimer()
+    private val switchDelay = MSTimer()
     private var attackDelay = 0L
     private var clicks = 0
     private var switchCount = 0
@@ -566,8 +571,11 @@ class KillAura : Module() {
                         attackEntity(entity)
                 }
             }
-
-            if(targetModeValue.get().equals("Switch", true)){
+            if(switchTimer.hasTimePassed(switchDelayValue.get().toLong()) || targetModeValue.get().equals("Switch", true)){
+                if (switchDelay.hasTimePassed(switchDelayValue.get().toLong())) {
+                if (switchDelayValue.get() != 0) {
+                    prevTargetEntities.add(currentTarget!!.entityId)
+                    switchDelay.reset()
                 switchCount++
                 if(switchCount>=switchChangeValue.get()){
                     switchCount=0
@@ -575,6 +583,7 @@ class KillAura : Module() {
                 }
             }else{
                 prevTargetEntities.add(if (aacValue.get()) target!!.entityId else currentTarget!!.entityId)
+                switchTimer.reset()
             }
 
             if (target == currentTarget)
@@ -836,5 +845,5 @@ class KillAura : Module() {
      * HUD Tag
      */
     override val tag: String
-        get() = targetModeValue.get()
+        get() =  targetModeValue.get() + " - " + priorityValue.get()
 }
