@@ -93,6 +93,7 @@ class KillAura : Module() {
     // Modes
     private val priorityValue = ListValue("Priority", arrayOf("Health", "Distance", "Direction", "LivingTime", "Armor"), "Distance")
     private val targetModeValue = ListValue("TargetMode", arrayOf("Single", "Switch", "Multi"), "Single")
+    private val multiModeValue = ListValue("MultiMode", arrayOf("Vanilla", "NCP" ), "Vanilla")
 
     // Bypass
     private val swingValue = ListValue("Swing", arrayOf("Normal", "Packet", "None"), "Normal")
@@ -163,7 +164,7 @@ class KillAura : Module() {
     private val fakeSwingValue = BoolValue("FakeSwing", true).displayable { failRateValue.get()!=0f }
     private val noInventoryAttackValue = BoolValue("NoInvAttack", false)
     private val noInventoryDelayValue = IntegerValue("NoInvDelay", 200, 0, 500)
-    private val switchDelayValue = IntegerValue("SwitchDelay",300 ,1, 2000).displayable { targetModeValue.get().equals("Switch",true) }
+    private val switchDelayValue = IntegerValue("SwitchDelay",250 ,1, 1000).displayable { targetModeValue.get().equals("Switch",true) }
     private val limitedMultiTargetsValue = IntegerValue("LimitedMultiTargets", 0, 0, 50).displayable { targetModeValue.get().equals("Multi",true) }
 
     // Visuals
@@ -559,6 +560,8 @@ class KillAura : Module() {
             // Attack
             if (!targetModeValue.get().equals("Multi", ignoreCase = true)) {
                 attackEntity(currentTarget!!)
+                if (args[1].equalsIgnoreCase("multimode")) {
+                 if (args.length > 2 && KillAura.this.multiModeValue.contains(args[2])) {
             } else {
                 inRangeDiscoveredTargets.forEachIndexed { index, entity ->
                     if(limitedMultiTargetsValue.get()==0 || index<limitedMultiTargetsValue.get())
