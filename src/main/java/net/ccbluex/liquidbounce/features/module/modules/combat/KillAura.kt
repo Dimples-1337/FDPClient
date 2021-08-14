@@ -168,7 +168,7 @@ class KillAura : Module() {
     private val limitedMultiTargetsValue = IntegerValue("LimitedMultiTargets", 0, 0, 50).displayable { targetModeValue.get().equals("Multi",true) }
 
     // Visuals
-    private val markValue = ListValue("Mark", arrayOf("Liquid","FDP","Block","Jello","None"),"FDP")
+    private val markValue = ListValue("Mark", arrayOf("Liquid","FDP","Block","Jello","Circle","Sims","Box","Xon","None"),"FDP")
     private val fakeSharpValue = BoolValue("FakeSharp", true)
 
     /**
@@ -514,7 +514,121 @@ class KillAura : Module() {
                     GL11.glPopMatrix()
                 }
             }
+            
+            if (!targetModeValue.get().equals("Multi", ignoreCase = true)) {
+             when (markModeValue.get()) {
+                "Xon" -> {
+                    renderESP()
+                    drawESP(target!!, Color(80, 255, 80).rgb, event)
+                }
+                "Circle" -> {
+                    if (espAnimation > target!!.eyeHeight + 0.4 || espAnimation < 0) {
+                        isUp = !isUp
+                    }
+                    if (isUp) {
+                        espAnimation += 0.05 * 60 / Minecraft.getDebugFPS()
+                    } else {
+                        espAnimation -= 0.05 * 60 / Minecraft.getDebugFPS()
+                    }
+                    if (isUp) {
+                        esp(target!!, event.partialTicks, circleRadiusValue.get())
+                    } else {
+                        esp(target!!, event.partialTicks, circleRadiusValue.get())
+                    }
+                }
+                "Sims" -> RenderUtils.drawPlatform(
+                    target!!,
+                    if (hitable) Color(37, 126, 255, 70) else Color(255, 0, 0, 70)
+                )
+                "Box" -> {
+                    val renderManager = mc.renderManager
+                    val x = (target!!.lastTickPosX
+                            + (target!!.posX - target!!.lastTickPosX) * mc.timer.renderPartialTicks
+                            - renderManager.renderPosX)
+                    val y = (target!!.lastTickPosY
+                            + (target!!.posY - target!!.lastTickPosY) * mc.timer.renderPartialTicks
+                            - renderManager.renderPosY)
+                    val z = (target!!.lastTickPosZ
+                            + (target!!.posZ - target!!.lastTickPosZ) * mc.timer.renderPartialTicks
+                            - renderManager.renderPosZ)
+                    val width = target!!.entityBoundingBox.maxX - target!!.entityBoundingBox.minX
+                    val height = (target!!.entityBoundingBox.maxY - target!!.entityBoundingBox.minY
+                            + 0.25)
+                    -target!!.entityBoundingBox.minY + 0.25
+                    val red = if (target!!.hurtTime > 0) 1.0f else 0.0f
+                    val green = if (target!!.hurtTime > 0) 0.2f else 1.0f
+                    val blue = if (target!!.hurtTime > 0) 0.0f else 0.0f
+                    val alpha = 0.2f
+                    val lineRed = if (target!!.hurtTime > 0) 1.0f else 0.0f
+                    val lineGreen = if (target!!.hurtTime > 0) 0.2f else 1.0f
+                    val lineBlue = if (target!!.hurtTime > 0) 0.0f else 0.0f
+                    val lineAlpha = 1.0f
+                    val lineWidth = 2.0f
+                    RenderUtils.drawEntityKillAuraESP(
+                        x, y, z, width, height, red, green, blue, alpha, lineRed, lineGreen,
+                        lineBlue, lineAlpha, lineWidth
+                    )
+                }
+            }
+//            for(i in targetList) {
+//                when (markModeValue.get()) {
+//                    "New" -> drawESP(i, Color(80, 255, 80).rgb, event)
+//                    "Circle" -> {
+//                        if (espAnimation > i.eyeHeight + 0.4 || espAnimation < 0) {
+//                            isUp = !isUp
+//                        }
+//                        if (isUp) {
+//                            espAnimation += 0.05 * 60 / Minecraft.getDebugFPS()
+//                        } else {
+//                            espAnimation -= 0.05 * 60 / Minecraft.getDebugFPS()
+//                        }
+//                        if (isUp) {
+//                            esp(i, event.partialTicks, circleRadiusValue.get())
+//                        } else {
+//                            esp(i, event.partialTicks, circleRadiusValue.get())
+//                        }
+//                    }
+//                    "Sims" -> RenderUtils.drawPlatform(
+//                        i,
+//                        if (hitable) Color(37, 126, 255, 70) else Color(255, 0, 0, 70)
+//                    )
+//                    "Box" -> {
+//                        val renderManager = mc.renderManager
+//                        val x = (i.lastTickPosX
+//                                + (i.posX - i.lastTickPosX) * mc.timer.renderPartialTicks
+//                                - renderManager.renderPosX)
+//                        val y = (i.lastTickPosY
+//                                + (i.posY - i.lastTickPosY) * mc.timer.renderPartialTicks
+//                                - renderManager.renderPosY)
+//                        val z = (i.lastTickPosZ
+//                                + (i.posZ - i.lastTickPosZ) * mc.timer.renderPartialTicks
+//                                - renderManager.renderPosZ)
+//                        val width = i.entityBoundingBox.maxX - i.entityBoundingBox.minX
+//                        val height = (i.entityBoundingBox.maxY - i.entityBoundingBox.minY
+//                                + 0.25)
+//                        -i.entityBoundingBox.minY + 0.25
+//                        val red = if (i.hurtTime > 0) 1.0f else 0.0f
+//                        val green = if (i.hurtTime > 0) 0.2f else 1.0f
+//                        val blue = if (i.hurtTime > 0) 0.0f else 0.0f
+//                        val alpha = 0.2f
+//                        val lineRed = if (i.hurtTime > 0) 1.0f else 0.0f
+//                        val lineGreen = if (i.hurtTime > 0) 0.2f else 1.0f
+//                        val lineBlue = if (i.hurtTime > 0) 0.0f else 0.0f
+//                        val lineAlpha = 1.0f
+//                        val lineWidth = 2.0f
+//                        RenderUtils.drawEntityKillAuraESP(
+//                            x, y, z, width, height, red, green, blue, alpha, lineRed, lineGreen,
+//                            lineBlue, lineAlpha, lineWidth
+//                        )
+//                    }
+//                }
+//            }
         }
+        if (currentTarget != null && attackTimer.hasTimePassed(attackDelay) &&
+                currentTarget!!.hurtTime <= hurtTimeValue.get()) {
+            clicks++
+            attackTimer.reset()
+         }
     }
 
     /**
