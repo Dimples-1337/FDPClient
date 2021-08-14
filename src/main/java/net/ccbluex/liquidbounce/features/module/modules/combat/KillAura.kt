@@ -88,6 +88,7 @@ class KillAura : Module() {
     }
     private val discoverRangeValue = FloatValue("DiscoverRange", 6f, 0f, 15f)
     private val rangeSprintReducementValue = FloatValue("RangeSprintReducement", 0f, 0f, 0.4f)
+    private val circleRadiusValue = FloatValue("CircleRadius", 1.0F,0.5F, 3.0F)
 
     // Modes
     private val priorityValue = ListValue("Priority", arrayOf("Health", "Distance", "Direction", "LivingTime", "Armor"), "Distance")
@@ -162,11 +163,11 @@ class KillAura : Module() {
     private val fakeSwingValue = BoolValue("FakeSwing", true).displayable { failRateValue.get()!=0f }
     private val noInventoryAttackValue = BoolValue("NoInvAttack", false)
     private val noInventoryDelayValue = IntegerValue("NoInvDelay", 200, 0, 500)
-    private val switchDelayValue = IntegerValue("SwitchDelay",300 ,1, 2000).displayable { targetModeValue.get().equals("Switch",true) }
+    private val switchDelayValue = IntegerValue("SwitchDelay",250 ,1, 1000).displayable { targetModeValue.get().equals("Switch",true) }
     private val limitedMultiTargetsValue = IntegerValue("LimitedMultiTargets", 0, 0, 50).displayable { targetModeValue.get().equals("Multi",true) }
 
     // Visuals
-    private val markValue = ListValue("Mark", arrayOf("Liquid","FDP","Block","Jello","None"),"FDP")
+    private val markValue = ListValue("Mark", arrayOf("Liquid","FDP","Block","Jello","Circle","None"),"FDP")
     private val fakeSharpValue = BoolValue("FakeSharp", true)
 
     /**
@@ -513,8 +514,23 @@ class KillAura : Module() {
                 }
             }
         }
-    }
-
+         "Circle" -> {
+             if (espAnimation > target!!.eyeHeight + 0.4 || espAnimation < 0) {
+                 isUp = !isUp
+             }
+             if (isUp) {
+                 espAnimation += 0.05 * 60 / Minecraft.getDebugFPS()
+             } else {
+               espAnimation -= 0.05 * 60 / Minecraft.getDebugFPS()
+             }
+             if (isUp) {
+               esp(target!!, event.partialTicks, circleRadiusValue.get())
+             } else {
+             esp(target!!, event.partialTicks, circleRadiusValue.get())
+            }
+         }
+      }
+         
     /**
      * Handle entity move
      */
