@@ -55,6 +55,10 @@ class Text(x: Double = 10.0, y: Double = 10.0, scale: Float = 1F,
     private val rectBlueValue = IntegerValue("RectBlue", 0, 0, 255)
     private val rectAlphaValue = IntegerValue("RectAlpha", 255, 0, 255)
     private val rect = BoolValue("Rect", false)
+    private val shadowRect = BoolValue("ShadowRect", true)
+    private val skeetRect = BoolValue("Skeet", false)
+    private val oneTapRect = BoolValue("OneTap", false)
+    private val shadow = BoolValue("Shadow", true)
     private val rectExpandValue = FloatValue("RectExpand", 0.3F, 0F, 1F)
     private val rainbowSpeed = IntegerValue("RainbowSpeed",10,1,10)
     private val rainbowIndex = IntegerValue("RainbowIndex",1,1,20)
@@ -143,6 +147,7 @@ class Text(x: Double = 10.0, y: Double = 10.0, scale: Float = 1F,
      */
     override fun drawElement(partialTicks: Float): Border {
         val color = Color(redValue.get(), greenValue.get(), blueValue.get(), alphaValue.get())
+        val addColor = color + Color(0, 0, 0, 50).rgb 
 
         val fontRenderer = fontValue.get()
 
@@ -150,9 +155,18 @@ class Text(x: Double = 10.0, y: Double = 10.0, scale: Float = 1F,
             val rectColor = Color(rectRedValue.get(), rectGreenValue.get(), rectBlueValue.get(), rectAlphaValue.get()).rgb
             val expand = fontRenderer.FONT_HEIGHT*rectExpandValue.get()
 
-            RenderUtils.drawRect(-expand,-expand,fontRenderer.getStringWidth(displayText)+expand,fontRenderer.FONT_HEIGHT+expand,rectColor)
+            RenderUtils.drawRect2(-2.0f, -2.0f, (fontRenderer.getStringWidth(displayText) + 1).toFloat(), fontRenderer.FONT_HEIGHT.toFloat(), Color(0, 0, 0, 150).rgb, shadowRect.get())
+         }
+         if (oneTapRect.get()) {
+            RenderUtils.drawRect(-4.0f, -8.0f, (fontRenderer.getStringWidth(displayText) + 3).toFloat(), fontRenderer.FONT_HEIGHT.toFloat(), Color(43, 43, 43).rgb)
+            RenderUtils.drawGradientSideways(-3.0, -7.0, fontRenderer.getStringWidth(displayText) + 2.0, -3.0, if (rainbow) rainbow(400000000L).rgb + Color(0, 0, 0, 50).rgb else addColor, if (rainbow) rainbow(400000000L).rgb else color)
         }
-
+        if (skeetRect.get()) {
+            RenderUtils.drawRect(-11.0, -11.0, (fontRenderer.getStringWidth(displayText) + 10).toDouble(), fontRenderer.FONT_HEIGHT.toDouble() + 8.0, Color(0, 0, 0).rgb)
+            RenderUtils.drawOutLineRect(-10.0, -10.0, (fontRenderer.getStringWidth(displayText) + 9).toDouble(), fontRenderer.FONT_HEIGHT.toDouble() + 7.0, 8.0, Color(59, 59, 59).rgb, Color(59, 59, 59).rgb)
+            RenderUtils.drawOutLineRect(-9.0, -9.0, (fontRenderer.getStringWidth(displayText) + 8).toDouble(), fontRenderer.FONT_HEIGHT.toDouble() + 6.0, 4.0, Color(59, 59, 59).rgb, Color(40, 40, 40).rgb)
+            RenderUtils.drawOutLineRect(-4.0, -4.0, (fontRenderer.getStringWidth(displayText) + 3).toDouble(), fontRenderer.FONT_HEIGHT.toDouble() + 1.0, 1.0, Color(18, 18, 18).rgb, Color(0, 0, 0).rgb)
+        }
         fontRenderer.drawString(displayText, 0F, 0F, when(colorModeValue.get().toLowerCase()){
             "rainbow" -> ColorUtils.rainbow(400000000L * rainbowIndex.get()).rgb
             "skyrainbow" -> RenderUtils.skyRainbow(rainbowIndex.get(), 1F, 1F, rainbowSpeed.get().toDouble()).rgb
