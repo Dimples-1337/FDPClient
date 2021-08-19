@@ -987,7 +987,7 @@ module.Target.name=目标
 module.Target.description=目标设置
 module.Target.value.Player.name=玩家
 module.Target.value.Animal.name=友好生物
-module.Target.value.Mob.name=地对生物
+module.Target.value.Mob.name=敌对生物
 module.Target.value.Invisible.name=隐身
 module.Target.value.Dead.name=死亡
 
