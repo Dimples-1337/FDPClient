@@ -15,11 +15,27 @@ import kotlin.math.min
 /**
  * CustomHUD element
  */
-abstract class Element(var x: Double = 2.0, var y: Double = 2.0, var scale: Float = 1F,
+abstract class Element(var x: Double = 2.0, var y: Double = 2.0, scale: Float = 1F,
                        var side: Side = Side.default()) : MinecraftInstance() {
-
     val info = javaClass.getAnnotation(ElementInfo::class.java)
             ?: throw IllegalArgumentException("Passed element with missing element info")
+
+    var scale: Float = 1F
+        set(value) {
+            if (info.disableScale)
+                return
+
+            field = value
+        }
+        get() {
+            if (info.disableScale)
+                return 1.0f
+            return field
+        }
+
+    init {
+        this.scale = scale
+    }
 
     val name: String
         get() = info.name
@@ -82,7 +98,7 @@ abstract class Element(var x: Double = 2.0, var y: Double = 2.0, var scale: Floa
     /**
      * Draw element
      */
-    abstract fun drawElement(partialTicks: Float): Border?
+    abstract fun drawElement(): Border?
 
     /**
      * Update element
@@ -120,7 +136,7 @@ abstract class Element(var x: Double = 2.0, var y: Double = 2.0, var scale: Floa
  * Element info
  */
 @kotlin.annotation.Retention(AnnotationRetention.RUNTIME)
-annotation class ElementInfo(val name: String, val single: Boolean = false, val force: Boolean = false)
+annotation class ElementInfo(val name: String, val single: Boolean = false, val force: Boolean = false, val disableScale: Boolean = false, val priority: Int = 0)
 
 /**
  * CustomHUD Side
@@ -181,6 +197,6 @@ class Side(var horizontal: Horizontal, var vertical: Vertical) {
  */
 data class Border(val x: Float, val y: Float, val x2: Float, val y2: Float) {
 
-    fun draw() = RenderUtils.drawBorderedRect(x, y, x2, y2, 3F, Int.MIN_VALUE, 0)
+    fun draw() = RenderUtils.drawBorderedRect(x, y, x2, y2, 1F, Int.MIN_VALUE, 0)
 
 }
