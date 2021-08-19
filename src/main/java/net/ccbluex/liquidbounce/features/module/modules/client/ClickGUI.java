@@ -11,12 +11,13 @@ import net.ccbluex.liquidbounce.event.PacketEvent;
 import net.ccbluex.liquidbounce.features.module.Module;
 import net.ccbluex.liquidbounce.features.module.ModuleCategory;
 import net.ccbluex.liquidbounce.features.module.ModuleInfo;
+import net.ccbluex.liquidbounce.features.module.modules.color.ColorMixer;
 import net.ccbluex.liquidbounce.ui.client.clickgui.ClickGui;
-import net.ccbluex.liquidbounce.ui.client.clickgui.style.styles.BlackStyle;
 import net.ccbluex.liquidbounce.ui.client.clickgui.style.styles.LiquidBounceStyle;
 import net.ccbluex.liquidbounce.ui.client.clickgui.style.styles.NullStyle;
 import net.ccbluex.liquidbounce.ui.client.clickgui.style.styles.SlowlyStyle;
-import net.ccbluex.liquidbounce.utils.render.ColorUtils;
+import net.ccbluex.liquidbounce.ui.client.clickgui.style.styles.BlackStyle;
+import net.ccbluex.liquidbounce.utils.render.RenderUtils;
 import net.ccbluex.liquidbounce.value.BoolValue;
 import net.ccbluex.liquidbounce.value.FloatValue;
 import net.ccbluex.liquidbounce.value.IntegerValue;
@@ -29,7 +30,7 @@ import java.awt.*;
 
 @ModuleInfo(name = "ClickGUI", category = ModuleCategory.CLIENT, keyBind = Keyboard.KEY_RSHIFT, canEnable = false)
 public class ClickGUI extends Module {
-    private final ListValue styleValue = new ListValue("Style", new String[] {"LiquidBounce", "Null", "Slowly", "Black"}, "Slowly") {
+    private final ListValue styleValue = new ListValue("Style", new String[] {"LiquidBounce", "Null", "Slowly", "Black"}, "Null") {
         @Override
         protected void onChanged(final String oldValue, final String newValue) {
             updateStyle();
@@ -39,13 +40,39 @@ public class ClickGUI extends Module {
     public final FloatValue scaleValue = new FloatValue("Scale", 1F, 0.7F, 2F);
     public final IntegerValue maxElementsValue = new IntegerValue("MaxElements", 15, 1, 20);
 
-    private static final BoolValue colorRainbow = new BoolValue("Rainbow", false);
-    private static final IntegerValue colorRedValue = (IntegerValue) new IntegerValue("R", 0, 0, 255).displayable(() -> !colorRainbow.get());
-    private static final IntegerValue colorGreenValue = (IntegerValue) new IntegerValue("G", 160, 0, 255).displayable(() -> !colorRainbow.get());
-    private static final IntegerValue colorBlueValue = (IntegerValue) new IntegerValue("B", 255, 0, 255).displayable(() -> !colorRainbow.get());
+    private static final ListValue colorModeValue = new ListValue("Color", new String[] {"Custom", "Sky", "LiquidSlowly", "Fade", "Mixer"}, "Custom");
+    private static final IntegerValue colorRedValue = new IntegerValue("Red", 0, 0, 255);
+    private static final IntegerValue colorGreenValue = new IntegerValue("Green", 160, 0, 255);
+    private static final IntegerValue colorBlueValue = new IntegerValue("Blue", 255, 0, 255);
+    private static final FloatValue saturationValue = new FloatValue("Saturation", 1F, 0F, 1F);
+    private static final FloatValue brightnessValue = new FloatValue("Brightness", 1F, 0F, 1F);
+    private static final IntegerValue mixerSecondsValue = new IntegerValue("Mixer-Seconds", 2, 1, 10);
+
+    public final ListValue backgroundValue = new ListValue("Background", new String[] {"Default", "Gradient", "Blur", "None"}, "Default");
+    public static final IntegerValue blurStrengthValue = new IntegerValue("Blur-Strength", 10, 1, 20);
+
+    public final ListValue animationValue = new ListValue("Animation", new String[] {"Azura", "Slide", "SlideBounce", "Zoom", "ZoomBounce", "None"}, "Azura");
 
     public static Color generateColor() {
-        return colorRainbow.get() ? ColorUtils.rainbow() : new Color(colorRedValue.get(), colorGreenValue.get(), colorBlueValue.get());
+        Color c = new Color(255, 255, 255, 255);
+        switch (colorModeValue.get().toLowerCase()) {
+            case "custom":
+                c = new Color(colorRedValue.get(), colorGreenValue.get(), colorBlueValue.get());
+                break;
+            case "sky":
+                c = RenderUtils.skyRainbow(0, saturationValue.get(), brightnessValue.get());
+                break;
+            case "liquidslowly":
+                c = ColorUtils.LiquidSlowly(System.nanoTime(), 0, saturationValue.get(), brightnessValue.get());
+                break;
+            case "fade":
+                c = ColorUtils.fade(new Color(colorRedValue.get(), colorGreenValue.get(), colorBlueValue.get()), 0, 100);
+                break;
+            case "mixer":
+                c = ColorMixer.getMixedColor(0, mixerSecondsValue.get());
+                break;
+        }
+        return c;
     }
 
     @Override
@@ -68,7 +95,6 @@ public class ClickGUI extends Module {
                 break;
             case "black":
                 LiquidBounce.clickGui.style = new BlackStyle();
-                break;
         }
     }
 
