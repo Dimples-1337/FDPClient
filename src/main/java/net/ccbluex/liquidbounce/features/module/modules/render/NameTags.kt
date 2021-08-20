@@ -14,7 +14,6 @@ import net.ccbluex.liquidbounce.features.module.ModuleInfo
 import net.ccbluex.liquidbounce.features.module.modules.misc.AntiBot
 import net.ccbluex.liquidbounce.features.module.modules.player.HackerDetector
 import net.ccbluex.liquidbounce.ui.font.Fonts
-import net.ccbluex.liquidbounce.ui.font.AWTFontRenderer
 import net.ccbluex.liquidbounce.utils.EntityUtils
 import net.ccbluex.liquidbounce.utils.render.ColorUtils
 import net.ccbluex.liquidbounce.utils.render.RenderUtils.drawRect
@@ -95,8 +94,6 @@ class NameTags : Module() {
         
         glScalef(-scale, -scale, scale)
 
-        AWTFontRenderer.assumeNonVolatile = true
-
         // Disable lightning and depth test
         disableGlCap(GL_LIGHTING, GL_DEPTH_TEST)
 
@@ -154,8 +151,6 @@ class NameTags : Module() {
                 
                 fontRenderer.drawString(text, 1F + -width, if (fontRenderer == Fonts.minecraftFont) 1F else 1.5F, 0xFFFFFF, true)
                 
-                 AWTFontRenderer.assumeNonVolatile = false
-
                 if (armorValue.get() && entity is EntityPlayer) {
                     for (index in 0..4) {
                         if (entity.getEquipmentInSlot(index) == null)
