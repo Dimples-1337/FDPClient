@@ -44,6 +44,7 @@ object LiquidBounce {
     const val COLORED_NAME = "§c§lFDP§6§lClient"
     const val CLIENT_REAL_VERSION = "v1.3.3"
     const val CLIENT_CREATOR = "CCBlueX & UnlegitMC"
+    const val CLIENT_STORAGE = "https://unlegitmc.github.io/FDPStorage/"
     const val MINECRAFT_VERSION = "1.8.9"
 
     // 自动读取客户端版本

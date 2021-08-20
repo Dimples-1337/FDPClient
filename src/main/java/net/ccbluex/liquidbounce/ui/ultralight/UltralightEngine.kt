@@ -13,12 +13,15 @@ import net.ccbluex.liquidbounce.event.Render2DEvent
 import net.ccbluex.liquidbounce.ui.ultralight.support.ClipboardAdapter
 import net.ccbluex.liquidbounce.ui.ultralight.support.FileSystemAdapter
 import net.ccbluex.liquidbounce.ui.ultralight.view.View
+import net.ccbluex.liquidbounce.utils.ClientUtils
+import net.ccbluex.liquidbounce.utils.FileUtils
 import net.ccbluex.liquidbounce.utils.timer.MSTimer
 import net.minecraft.client.Minecraft
 import net.minecraft.client.gui.ScaledResolution
 import org.apache.logging.log4j.LogManager
 import org.lwjgl.opengl.Display
 import java.io.File
+import java.net.URL
 
 object UltralightEngine : Listenable {
     lateinit var platform: UltralightPlatform
@@ -31,6 +34,8 @@ object UltralightEngine : Listenable {
     private val pagesPath = File(ultralightPath, "pages")
     private val cachePath = File(ultralightPath, "cache")
 
+    private const val ULTRALIGHT_NATIVE_VERSION = "0.4.6"
+
     var width=0
     var height=0
     var scaledWidth=0
@@ -41,9 +46,6 @@ object UltralightEngine : Listenable {
     private val views=mutableListOf<View>()
 
     init {
-        if(!resourcePath.exists())
-            resourcePath.mkdirs()
-
         if(!pagesPath.exists())
             pagesPath.mkdirs()
 
@@ -52,8 +54,11 @@ object UltralightEngine : Listenable {
     }
 
     fun init(){
-        // load ultralight natives and resources from web
-        loadResources()
+        // download ultralight natives and resources from web
+        checkResources()
+
+        // then load it
+        UltralightJava.load(resourcePath.toPath())
 
         platform = UltralightPlatform.instance()
         platform.setConfig(
@@ -81,11 +86,26 @@ object UltralightEngine : Listenable {
         LiquidBounce.eventManager.registerListener(this)
     }
 
-    private fun loadResources(){
-        // TODO download the natives
+    private fun checkResources(){
+        val versionsFile = File(resourcePath, "VERSION")
 
-        // then load it
-        UltralightJava.load(resourcePath.toPath())
+        // Check if library version is matching the resources version
+        if (versionsFile.exists() && versionsFile.readText() == ULTRALIGHT_NATIVE_VERSION)
+            return
+
+        if(resourcePath.exists())
+            resourcePath.deleteRecursively()
+
+        resourcePath.mkdirs()
+
+        // download the natives
+        val resourcesZip = File(resourcePath, "resources.zip")
+        FileUtils.downloadFile(resourcesZip, URL("${LiquidBounce.CLIENT_STORAGE}ultralight/$ULTRALIGHT_NATIVE_VERSION/${ClientUtils.osType.friendlyName}-x64.zip"))
+        FileUtils.extractZip(resourcesZip, resourcePath)
+        resourcesZip.delete()
+
+        versionsFile.createNewFile()
+        versionsFile.writeText(ULTRALIGHT_NATIVE_VERSION)
     }
 
     fun registerView(view: View){
