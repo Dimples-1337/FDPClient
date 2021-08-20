@@ -22,6 +22,7 @@ import javax.imageio.ImageIO
 class AWTFontRenderer(val font: Font, initialize: Boolean = true) {
 
     private val fontHeight: Int
+    var assumeNonVolatile: Boolean = false
 
     private val chars=HashMap<String, FontChar>()
 
@@ -71,6 +72,61 @@ class AWTFontRenderer(val font: Font, initialize: Boolean = true) {
         val alpha = (color shr 24 and 0xff) / 255F
 
         GlStateManager.color(red, green, blue, alpha)
+        
+        var currX = 0.0
+        val cached: CachedFont? = cachedStrings[text]
+
+        if (cached != null) {
+            GL11.glCallList(cached.displayList)
+
+            cached.lastUsage = System.currentTimeMillis()
+
+            GlStateManager.popMatrix()
+
+            return
+        }
+
+        var list = -1
+
+        if (assumeNonVolatile) {
+            list = GL11.glGenLists(1)
+
+            GL11.glNewList(list, GL11.GL_COMPILE_AND_EXECUTE)
+        }
+
+        GL11.glBegin(GL11.GL_QUADS)
+
+        for (char in text.toCharArray()) {
+            if (char.toInt() >= charLocations.size) {
+                GL11.glEnd()
+
+                // Ugly solution, because floating point numbers, but I think that shouldn't be that much of a problem
+                GlStateManager.scale(reverse, reverse, reverse)
+                Minecraft.getMinecraft().fontRendererObj.drawString("$char", currX.toFloat() * scale.toFloat() + 1, 2f, color, false)
+                currX += Minecraft.getMinecraft().fontRendererObj.getStringWidth("$char") * reverse
+
+                GlStateManager.scale(scale, scale, scale)
+                GlStateManager.bindTexture(textureID)
+                GlStateManager.color(red, green, blue, alpha)
+
+                GL11.glBegin(GL11.GL_QUADS)
+            } else {
+                val fontChar = charLocations[char.toInt()] ?: continue
+
+                drawChar(fontChar, currX.toFloat(), 0f)
+                currX += fontChar.width - 8.0
+            }
+        }
+
+        GL11.glEnd()
+
+        if (assumeNonVolatile) {
+            cachedStrings[text] = CachedFont(list, System.currentTimeMillis())
+            GL11.glEndList()
+        }
+
+        GlStateManager.popMatrix()
+    }
 
         var isLastUTF16=false
         var highSurrogate='\u0000'
