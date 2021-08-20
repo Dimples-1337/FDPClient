@@ -27,7 +27,6 @@ class HUD : Module() {
     val chatCombineValue = BoolValue("ChatCombine", true)
     val chatAnimValue = BoolValue("ChatAnimation", true)
     val chatAnimationSpeedValue = FloatValue("Chat-AnimationSpeed", 0.1F, 0.01F, 0.1F)
-    val invEffectOffset = BoolValue("InvEffect-Offset", false)
 
     @EventTarget
     fun onRender2D(event: Render2DEvent) {
