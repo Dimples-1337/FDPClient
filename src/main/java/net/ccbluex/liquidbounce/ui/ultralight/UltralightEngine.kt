@@ -29,7 +29,7 @@ object UltralightEngine : Listenable {
 
     val logger = LogManager.getLogger("Ultralight")
 
-    private val ultralightPath = File(LiquidBounce.fileManager.cacheDir, "Ultralight")
+    private val ultralightPath = File(LiquidBounce.fileManager.cacheDir, "ultralight")
     private val resourcePath = File(ultralightPath, "resources")
     private val pagesPath = File(ultralightPath, "pages")
     private val cachePath = File(ultralightPath, "cache")
