@@ -263,4 +263,5 @@ class Projectiles : Module() {
 
         val hue = (hueMax - hueMin) * process + hueMin
         return Color.getHSBColor(hue, saturation, brightness)
-    }
+        }
+ }
