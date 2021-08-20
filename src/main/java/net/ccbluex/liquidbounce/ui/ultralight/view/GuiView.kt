@@ -6,12 +6,8 @@ import net.ccbluex.liquidbounce.ui.ultralight.support.UltralightUtils
 import net.minecraft.client.gui.GuiScreen
 import org.lwjgl.input.Mouse
 
-open class GuiView(private val url: String) : GuiScreen() {
+abstract class GuiView(private val url: String) : GuiScreen() {
     lateinit var view: View
-
-    init {
-        init()
-    }
 
     fun init(){
         view=View()

@@ -8,7 +8,6 @@ import com.labymedia.ultralight.input.UltralightMouseEvent
 import com.labymedia.ultralight.input.UltralightScrollEvent
 import net.ccbluex.liquidbounce.ui.ultralight.UltralightEngine
 import net.ccbluex.liquidbounce.ui.ultralight.listener.TheLoadListener
-import net.ccbluex.liquidbounce.ui.ultralight.listener.TheViewListener
 import net.minecraft.client.gui.Gui
 import net.minecraft.client.renderer.GlStateManager
 import net.minecraft.client.renderer.OpenGlHelper
@@ -18,7 +17,6 @@ import java.nio.ByteBuffer
 
 class View {
     private val view: UltralightView
-    private val viewListener: TheViewListener
     private val loadListener: TheLoadListener
 
     private var glTexture = -1
@@ -30,8 +28,6 @@ class View {
                 .initialDeviceScale(1.0)
                 .isTransparent(true)
         )
-        viewListener = TheViewListener()
-        view.setViewListener(viewListener)
         loadListener = TheLoadListener(view)
         view.setLoadListener(loadListener)
     }

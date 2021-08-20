@@ -20,10 +20,8 @@ package net.ccbluex.liquidbounce.ui.ultralight.support
 
 import com.labymedia.ultralight.plugin.clipboard.UltralightClipboard
 import java.awt.Toolkit
-import java.awt.datatransfer.Transferable
 import java.awt.datatransfer.DataFlavor
 import java.awt.datatransfer.StringSelection
-import java.lang.Exception
 
 /**
  * LWJGL2 don't support to modify clipboard, so we use java

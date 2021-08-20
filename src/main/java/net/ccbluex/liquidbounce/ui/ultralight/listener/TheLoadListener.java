@@ -25,7 +25,6 @@ import com.labymedia.ultralight.databind.DatabindConfiguration;
 import com.labymedia.ultralight.databind.api.JavaAPI;
 import com.labymedia.ultralight.javascript.*;
 import com.labymedia.ultralight.plugin.loading.UltralightLoadListener;
-import net.ccbluex.liquidbounce.ui.ultralight.UltralightEngine;
 import net.ccbluex.liquidbounce.ui.ultralight.support.ViewContextProvider;
 
 /**

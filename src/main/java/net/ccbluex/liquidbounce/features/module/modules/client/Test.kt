@@ -5,6 +5,7 @@ import net.ccbluex.liquidbounce.event.UpdateEvent
 import net.ccbluex.liquidbounce.features.module.Module
 import net.ccbluex.liquidbounce.features.module.ModuleCategory
 import net.ccbluex.liquidbounce.features.module.ModuleInfo
+import net.ccbluex.liquidbounce.ui.ultralight.view.DynamicGuiView
 import net.ccbluex.liquidbounce.ui.ultralight.view.GuiView
 import net.ccbluex.liquidbounce.value.TextValue
 
@@ -14,7 +15,7 @@ class Test : Module() {
     private var guiView: GuiView? = null
 
     override fun onEnable() {
-        guiView=GuiView(value.get())
+        guiView=DynamicGuiView(value.get())
         mc.displayGuiScreen(guiView)
     }
 
