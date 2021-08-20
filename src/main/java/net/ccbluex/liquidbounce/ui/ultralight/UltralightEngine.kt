@@ -1,5 +1,6 @@
 package net.ccbluex.liquidbounce.ui.ultralight
 
+import com.labymedia.ultralight.UltralightJava
 import com.labymedia.ultralight.UltralightPlatform
 import com.labymedia.ultralight.UltralightRenderer
 import com.labymedia.ultralight.config.FontHinting
@@ -16,13 +17,14 @@ import net.ccbluex.liquidbounce.utils.timer.MSTimer
 import net.minecraft.client.Minecraft
 import net.minecraft.client.gui.ScaledResolution
 import org.apache.logging.log4j.LogManager
+import org.lwjgl.opengl.Display
 import java.io.File
 
 object UltralightEngine : Listenable {
     lateinit var platform: UltralightPlatform
     lateinit var renderer: UltralightRenderer
 
-    private val logger = LogManager.getLogger("Ultralight")
+    val logger = LogManager.getLogger("Ultralight")
 
     private val ultralightPath = File(LiquidBounce.fileManager.cacheDir, "Ultralight")
     private val resourcePath = File(ultralightPath, "resources")
@@ -30,6 +32,8 @@ object UltralightEngine : Listenable {
 
     var width=0
     var height=0
+    var scaledWidth=0
+    var scaledHeight=0
     private val gcTimer=MSTimer()
 
     private val views=mutableListOf<View>()
@@ -72,7 +76,10 @@ object UltralightEngine : Listenable {
     }
 
     private fun loadResources(){
+        // download the natives
 
+        // then load it
+        UltralightJava.load(resourcePath.toPath())
     }
 
     fun registerView(view: View){
@@ -86,9 +93,22 @@ object UltralightEngine : Listenable {
 
     @EventTarget
     fun onRender2d(event: Render2DEvent){
+        var resized=false
+        if(width!=Display.getWidth()) {
+            width = Display.getWidth()
+            resized=true
+        }
+        if(height!=Display.getHeight()) {
+            height = Display.getHeight()
+            resized=true
+        }
         val sr=ScaledResolution(Minecraft.getMinecraft())
-        width=sr.scaledWidth
-        height=sr.scaledHeight
+        scaledWidth=sr.scaledWidth
+        scaledHeight=sr.scaledHeight
+
+        if(resized){
+            views.forEach { it.resize(width, height) }
+        }
 
         this.renderer.update()
         this.renderer.render()

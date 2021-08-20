@@ -24,6 +24,8 @@ import com.labymedia.ultralight.databind.Databind;
 import com.labymedia.ultralight.databind.DatabindConfiguration;
 import com.labymedia.ultralight.databind.api.JavaAPI;
 import com.labymedia.ultralight.javascript.*;
+import com.labymedia.ultralight.plugin.loading.UltralightLoadListener;
+import net.ccbluex.liquidbounce.ui.ultralight.UltralightEngine;
 import net.ccbluex.liquidbounce.ui.ultralight.support.ViewContextProvider;
 
 /**
@@ -31,19 +33,19 @@ import net.ccbluex.liquidbounce.ui.ultralight.support.ViewContextProvider;
  * <p>
  * Instances of load listeners receive various events regarding the load progress of a page.
  * <p>
- * A load listener is registered using {@link UltralightView#setLoadListener(com.labymedia.ultralight.plugin.loading.UltralightLoadListener)}.
+ * A load listener is registered using {@link UltralightView#setLoadListener(UltralightLoadListener)}.
  */
-public class UltralightLoadListener implements com.labymedia.ultralight.plugin.loading.UltralightLoadListener {
+public class TheLoadListener implements UltralightLoadListener {
     private final UltralightView view;
     private final Databind databind;
     private final JavaAPI javaApi;
 
     /**
-     * Constructs a new {@link UltralightLoadListener} for the given view.
+     * Constructs a new {@link TheLoadListener} for the given view.
      *
      * @param view The view the listener is being constructed for
      */
-    public UltralightLoadListener(UltralightView view) {
+    public TheLoadListener(UltralightView view) {
         this.view = view;
 
         // Create a databind instance so translation from Java to Javascript and back is possible
@@ -80,7 +82,7 @@ public class UltralightLoadListener implements com.labymedia.ultralight.plugin.l
      */
     @Override
     public void onBeginLoading(long frameId, boolean isMainFrame, String url) {
-        System.out.println(frameName(frameId, isMainFrame, url) + "The view is about to load");
+        UltralightEngine.INSTANCE.getLogger().info(frameName(frameId, isMainFrame, url) + "The view is about to load");
     }
 
     /**
@@ -92,7 +94,7 @@ public class UltralightLoadListener implements com.labymedia.ultralight.plugin.l
      */
     @Override
     public void onFinishLoading(long frameId, boolean isMainFrame, String url) {
-        System.out.println(frameName(frameId, isMainFrame, url) + "The view finished loading");
+        UltralightEngine.INSTANCE.getLogger().info(frameName(frameId, isMainFrame, url) + "The view finished loading");
     }
 
     /**
@@ -108,7 +110,7 @@ public class UltralightLoadListener implements com.labymedia.ultralight.plugin.l
     @Override
     public void onFailLoading(
             long frameId, boolean isMainFrame, String url, String description, String errorDomain, int errorCode) {
-        System.err.println(frameName(frameId, isMainFrame, url) +
+        UltralightEngine.INSTANCE.getLogger().error(frameName(frameId, isMainFrame, url) +
                 "Failed to load " + errorDomain + ", " + errorCode + "(" + description + ")");
     }
 
@@ -117,7 +119,7 @@ public class UltralightLoadListener implements com.labymedia.ultralight.plugin.l
      */
     @Override
     public void onUpdateHistory() {
-        System.out.println("The view has updated the history");
+        UltralightEngine.INSTANCE.getLogger().info("The view has updated the history");
     }
 
     /**

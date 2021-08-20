@@ -24,6 +24,8 @@ import com.labymedia.ultralight.input.UltralightCursor;
 import com.labymedia.ultralight.math.IntRect;
 import com.labymedia.ultralight.plugin.view.MessageLevel;
 import com.labymedia.ultralight.plugin.view.MessageSource;
+import com.labymedia.ultralight.plugin.view.UltralightViewListener;
+import net.ccbluex.liquidbounce.ui.ultralight.UltralightEngine;
 
 /**
  * Example view listener for the main view.
@@ -31,14 +33,14 @@ import com.labymedia.ultralight.plugin.view.MessageSource;
  * Instances of view listeners receive view bound events and can be used to update visual aspects such as the cursor and
  * the tooltip.
  * <p>
- * A view listener is registered using {@link UltralightView#setViewListener(com.labymedia.ultralight.plugin.view.UltralightViewListener)}.
+ * A view listener is registered using {@link UltralightView#setViewListener(UltralightViewListener)}.
  */
-public class UltralightViewListener implements com.labymedia.ultralight.plugin.view.UltralightViewListener {
+public class TheViewListener implements UltralightViewListener {
     /**
-     * Constructs a new {@link UltralightViewListener} and used the given cursor manager for changing the displayed
+     * Constructs a new {@link TheViewListener} and used the given cursor manager for changing the displayed
      * cursor.
      */
-    public UltralightViewListener() {
+    public TheViewListener() {
     }
 
     /**
@@ -48,7 +50,7 @@ public class UltralightViewListener implements com.labymedia.ultralight.plugin.v
      */
     @Override
     public void onChangeTitle(String title) {
-        System.out.println("View title has changed: " + title);
+        UltralightEngine.INSTANCE.getLogger().info("View title has changed: " + title);
     }
 
     /**
@@ -58,7 +60,7 @@ public class UltralightViewListener implements com.labymedia.ultralight.plugin.v
      */
     @Override
     public void onChangeURL(String url) {
-        System.out.println("View url has changed: " + url);
+        UltralightEngine.INSTANCE.getLogger().info("View url has changed: " + url);
     }
 
     /**
@@ -68,7 +70,7 @@ public class UltralightViewListener implements com.labymedia.ultralight.plugin.v
      */
     @Override
     public void onChangeTooltip(String tooltip) {
-        // System.out.println("View tooltip has changed: " + tooltip);
+         UltralightEngine.INSTANCE.getLogger().info("View tooltip has changed: " + tooltip);
     }
 
     /**
@@ -81,7 +83,7 @@ public class UltralightViewListener implements com.labymedia.ultralight.plugin.v
      */
     @Override
     public void onChangeCursor(UltralightCursor cursor) {
-        System.out.println("Cursor has changed: " + cursor);
+        UltralightEngine.INSTANCE.getLogger().info("Cursor has changed: " + cursor);
     }
 
     /**
@@ -104,7 +106,7 @@ public class UltralightViewListener implements com.labymedia.ultralight.plugin.v
             long columnNumber,
             String sourceId
     ) {
-        System.out.println(
+        UltralightEngine.INSTANCE.getLogger().info(
                 "View message: ["
                         + source.name() + "/" + level.name() + "] "
                         + sourceId + ":" + lineNumber + ":" + columnNumber + ": " + message);
@@ -124,17 +126,17 @@ public class UltralightViewListener implements com.labymedia.ultralight.plugin.v
      */
     @Override
     public UltralightView onCreateChildView(String openerUrl, String targetUrl, boolean isPopup, IntRect popupRect) {
-        System.out.println("View wants child: ");
-        System.out.println("\tFrom: " + openerUrl);
-        System.out.println("\tTo: " + targetUrl);
-        System.out.println("\tIs popup: " + isPopup);
+        UltralightEngine.INSTANCE.getLogger().info("View wants child: ");
+        UltralightEngine.INSTANCE.getLogger().info("\tFrom: " + openerUrl);
+        UltralightEngine.INSTANCE.getLogger().info("\tTo: " + targetUrl);
+        UltralightEngine.INSTANCE.getLogger().info("\tIs popup: " + isPopup);
         if (popupRect.isValid()) {
-            System.out.println("\tTarget rect: (" +
+            UltralightEngine.INSTANCE.getLogger().info("\tTarget rect: (" +
                     popupRect.x() + "," + popupRect.y() + " -> " + popupRect.width() + "," + popupRect.height() + ")");
         } else {
-            System.out.println("\tTarget rect: NONE");
+            UltralightEngine.INSTANCE.getLogger().info("\tTarget rect: NONE");
         }
-        System.out.println("Cancelling request, multi view not implemented");
+        UltralightEngine.INSTANCE.getLogger().info("Cancelling request, multi view not implemented");
 
         // Returning null will stop Ultralight from further handling the request, ignoring it altogether
         return null;
