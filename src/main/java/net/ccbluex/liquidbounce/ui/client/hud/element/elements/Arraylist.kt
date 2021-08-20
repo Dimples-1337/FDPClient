@@ -49,6 +49,7 @@ class Arraylist(x: Double = 5.0, y: Double = 5.0, scale: Float = 1F,
     private val saturationValue = FloatValue("Random-Saturation", 0.9f, 0f, 1f)
     private val brightnessValue = FloatValue("Random-Brightness", 1f, 0f, 1f)
     private val tags = BoolValue("Tags", true)
+    private val tagsStyleValue = ListValue("TagsStyle", arrayOf("-", "()", "[]", "Default"), "-")
     private val shadow = BoolValue("ShadowText", false)
     private val split = BoolValue("SplitName", false)
     private val slideInAnimation = BoolValue("SlideInAnimation", true)
@@ -306,4 +307,21 @@ class Arraylist(x: Double = 5.0, y: Double = 5.0, scale: Float = 1F,
                 .filter { it.array && !shouldExpect(it) && (it.state || it.slide > 0 || !(it.yPosAnimation==null || it.yPosAnimation!!.state==Animation.EnumAnimationState.STOPPED)) }
                 .sortedBy { -it.width }
     }
-}
+    
+fun getModName(mod: Module): String {
+        var displayName : String =  if (!tags.get()) 
+                                        mod.name
+                                    else if (tagsArrayColor.get())
+                                        when (tagsStyleValue.get()) {
+                                            "-" -> mod.colorlessTagName
+                                            "[]" -> mod.colorlessTagName.replaceFirst("- ", "[") + if (mod.colorlessTagName.contains("- ")) "]" else ""
+                                            "()" -> mod.colorlessTagName.replaceFirst("- ", "(") + if (mod.colorlessTagName.contains("- ")) ")" else ""
+                                            else -> mod.colorlessTagName.replaceFirst("- ", "")
+                                        }
+                                    else when (tagsStyleValue.get()) {
+                                            "-" -> mod.tagName
+                                            "[]" -> mod.tagName.replaceFirst("- ", "[") + if (mod.tagName.contains("- ")) "]" else ""
+                                            "()" -> mod.tagName.replaceFirst("- ", "(") + if (mod.tagName.contains("- ")) ")" else ""
+                                            else -> mod.tagName.replaceFirst("- ", "")
+                                         }
+  }
