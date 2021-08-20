@@ -38,14 +38,27 @@ public class ClickGUI extends Module {
 
     public final FloatValue scaleValue = new FloatValue("Scale", 1F, 0.7F, 2F);
     public final IntegerValue maxElementsValue = new IntegerValue("MaxElements", 15, 1, 20);
-
-    private static final BoolValue colorRainbow = new BoolValue("Rainbow", false);
+  
+    private static final ListValue colorModeValue = new ListValue("Color", new String[] {"Custom", "Fade", "Rainbow"}, "Custom");
+    private static final IntegerValue colorRedValue = new IntegerValue("Red", 0, 0, 255);
     private static final IntegerValue colorRedValue = (IntegerValue) new IntegerValue("R", 0, 0, 255).displayable(() -> !colorRainbow.get());
     private static final IntegerValue colorGreenValue = (IntegerValue) new IntegerValue("G", 160, 0, 255).displayable(() -> !colorRainbow.get());
     private static final IntegerValue colorBlueValue = (IntegerValue) new IntegerValue("B", 255, 0, 255).displayable(() -> !colorRainbow.get());
 
     public static Color generateColor() {
-        return colorRainbow.get() ? ColorUtils.rainbow() : new Color(colorRedValue.get(), colorGreenValue.get(), colorBlueValue.get());
+        Color c = new Color(255, 255, 255, 255);
+        switch (colorModeValue.get().toLowerCase()) {
+            case "custom":
+                c = new Color(colorRedValue.get(), colorGreenValue.get(), colorBlueValue.get());
+                break;
+            case "fade":
+                c = ColorUtils.fade(new Color(colorRedValue.get(), colorGreenValue.get(), colorBlueValue.get()), 0, 100);
+                break;
+           case "rainbow"
+                c = ColorUtils.rainbow() : new Color(colorRedValue.get(), colorGreenValue.get(), colorBlueValue.get());
+  
+        }
+        return c;
     }
 
     @Override
