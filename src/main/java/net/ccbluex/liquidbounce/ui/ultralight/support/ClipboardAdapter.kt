@@ -57,10 +57,9 @@ class ClipboardAdapter : UltralightClipboard {
      *
      * @param text The plain text to write to the clipboard
      */
-    override fun writePlainText(text: String) {
+    override fun writePlainText(text: String?) {
         try {
-            val stringselection = StringSelection(text)
-            Toolkit.getDefaultToolkit().systemClipboard.setContents(stringselection, null)
+            Toolkit.getDefaultToolkit().systemClipboard.setContents(StringSelection(text), null)
         } catch (var2: Exception) {
         }
     }

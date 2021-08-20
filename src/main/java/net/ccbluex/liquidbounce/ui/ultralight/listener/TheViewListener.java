@@ -50,7 +50,7 @@ public class TheViewListener implements UltralightViewListener {
      */
     @Override
     public void onChangeTitle(String title) {
-        UltralightEngine.INSTANCE.getLogger().info("View title has changed: " + title);
+//        UltralightEngine.INSTANCE.getLogger().info("View title has changed: " + title);
     }
 
     /**
@@ -60,7 +60,7 @@ public class TheViewListener implements UltralightViewListener {
      */
     @Override
     public void onChangeURL(String url) {
-        UltralightEngine.INSTANCE.getLogger().info("View url has changed: " + url);
+//        UltralightEngine.INSTANCE.getLogger().info("View url has changed: " + url);
     }
 
     /**
@@ -70,7 +70,7 @@ public class TheViewListener implements UltralightViewListener {
      */
     @Override
     public void onChangeTooltip(String tooltip) {
-         UltralightEngine.INSTANCE.getLogger().info("View tooltip has changed: " + tooltip);
+//         UltralightEngine.INSTANCE.getLogger().info("View tooltip has changed: " + tooltip);
     }
 
     /**
@@ -83,7 +83,7 @@ public class TheViewListener implements UltralightViewListener {
      */
     @Override
     public void onChangeCursor(UltralightCursor cursor) {
-        UltralightEngine.INSTANCE.getLogger().info("Cursor has changed: " + cursor);
+//        UltralightEngine.INSTANCE.getLogger().info("Cursor has changed: " + cursor);
     }
 
     /**
@@ -106,10 +106,10 @@ public class TheViewListener implements UltralightViewListener {
             long columnNumber,
             String sourceId
     ) {
-        UltralightEngine.INSTANCE.getLogger().info(
-                "View message: ["
-                        + source.name() + "/" + level.name() + "] "
-                        + sourceId + ":" + lineNumber + ":" + columnNumber + ": " + message);
+//        UltralightEngine.INSTANCE.getLogger().info(
+//                "View message: ["
+//                        + source.name() + "/" + level.name() + "] "
+//                        + sourceId + ":" + lineNumber + ":" + columnNumber + ": " + message);
     }
 
     /**
@@ -126,17 +126,17 @@ public class TheViewListener implements UltralightViewListener {
      */
     @Override
     public UltralightView onCreateChildView(String openerUrl, String targetUrl, boolean isPopup, IntRect popupRect) {
-        UltralightEngine.INSTANCE.getLogger().info("View wants child: ");
-        UltralightEngine.INSTANCE.getLogger().info("\tFrom: " + openerUrl);
-        UltralightEngine.INSTANCE.getLogger().info("\tTo: " + targetUrl);
-        UltralightEngine.INSTANCE.getLogger().info("\tIs popup: " + isPopup);
-        if (popupRect.isValid()) {
-            UltralightEngine.INSTANCE.getLogger().info("\tTarget rect: (" +
-                    popupRect.x() + "," + popupRect.y() + " -> " + popupRect.width() + "," + popupRect.height() + ")");
-        } else {
-            UltralightEngine.INSTANCE.getLogger().info("\tTarget rect: NONE");
-        }
-        UltralightEngine.INSTANCE.getLogger().info("Cancelling request, multi view not implemented");
+//        UltralightEngine.INSTANCE.getLogger().info("View wants child: ");
+//        UltralightEngine.INSTANCE.getLogger().info("\tFrom: " + openerUrl);
+//        UltralightEngine.INSTANCE.getLogger().info("\tTo: " + targetUrl);
+//        UltralightEngine.INSTANCE.getLogger().info("\tIs popup: " + isPopup);
+//        if (popupRect.isValid()) {
+//            UltralightEngine.INSTANCE.getLogger().info("\tTarget rect: (" +
+//                    popupRect.x() + "," + popupRect.y() + " -> " + popupRect.width() + "," + popupRect.height() + ")");
+//        } else {
+//            UltralightEngine.INSTANCE.getLogger().info("\tTarget rect: NONE");
+//        }
+//        UltralightEngine.INSTANCE.getLogger().info("Cancelling request, multi view not implemented");
 
         // Returning null will stop Ultralight from further handling the request, ignoring it altogether
         return null;

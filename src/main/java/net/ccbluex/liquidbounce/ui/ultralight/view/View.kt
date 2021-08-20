@@ -3,12 +3,13 @@ package net.ccbluex.liquidbounce.ui.ultralight.view
 import com.labymedia.ultralight.UltralightView
 import com.labymedia.ultralight.bitmap.UltralightBitmapSurface
 import com.labymedia.ultralight.config.UltralightViewConfig
+import com.labymedia.ultralight.input.UltralightKeyEvent
+import com.labymedia.ultralight.input.UltralightMouseEvent
+import com.labymedia.ultralight.input.UltralightScrollEvent
 import net.ccbluex.liquidbounce.ui.ultralight.UltralightEngine
 import net.ccbluex.liquidbounce.ui.ultralight.listener.TheLoadListener
 import net.ccbluex.liquidbounce.ui.ultralight.listener.TheViewListener
-import net.minecraft.client.Minecraft
 import net.minecraft.client.gui.Gui
-import net.minecraft.client.gui.ScaledResolution
 import net.minecraft.client.renderer.GlStateManager
 import net.minecraft.client.renderer.OpenGlHelper
 import org.lwjgl.opengl.GL11.*
@@ -43,6 +44,9 @@ class View {
         view.resize(width.toLong(), height.toLong())
     }
 
+    /**
+     * @author CCBlueX
+     */
     fun render(){
         if (glTexture == -1) {
             createTexture()
@@ -57,8 +61,6 @@ class View {
         // Prepare OpenGL for 2D textures and bind our texture
         GlStateManager.enableTexture2D()
         GlStateManager.bindTexture(glTexture)
-//        RenderSystem.enableTexture()
-//        RenderSystem.bindTexture(glTexture)
 
         val dirtyBounds = surface.dirtyBounds()
 
@@ -115,41 +117,6 @@ class View {
         glDepthMask(true)
         glDisable(GL_BLEND)
         glEnable(GL_DEPTH_TEST)
-
-//        val tessellator = Tessellator.getInstance()
-//        val bufferBuilder = tessellator.buffer
-//        val scaleFactor = mc.window.scaleFactor.toFloat()
-//
-//        RenderSystem.setShader { GameRenderer.getPositionTexColorShader() }
-//        RenderSystem.setShaderTexture(0, glTexture)
-//        RenderSystem.setShaderColor(1.0f, 1.0f, 1.0f, 1.0f)
-//        RenderSystem.enableBlend()
-//        bufferBuilder.begin(VertexFormat.DrawMode.QUADS, VertexFormats.POSITION_TEXTURE_COLOR)
-//
-//        bufferBuilder
-//            .vertex(0.0, height.toDouble(), 0.0)
-//            .texture(0f, scaleFactor)
-//            .color(255, 255, 255, 255)
-//            .next()
-//        bufferBuilder
-//            .vertex(width.toDouble(), height.toDouble(), 0.0)
-//            .texture(scaleFactor, scaleFactor)
-//            .color(255, 255, 255, 255)
-//            .next()
-//        bufferBuilder
-//            .vertex(width.toDouble(), 0.0, 0.0)
-//            .texture(scaleFactor, 0.0f)
-//            .color(255, 255, 255, 255)
-//            .next()
-//
-//        bufferBuilder
-//            .vertex(0.0, 0.0, 0.0)
-//            .texture(0.0f, 0.0f)
-//            .color(255, 255, 255, 255)
-//            .next()
-//
-//        tessellator.draw()
-//        RenderSystem.disableBlend()
     }
 
     fun deleteTexture() {
@@ -180,5 +147,17 @@ class View {
         view.unfocus()
         view.stop()
         deleteTexture()
+    }
+
+    fun fireScrollEvent(event: UltralightScrollEvent) {
+        view.fireScrollEvent(event)
+    }
+
+    fun fireMouseEvent(event: UltralightMouseEvent) {
+        view.fireMouseEvent(event)
+    }
+
+    fun fireKeyEvent(event: UltralightKeyEvent) {
+        view.fireKeyEvent(event)
     }
 }

@@ -16,25 +16,32 @@
  * along with this program; if not, write to the Free Software Foundation,
  * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
-package net.ccbluex.liquidbounce.ui.ultralight.support
 
-import com.labymedia.ultralight.UltralightView
-import com.labymedia.ultralight.databind.context.ContextProvider
-import com.labymedia.ultralight.javascript.JavascriptContextLock
-import com.labymedia.ultralight.databind.context.ContextProviderFactory
-import com.labymedia.ultralight.javascript.JavascriptValue
-import net.ccbluex.liquidbounce.ui.ultralight.support.ViewContextProvider
-import java.util.function.Consumer
+package net.ccbluex.liquidbounce.ui.ultralight.support;
+
+import com.labymedia.ultralight.UltralightView;
+import com.labymedia.ultralight.databind.context.ContextProvider;
+import com.labymedia.ultralight.databind.context.ContextProviderFactory;
+import com.labymedia.ultralight.javascript.JavascriptContextLock;
+import com.labymedia.ultralight.javascript.JavascriptValue;
+
+import java.util.function.Consumer;
 
 /**
  * This class is used in case Ultralight needs a Javascript context.
  */
-class ViewContextProvider
-/**
- * Constructs a new [ViewContextProvider] for the given view.
- *
- * @param view The view to use for retrieving the context.
- */ private constructor(private val view: UltralightView) : ContextProvider {
+public class ViewContextProvider implements ContextProvider {
+    private final UltralightView view;
+
+    /**
+     * Constructs a new {@link ViewContextProvider} for the given view.
+     *
+     * @param view The view to use for retrieving the context.
+     */
+    private ViewContextProvider(UltralightView view) {
+        this.view = view;
+    }
+
     /**
      * This will be called whenever Ultralight needs the Javascript context for the view.
      * Typically this just means locking it and executing the callback. However, in multi-threaded environments
@@ -42,50 +49,59 @@ class ViewContextProvider
      *
      * @param callback The callback to execute
      */
-    override fun syncWithJavascript(callback: Consumer<JavascriptContextLock>) {
+    @Override
+    public void syncWithJavascript(Consumer<JavascriptContextLock> callback) {
         // Move callback to the thread Ultralight is executing... in our case, this is the case
         // already, as we only use one thread.
         //
         // In a multithreaded environment this call should move the callback to the thread hosting Ultralight.
         // This call does not need to block even if the callback is executed asynchronously.
-        view.lockJavascriptContext().use { lock -> callback.accept(lock) }
+        try (JavascriptContextLock lock = view.lockJavascriptContext()) {
+            callback.accept(lock);
+        }
     }
 
     /**
      * Factory class for context providers.
      */
-    class Factory(private val view: UltralightView) : ContextProviderFactory {
+    public static class Factory implements ContextProviderFactory {
+        private final UltralightView view;
+
+        public Factory(UltralightView view) {
+            this.view = view;
+        }
+
         /**
          * The factory needs to bind a provider for a given Javascript value. The value can be used to identify
          * the view based on its handle.
-         *
-         *
-         * For example, given an UltralightView `view` and a JavascriptValue `value`, it can be tested if
+         * <p>
+         * For example, given an UltralightView {@code view} and a JavascriptValue {@code value}, it can be tested if
          * the value belongs to the view using:
          * <blockquote>
          * <pre>
-         * JavascriptValue value = ...;
-         * UltralightView view = ...;
+         *         JavascriptValue value = ...;
+         *         UltralightView view = ...;
          *
-         * try(JavascriptContextLock lock = view.lockContext()) {
-         * if(value.getLock().getContext().getGlobalContext().getHandle() == lock.getContext().getHandle()) {
-         * System.out.println("The value belongs to the view!");
-         * } else {
-         * System.out.println("The value belongs to another view!");
-         * }
-         * }
-        </pre> *
-        </blockquote> *
+         *         try(JavascriptContextLock lock = view.lockContext()) {
+         *             if(value.getLock().getContext().getGlobalContext().getHandle() == lock.getContext().getHandle()) {
+         *                 System.out.println("The value belongs to the view!");
+         *             } else {
+         *                 System.out.println("The value belongs to another view!");
+         *             }
+         *         }
+         *     </pre>
+         * </blockquote>
          * By maintaining a map of context handles and their respective views it is possible to map back values to their
          * views. If you only have one view, you can simply always use it.
          *
          * @param value The value to bind a provider for
          * @return A context provider for the given value
          */
-        override fun bindProvider(value: JavascriptValue): ContextProvider {
+        @Override
+        public ContextProvider bindProvider(JavascriptValue value) {
             // We only have one view, so we can ignore the value.
             // Else use the formula pointed at above to find a view for a given value.
-            return ViewContextProvider(view)
+            return new ViewContextProvider(view);
         }
     }
 }

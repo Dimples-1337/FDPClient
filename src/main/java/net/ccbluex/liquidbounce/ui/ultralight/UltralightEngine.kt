@@ -29,11 +29,13 @@ object UltralightEngine : Listenable {
     private val ultralightPath = File(LiquidBounce.fileManager.cacheDir, "Ultralight")
     private val resourcePath = File(ultralightPath, "resources")
     private val pagesPath = File(ultralightPath, "pages")
+    private val cachePath = File(ultralightPath, "cache")
 
     var width=0
     var height=0
     var scaledWidth=0
     var scaledHeight=0
+    var factor=1
     private val gcTimer=MSTimer()
 
     private val views=mutableListOf<View>()
@@ -44,6 +46,9 @@ object UltralightEngine : Listenable {
 
         if(!pagesPath.exists())
             pagesPath.mkdirs()
+
+        if(!cachePath.exists())
+            cachePath.mkdirs()
     }
 
     fun init(){
@@ -55,7 +60,8 @@ object UltralightEngine : Listenable {
             UltralightConfig()
                 .forceRepaint(false)
                 .resourcePath(resourcePath.absolutePath.toString())
-                .fontHinting(FontHinting.NORMAL)
+                .cachePath(cachePath.absolutePath.toString())
+                .fontHinting(FontHinting.SMOOTH)
         )
         platform.usePlatformFontLoader()
         platform.setFileSystem(FileSystemAdapter())
@@ -76,7 +82,7 @@ object UltralightEngine : Listenable {
     }
 
     private fun loadResources(){
-        // download the natives
+        // TODO download the natives
 
         // then load it
         UltralightJava.load(resourcePath.toPath())
@@ -105,6 +111,7 @@ object UltralightEngine : Listenable {
         val sr=ScaledResolution(Minecraft.getMinecraft())
         scaledWidth=sr.scaledWidth
         scaledHeight=sr.scaledHeight
+        factor=sr.scaleFactor
 
         if(resized){
             views.forEach { it.resize(width, height) }
@@ -115,6 +122,7 @@ object UltralightEngine : Listenable {
 
         if(gcTimer.hasTimePassed(1000L)){
             views.forEach { it.gc() }
+            gcTimer.reset()
         }
     }
 

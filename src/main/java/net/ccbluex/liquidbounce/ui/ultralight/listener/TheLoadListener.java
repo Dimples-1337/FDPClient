@@ -82,7 +82,7 @@ public class TheLoadListener implements UltralightLoadListener {
      */
     @Override
     public void onBeginLoading(long frameId, boolean isMainFrame, String url) {
-        UltralightEngine.INSTANCE.getLogger().info(frameName(frameId, isMainFrame, url) + "The view is about to load");
+//        UltralightEngine.INSTANCE.getLogger().info(frameName(frameId, isMainFrame, url) + "The view is about to load");
     }
 
     /**
@@ -94,7 +94,7 @@ public class TheLoadListener implements UltralightLoadListener {
      */
     @Override
     public void onFinishLoading(long frameId, boolean isMainFrame, String url) {
-        UltralightEngine.INSTANCE.getLogger().info(frameName(frameId, isMainFrame, url) + "The view finished loading");
+//        UltralightEngine.INSTANCE.getLogger().info(frameName(frameId, isMainFrame, url) + "The view finished loading");
     }
 
     /**
@@ -110,8 +110,8 @@ public class TheLoadListener implements UltralightLoadListener {
     @Override
     public void onFailLoading(
             long frameId, boolean isMainFrame, String url, String description, String errorDomain, int errorCode) {
-        UltralightEngine.INSTANCE.getLogger().error(frameName(frameId, isMainFrame, url) +
-                "Failed to load " + errorDomain + ", " + errorCode + "(" + description + ")");
+//        UltralightEngine.INSTANCE.getLogger().error(frameName(frameId, isMainFrame, url) +
+//                "Failed to load " + errorDomain + ", " + errorCode + "(" + description + ")");
     }
 
     /**
@@ -119,7 +119,7 @@ public class TheLoadListener implements UltralightLoadListener {
      */
     @Override
     public void onUpdateHistory() {
-        UltralightEngine.INSTANCE.getLogger().info("The view has updated the history");
+//        UltralightEngine.INSTANCE.getLogger().info("The view has updated the history");
     }
 
     /**
