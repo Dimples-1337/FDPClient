@@ -94,6 +94,7 @@ class KillAura : Module() {
     private val rangeSprintReducementValue = FloatValue("RangeSprintReducement", 0f, 0f, 0.4f)
 
     // Modes
+    private val rotations = ListValue("RotationMode", arrayOf("Vanilla", "BackTrack", "NCP"), "BackTrack")
     private val priorityValue = ListValue("Priority", arrayOf("Health", "Distance", "Direction", "LivingTime", "Armor"), "Distance")
     private val targetModeValue = ListValue("TargetMode", arrayOf("Single", "Switch", "Multi"), "Single")
 
@@ -709,38 +710,90 @@ class KillAura : Module() {
         }
     }
 
-    /**
+    //**
      * Update killaura rotations to enemy
      */
     private fun updateRotations(entity: Entity): Boolean {
-        if(maxTurnSpeed.get() <= 0F)
-            return true
-
         var boundingBox = entity.entityBoundingBox
+        if (rotations.get().equals("Vanilla", ignoreCase = true)){
+            if (maxTurnSpeed.get() <= 0F)
+                return true
 
-        if (predictValue.get())
-            boundingBox = boundingBox.offset(
-                (entity.posX - entity.prevPosX) * RandomUtils.nextFloat(minPredictSize.get(), maxPredictSize.get()),
-                (entity.posY - entity.prevPosY) * RandomUtils.nextFloat(minPredictSize.get(), maxPredictSize.get()),
-                (entity.posZ - entity.prevPosZ) * RandomUtils.nextFloat(minPredictSize.get(), maxPredictSize.get())
-            )
+            if (predictValue.get())
+                boundingBox = boundingBox.offset(
+                        (entity.posX - entity.prevPosX) * RandomUtils.nextFloat(minPredictSize.get(), maxPredictSize.get()),
+                        (entity.posY - entity.prevPosY) * RandomUtils.nextFloat(minPredictSize.get(), maxPredictSize.get()),
+                        (entity.posZ - entity.prevPosZ) * RandomUtils.nextFloat(minPredictSize.get(), maxPredictSize.get())
+                )
 
-        val (_, rotation) = RotationUtils.searchCenter(
-            boundingBox,
-            outborderValue.get() && !attackTimer.hasTimePassed(attackDelay / 2),
-            randomCenterValue.get(),
-            predictValue.get(),
-            mc.thePlayer.getDistanceToEntityBox(entity) < throughWallsRangeValue.get()
-        ) ?: return false
+            val (_, rotation) = RotationUtils.searchCenter(
+                    boundingBox,
+                    outborderValue.get() && !attackTimer.hasTimePassed(attackDelay / 2),
+                    randomCenterValue.get(),
+                    predictValue.get(),
+                    mc.thePlayer!!.getDistanceToEntityBox(entity) < throughWallsRangeValue.get(),
+                    maxRange
+            ) ?: return false
 
-        val limitedRotation = RotationUtils.limitAngleChange(RotationUtils.serverRotation, rotation,
-            (Math.random() * (maxTurnSpeed.get() - minTurnSpeed.get()) + minTurnSpeed.get()).toFloat())
+            val limitedRotation = RotationUtils.limitAngleChange(RotationUtils.serverRotation, rotation,
+                    (Math.random() * (maxTurnSpeed.get() - minTurnSpeed.get()) + minTurnSpeed.get()).toFloat())
 
-        if (silentRotationValue.get())
-            RotationUtils.setTargetRotation(limitedRotation, if (aacValue.get()) 90 - aacPitchValue.get() else 0)
-        else
-            limitedRotation.toPlayer(mc.thePlayer)
+            if (silentRotationValue.get())
+                RotationUtils.setTargetRotation(limitedRotation, if (aacValue.get()) 90 - aacPitchValue.get() else 0)
+            else
+                limitedRotation.toPlayer(mc.thePlayer!!)
 
+            return true
+        }
+        if (rotations.get().equals("NCP", ignoreCase = true)){
+            if (maxTurnSpeed.get() <= 0F)
+                return true
+
+            if (predictValue.get())
+                boundingBox = boundingBox.offset(
+                        (entity.posX - entity.prevPosX) * RandomUtils.nextFloat(minPredictSize.get(), maxPredictSize.get()),
+                        (entity.posY - entity.prevPosY) * RandomUtils.nextFloat(minPredictSize.get(), maxPredictSize.get()),
+                        (entity.posZ - entity.prevPosZ) * RandomUtils.nextFloat(minPredictSize.get(), maxPredictSize.get())
+                )
+
+            val (_, rotation) = RotationUtils.searchCenter(
+                    boundingBox,
+                    false,
+                    false,
+                    false,
+                    mc.thePlayer!!.getDistanceToEntityBox(entity) < throughWallsRangeValue.get(),
+                    maxRange
+            ) ?: return false
+
+            val limitedRotation = rotation//RotationUtils.limitAngleChange(RotationUtils.serverRotation, rotation,
+                    //(Math.random() * (maxTurnSpeed.get() - minTurnSpeed.get()) + minTurnSpeed.get()).toFloat())
+
+            if (silentRotationValue.get())
+                RotationUtils.setTargetRotation(limitedRotation, 0)
+            else
+                limitedRotation.toPlayer(mc.thePlayer!!)
+
+            return true
+        }
+        if (rotations.get().equals("BackTrack", ignoreCase = true)) {
+            if (predictValue.get())
+                boundingBox = boundingBox.offset(
+                        (entity.posX - entity.prevPosX) * RandomUtils.nextFloat(minPredictSize.get(), maxPredictSize.get()),
+                        (entity.posY - entity.prevPosY) * RandomUtils.nextFloat(minPredictSize.get(), maxPredictSize.get()),
+                        (entity.posZ - entity.prevPosZ) * RandomUtils.nextFloat(minPredictSize.get(), maxPredictSize.get())
+                )
+
+            val limitedRotation = RotationUtils.limitAngleChange(RotationUtils.serverRotation,
+                    RotationUtils.OtherRotation(boundingBox,RotationUtils.getCenter(entity.entityBoundingBox), predictValue.get(),
+                            mc.thePlayer!!.getDistanceToEntityBox(entity) < throughWallsRangeValue.get(),maxRange), (Math.random() * (maxTurnSpeed.get() - minTurnSpeed.get()) + minTurnSpeed.get()).toFloat())
+
+            if (silentRotationValue.get()) {
+                RotationUtils.setTargetRotation(limitedRotation, if (aacValue.get()) aacPitchValue.get() else 0)
+            }else {
+                limitedRotation.toPlayer(mc.thePlayer!!)
+                return true
+            }
+        }
         return true
     }
 
