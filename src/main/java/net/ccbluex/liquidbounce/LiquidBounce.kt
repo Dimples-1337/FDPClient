@@ -28,6 +28,7 @@ import net.ccbluex.liquidbounce.ui.client.keybind.KeyBindManager
 import net.ccbluex.liquidbounce.ui.font.Fonts
 import net.ccbluex.liquidbounce.ui.i18n.LanguageManager
 import net.ccbluex.liquidbounce.ui.sound.TipSoundManager
+import net.ccbluex.liquidbounce.ui.ultralight.UltralightEngine
 import net.ccbluex.liquidbounce.utils.ClientUtils
 import net.ccbluex.liquidbounce.utils.InventoryUtils
 import net.ccbluex.liquidbounce.utils.RotationUtils
@@ -138,8 +139,11 @@ object LiquidBounce {
         fileManager = FileManager()
         configManager = ConfigManager()
 
-        // Crate event manager
+        // Create event manager
         eventManager = EventManager()
+
+        // Load Ultralight renderer
+        UltralightEngine.init()
 
         // Register listeners
         eventManager.registerListener(RotationUtils())
