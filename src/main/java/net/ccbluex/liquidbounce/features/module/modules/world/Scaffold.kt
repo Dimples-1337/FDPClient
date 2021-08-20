@@ -142,6 +142,7 @@ class Scaffold : Module() {
 
     // Safety
     private val sameYValue = ListValue("SameY", arrayOf("Simple", "AutoJump", "WhenSpeed", "OFF"), "WhenSpeed")
+    private val autoJumpValue = BoolValue("AutoJump", true)
     private val safeWalkValue = ListValue("SafeWalk", arrayOf("Ground", "Air", "OFF"), "OFF")
     private val hitableCheck = ListValue("HitableCheck", arrayOf("Simple", "Strict", "OFF"), "Simple")
 
@@ -358,8 +359,16 @@ class Scaffold : Module() {
                 mc.thePlayer.motionZ += cos(yaw) * zitterStrength.get()
                 zitterDirection = !zitterDirection
             }
+         
+         // Auto Jump 
+        if (shouldGoDown) launchY = (int) mc.thePlayer.posY - 1
+        else if (!sameYValue.get()) {
+            if (!autoJumpValue.get() || GameSettings.isKeyDown(mc.gameSettings.keyBindJump)) launchY = (int) mc.thePlayer.posY
+            if (autoJumpValue.get() && MovementUtils.isMoving() && mc.thePlayer.onGround && mc.thePlayer.jumpTicks == 0) {
+                mc.thePlayer.jump()
+                mc.thePlayer.jumpTicks = 10;
+            }
         }
-    }
 
     @EventTarget
     fun onPacket(event: PacketEvent) {
@@ -561,38 +570,37 @@ class Scaffold : Module() {
         findBlock(expandLengthValue.get()>1)
     }
 
-    /**
+     /**
      * Search for new target block
      */
-    private fun findBlock(expand: Boolean) {
-        val blockPosition = if (shouldGoDown) if (mc.thePlayer.posY == mc.thePlayer.posY.toInt() + 0.5) BlockPos(
-            mc.thePlayer.posX,
-            mc.thePlayer.posY - 0.6,
-            mc.thePlayer.posZ
-        ) else BlockPos(
-            mc.thePlayer.posX, mc.thePlayer.posY - 0.6, mc.thePlayer.posZ
-        ).down() else if (mc.thePlayer.posY == mc.thePlayer.posY.toInt() + 0.5 && !canSameY) BlockPos(
-            mc.thePlayer
-        ) else if(canSameY && lastGroundY<=mc.thePlayer.posY) BlockPos(
-            mc.thePlayer.posX, lastGroundY-1.0, mc.thePlayer.posZ) else BlockPos(
-            mc.thePlayer.posX, mc.thePlayer.posY, mc.thePlayer.posZ
-        ).down()
-        if (!expand && (!BlockUtils.isReplaceable(blockPosition) || search(blockPosition, !shouldGoDown))) return
+    private void findBlock(final boolean expand) {
+        final BlockPos blockPosition = shouldGoDown ? (mc.thePlayer.posY == (int) mc.thePlayer.posY + 0.5D ? new BlockPos(mc.thePlayer.posX, mc.thePlayer.posY - 0.6D, mc.thePlayer.posZ)
+                : new BlockPos(mc.thePlayer.posX, mc.thePlayer.posY - 0.6, mc.thePlayer.posZ).down()) :
+                ((sameYValue.get() || (autoJumpValue.get() && !GameSettings.isKeyDown(mc.gameSettings.keyBindJump))) && launchY <= mc.thePlayer.posY ? (new BlockPos(mc.thePlayer.posX, launchY - 1, mc.thePlayer.posZ)) :
+                (mc.thePlayer.posY == (int) mc.thePlayer.posY + 0.5D ? new BlockPos(mc.thePlayer)
+                        : new BlockPos(mc.thePlayer.posX, mc.thePlayer.posY, mc.thePlayer.posZ).down()))
+
+        if (!expand && (!BlockUtils.isReplaceable(blockPosition) || search(blockPosition, !shouldGoDown)))
+            return
+
         if (expand) {
-            for (i in 0 until expandLengthValue.get()) {
-                if (search(
-                        blockPosition.add(
-                            if (mc.thePlayer.horizontalFacing == EnumFacing.WEST) -i else if (mc.thePlayer.horizontalFacing == EnumFacing.EAST) i else 0,
-                            0,
-                            if (mc.thePlayer.horizontalFacing == EnumFacing.NORTH) -i else if (mc.thePlayer.horizontalFacing == EnumFacing.SOUTH) i else 0
-                        ), false
-                    )
-                ) return
+            for (int i = 0; i < expandLengthValue.get(); i++) {
+                if (search(blockPosition.add(
+                        mc.thePlayer.getHorizontalFacing() == EnumFacing.WEST ? -i : mc.thePlayer.getHorizontalFacing() == EnumFacing.EAST ? i : 0,
+                        0,
+                        mc.thePlayer.getHorizontalFacing() == EnumFacing.NORTH ? -i : mc.thePlayer.getHorizontalFacing() == EnumFacing.SOUTH ? i : 0
+                ), false))
+
+                    return
             }
         } else if (searchValue.get()) {
-            for (x in -1..1) for (z in -1..1) if (search(blockPosition.add(x, 0, z), !shouldGoDown)) return
+            for (int x = -1; x <= 1; x++)
+                for (int z = -1; z <= 1; z++)
+                    if (search(blockPosition.add(x, 0, z), !shouldGoDown))
+                        return
         }
     }
+
 
     /**
      * Place target block
@@ -606,7 +614,7 @@ class Scaffold : Module() {
             }
             return
         }
-        if (!delayTimer.hasTimePassed(delay) || !towerStatus && canSameY && lastGroundY - 1 != targetPlace!!.vec3.yCoord.toInt())
+        if (!delayTimer.hasTimePassed(delay) || ((sameYValue.get() || (autoJumpValue.get() && !GameSettings.isKeyDown(mc.gameSettings.keyBindJump))) && launchY - 1 != (int) targetPlace.getVec3().yCoord))
             return
 
         if(!rotationsValue.get().equals("None",true)){
