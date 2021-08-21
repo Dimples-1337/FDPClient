@@ -22,7 +22,6 @@ class Chams : Module() {
 	val greenValue = IntegerValue("Green", 255, 0, 255)
 	val blueValue = IntegerValue("Blue", 255, 0, 255)
     val alphaValue = IntegerValue("Alpha", 255, 0, 255)
-    val alphaValue = IntegerValue("Alpha", 255, 0, 255)
     val brightnessValue = FloatValue("Brightness", 1F, 0F, 1F)
     val saturationValue = FloatValue("Saturation", 1F, 0F, 1F)
 }
