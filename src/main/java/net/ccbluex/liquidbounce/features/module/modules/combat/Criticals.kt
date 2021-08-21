@@ -34,6 +34,8 @@ class Criticals : Module() {
     private val lookValue = BoolValue("UseC06Packet", false)
     private val debugValue = BoolValue("DebugMessage", false)
     private val rsNofallValue = BoolValue("RedeNofall",true)
+    private val jumpHeightValue = FloatValue("JumpHeight", 0.42F, 0.1F, 0.42F)
+    private val downYValue = FloatValue("DownY", 0f, 0f, 0.1F)
 
     val msTimer = MSTimer()
 
@@ -220,6 +222,12 @@ class Criticals : Module() {
                     }
                     mc.thePlayer.setPosition(x, y + 0.01, z)
                 }
+                "jump" -> {
+                    if (mc.thePlayer.onGround) {
+                        mc.thePlayer.motionY = jumpHeightValue.get().toDouble()
+                    } else {
+                  mc.thePlayer.motionY -= downYValue.get()
+              }
 
                 "visual" -> mc.thePlayer.onCriticalHit(entity)
                 "jump" -> mc.thePlayer.motionY = 0.42
