@@ -175,6 +175,10 @@ class KillAura : Module() {
     private val fakeSharpValue = BoolValue("FakeSharp", true)
     private val circleValue = BoolValue("Circle", true)
     private val accuracyValue = IntegerValue("Accuracy", 59, 0, 59)
+    private val red = IntegerValue("Red", 0, 0, 255)
+    private val green = IntegerValue("Green", 0, 0, 255)
+    private val blue = IntegerValue("Blue", 0, 0, 255)
+    private val alpha = IntegerValue("Alpha", 0, 0, 255)
 
     /**
      * MODULE
