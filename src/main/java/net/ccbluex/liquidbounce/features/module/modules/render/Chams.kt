@@ -17,7 +17,7 @@ class Chams : Module() {
     val itemsValue = BoolValue("Items", true)
     val legacyMode = BoolValue("Legacy-Mode", false)
     val texturedValue = BoolValue("Textured", true)
-    val tagColorModeValue = ListValue("Tag-Color", arrayOf("Custom", "Random", "Rainbow", "AnotherRainbow", "RiseRainbow", "SkyRainbow"), "Custom")
+    val colorModeValue = ListValue("Text-Color", arrayOf("Custom", "Random", "Rainbow", "AnotherRainbow", "RiseRainbow", "SkyRainbow"), "RiseRainbow")
     val redValue = IntegerValue("Red", 255, 0, 255)
 	val greenValue = IntegerValue("Green", 255, 0, 255)
 	val blueValue = IntegerValue("Blue", 255, 0, 255)
