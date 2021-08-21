@@ -29,6 +29,7 @@ import kotlin.math.roundToInt
 class NameTags : Module() {
     private val modeValue = ListValue("Mode", arrayOf("Simple","Liquid","Jello"),"Simple")
     private val healthValue = BoolValue("Health", true)
+    private val healthBarValue = BoolValue("Bar", true)
     private val pingValue = BoolValue("Ping", true)
     private val distanceValue = BoolValue("Distance", false)
     private val armorValue = BoolValue("Armor", true)
@@ -108,19 +109,24 @@ class NameTags : Module() {
                 val nameColor = if (bot) "§3" else if (entity.isInvisible) "§6" else if (entity.isSneaking) "§4" else "§7"
                 val ping = if (entity is EntityPlayer) EntityUtils.getPing(entity) else 0
 
-                val distanceText = if (distanceValue.get()) "§7${mc.thePlayer.getDistanceToEntity(entity).roundToInt()}m " else ""
-                val pingText = if (pingValue.get() && entity is EntityPlayer) (if (ping > 200) "§c" else if (ping > 100) "§e" else "§a") + ping + "ms §7" else ""
-                val healthText = if (healthValue.get()) "§7§c " + entity.health.toInt() + " HP" else ""
-                val botText = if (bot) " §c§lBot" else ""
+                val distanceText = if (distanceValue.get()) "§7 [§a${mc.thePlayer.getDistanceToEntity(entity).roundToInt()}§7]" else ""
+                val pingText = if (pingValue.get() && entity is EntityPlayer) " §7[" + (if (ping > 200) "§c" else if (ping > 100) "§e" else "§a") + ping + "ms§7]" else ""
+                val healthText = if (healthValue.get()) "§7 [§f" + entity.health.toInt() + "§c❤§7]" else ""
+                val botText = if (bot) " §7[§6§lBot§7]" else ""
 
                 val text = "$distanceText$pingText$nameColor$tag$healthText$botText"
 
                 glScalef(-scale, -scale, scale)
                 val width = fontRenderer.getStringWidth(text) / 2
                 if (borderValue.get())
-                    drawBorderedRect(-width - 2F, -2F, width + 4F, fontRenderer.FONT_HEIGHT + 2F, 2F, Color(255, 255, 255, 90).rgb, Integer.MIN_VALUE)
+                    DrawBorderedRect(-width - 2F, -2F, width + 4F, fontRenderer.FONT_HEIGHT + 2F + if (healthBarValue.get()) 2F else 0F, 2F, borderColor.rgb, bgColor.rgb)
                 else
-                    drawRect(-width - 2F, -2F, width + 4F, fontRenderer.FONT_HEIGHT + 2F, Integer.MIN_VALUE)
+                    DrawRect(-width - 2F, -2F, width + 4F, fontRenderer.FONT_HEIGHT + 2F + if (healthBarValue.get()) 2F else 0F, bgColor.rgb)
+                    
+                if (healthBarValue.get())
+                   DrawRect(-width - 2F, fontRenderer.FONT_HEIGHT + 3F, -width - 2F + (dist * (entity.health.toFloat() / entity.maxHealth.toFloat()).coerceIn(0F, entity.maxHealth.toFloat())), fontRenderer.FONT_HEIGHT + 4F, Color(10, 255, 10).rgb)   
+                    
+                glEnable(GL_TEXTURE_2D)
 
                 fontRenderer.drawString(text, 1F + -width, if (fontRenderer == Fonts.minecraftFont) 1F else 1.5F, 0xFFFFFF, true)
 
