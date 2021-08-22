@@ -30,7 +30,7 @@ import static org.lwjgl.opengl.GL11.*;
 public class Crosshair extends Module {
 
     //Color
-    public ListValue colorModeValue = new ListValue("Color", new String[]{ "Custom", "LiquidSlowly", "Sky", "Fade" }, "Custom");
+    public ListValue colorModeValue = new ListValue("Color", new String[]{ "Custom", "Slowly" }, "Custom");
     public IntegerValue colorRedValue = new IntegerValue("Red", 0, 0, 255);
     public IntegerValue colorGreenValue = new IntegerValue("Green", 0, 0, 255);
     public IntegerValue colorBlueValue = new IntegerValue("Blue", 0, 0, 255);
@@ -120,9 +120,7 @@ public class Crosshair extends Module {
         switch (colorModeValue.get()) {
 			case "Custom":
 				return new Color(colorRedValue.get(), colorGreenValue.get(), colorBlueValue.get());
-			case "Sky":
-				return RenderUtils.skyRainbow(0, saturationValue.get(), brightnessValue.get());
-			case "LiquidSlowly":
+			case "Slowly":
 				return ColorUtils.LiquidSlowly(System.nanoTime(), 0, saturationValue.get(), brightnessValue.get());
 		}
     }
