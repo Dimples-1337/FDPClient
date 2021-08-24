@@ -35,6 +35,10 @@ class NameTags : Module() {
     private val clearNamesValue = BoolValue("ClearNames", true)
     private val fontValue = FontValue("Font", Fonts.font40)
     private val borderValue = BoolValue("Border", true)
+    private val borderColorRedValue = IntegerValue("Border-R", 0, 0, 255)
+    private val borderColorGreenValue = IntegerValue("Border-G", 0, 0, 255)
+    private val borderColorBlueValue = IntegerValue("Border-B", 0, 0, 255)
+    private val borderColorAlphaValue = IntegerValue("Border-Alpha", 0, 0, 255)
     private val hackerValue = BoolValue("Hacker", true)
     private val jelloColorValue = BoolValue("JelloHPColor", true).displayable { modeValue.get().equals("Jello",true) }
     private val jelloAlphaValue = IntegerValue("JelloAlpha", 170, 0, 255).displayable { modeValue.get().equals("Jello",true) }
@@ -117,8 +121,9 @@ class NameTags : Module() {
 
                 glScalef(-scale, -scale, scale)
                 val width = fontRenderer.getStringWidth(text) / 2
+                val borderColor = Color(borderColorRedValue.get(), borderColorGreenValue.get(), borderColorBlueValue.get(), borderColorAlphaValue.get())
                 if (borderValue.get())
-                    drawBorderedRect(-width - 2F, -2F, width + 4F, fontRenderer.FONT_HEIGHT + 2F, 2F, Color(255, 255, 255, 90).rgb, Integer.MIN_VALUE)
+                    drawBorderedRect(-width - 2F, -2F, width + 4F, fontRenderer.FONT_HEIGHT + 2F, 2F, borderColor.rgb, bgColor.rgb)
                 else
                     drawRect(-width - 2F, -2F, width + 4F, fontRenderer.FONT_HEIGHT + 2F, Integer.MIN_VALUE)
 
