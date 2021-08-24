@@ -48,9 +48,12 @@ object Fucker : Module() {
     private val actionValue = ListValue("Action", arrayOf("Destroy", "Use"), "Destroy")
     private val instantValue = BoolValue("Instant", false)
     private val switchValue = IntegerValue("SwitchDelay", 250, 0, 1000)
+    private val coolDownValue = IntegerValue("Cooldown-Seconds", 15, 0, 60)
     private val rotationsValue = BoolValue("Rotations", true)
     private val surroundingsValue = BoolValue("Surroundings", true)
     private val noHitValue = BoolValue("NoHit", false)
+    private val toggleResetCDValue = BoolValue("ResetCoolDownWhenToggled", false)
+
 
 
     /**
@@ -61,8 +64,13 @@ object Fucker : Module() {
     private var oldPos: BlockPos? = null
     private var blockHitDelay = 0
     private val switchTimer = MSTimer()
+    private val coolDownTimer = MSTimer()
     var currentDamage = 0F
 
+    override fun onEnable() {
+        if (toggleResetCDValue.get()) coolDownTimer.reset()
+    }
+    
     @EventTarget
     fun onUpdate(event: UpdateEvent) {
         if (noHitValue.get()) {
@@ -113,7 +121,7 @@ object Fucker : Module() {
 
         oldPos = currentPos
 
-        if (!switchTimer.hasTimePassed(switchValue.get().toLong()))
+        if (!switchTimer.hasTimePassed(switchValue.get().toLong()) || (coolDownValue.get() > 0 && !coolDownTimer.hasTimePassed(coolDownValue.get().toLong() * 1000L)))
             return
 
         // Block hit delay
@@ -147,6 +155,7 @@ object Fucker : Module() {
                     mc.netHandler.addToSendQueue(C07PacketPlayerDigging(C07PacketPlayerDigging.Action.STOP_DESTROY_BLOCK,
                             currentPos, EnumFacing.DOWN))
                     currentDamage = 0F
+                    if (!surroundingsValue.get()) coolDownTimer.reset()
                     return
                 }
 
@@ -168,6 +177,7 @@ object Fucker : Module() {
 
                         currentDamage = 0F
                         pos = null
+                        if (!surroundingsValue.get()) coolDownTimer.reset()
                         return
                     }
                 }
@@ -187,6 +197,7 @@ object Fucker : Module() {
                     blockHitDelay = 4
                     currentDamage = 0F
                     pos = null
+                    if (!surroundingsValue.get()) coolDownTimer.reset()
                 }
             }
 
@@ -202,15 +213,31 @@ object Fucker : Module() {
                 blockHitDelay = 4
                 currentDamage = 0F
                 pos = null
+                coolDownTimer.reset()
             }
         }
     }
 
     @EventTarget
     fun onRender3D(event: Render3DEvent) {
-        RenderUtils.drawBlockBox(pos ?: return, Color.RED, false,true, 1F)
+        RenderUtils.drawBlockBox(pos ?: return, if (!coolDownTimer.hasTimePassed(coolDownValue.get().toLong() * 1000L)) Color.DARK_GRAY else Color.RED, true)
     }
+    
+    @EventTarget
+    fun onRender2D(event: Render2DEvent) {
+        val sc = ScaledResolution(mc)
+        if (coolDownValue.get() > 0 && !coolDownTimer.hasTimePassed(coolDownValue.get().toLong() * 1000L)) {
+            val timeLeft = "Cooldown: ${(coolDownTimer.hasTimeLeft(coolDownValue.get().toLong() * 1000L) / 1000L).toInt()}s"
+            val strWidth = Fonts.minecraftFont.getStringWidth(timeLeft)
 
+            Fonts.minecraftFont.drawString(timeLeft, sc.getScaledWidth() / 2 - strWidth / 2 - 1, sc.getScaledHeight() / 2 - 70, 0x000000)
+            Fonts.minecraftFont.drawString(timeLeft, sc.getScaledWidth() / 2 - strWidth / 2 + 1, sc.getScaledHeight() / 2 - 70, 0x000000)
+            Fonts.minecraftFont.drawString(timeLeft, sc.getScaledWidth() / 2 - strWidth / 2, sc.getScaledHeight() / 2 - 69, 0x000000)
+            Fonts.minecraftFont.drawString(timeLeft, sc.getScaledWidth() / 2 - strWidth / 2, sc.getScaledHeight() / 2 - 71, 0x000000)
+            Fonts.minecraftFont.drawString(timeLeft, sc.getScaledWidth() / 2 - strWidth / 2, sc.getScaledHeight() / 2 - 70, -1)
+        }
+    }
+    
     /**
      * Find new target block by [targetID]
      */
