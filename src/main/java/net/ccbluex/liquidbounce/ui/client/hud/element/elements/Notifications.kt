@@ -87,9 +87,7 @@ class Notification(val title: String, val content: String, val type: NotifyType,
     /**
     * Background
     */
-    RenderUtils.drawBorderedRect(1F, 0F, width.get(), guiHeight, borderStrength.get(), borderColor.rgb, backgroundColor.rgb)
-    val backgroundColor = Color(backgroundRedValue.get(), backgroundGreenValue.get(), backgroundBlueValue.get(),
-                backgroundAlphaValue.get())
+    RenderUtils.drawBorderedRect(1F, 0F, width.get(), backgroundColor.rgb))
 
         
         //Y-Axis Animation
