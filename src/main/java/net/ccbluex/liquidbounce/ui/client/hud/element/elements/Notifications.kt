@@ -24,6 +24,11 @@ import kotlin.math.max
 @ElementInfo(name = "Notifications", single = true)
 class Notifications(x: Double = 0.0, y: Double = 0.0, scale: Float = 1F,
                     side: Side = Side(Side.Horizontal.RIGHT, Side.Vertical.DOWN)) : Element(x, y, scale, side) {
+  
+    private val backgroundRedValue = IntegerValue("Background Red", 0, 0, 255)
+    private val backgroundGreenValue = IntegerValue("Background Green", 0, 0, 255)
+    private val backgroundBlueValue = IntegerValue("Background Blue", 0, 0, 255)
+    private val backgroundAlphaValue = IntegerValue("Background Alpha", 150, 0, 255)
 
     /**
      * Example notification for CustomHUD designer
@@ -75,9 +80,15 @@ class Notification(val title: String, val content: String, val type: NotifyType,
     /**
      * Draw notification
      */
-    fun drawNotification(index: Int):Boolean {
+    fun drawNotification(animationY: Float, smooth: Boolean, backgroundColor: Color, side: Side) {
         val realY=-(index+1)*height
         val nowTime=System.currentTimeMillis()
+        
+    /**
+    * Background
+    */
+    RenderUtils.drawRect(-x + 8 + textLength, -y, -x - 1 - 26F, -28F - y, backgroundColor.rgb)
+        
 
         //Y-Axis Animation
         if(nowY!=realY){
