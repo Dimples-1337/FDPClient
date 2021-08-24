@@ -80,16 +80,18 @@ class Notification(val title: String, val content: String, val type: NotifyType,
     /**
      * Draw notification
      */
-    fun drawNotification(animationY: Float, smooth: Boolean, backgroundColor: Color, side: Side) {
+    fun drawNotification(index: Int):Boolean {
         val realY=-(index+1)*height
         val nowTime=System.currentTimeMillis()
         
     /**
     * Background
     */
-    RenderUtils.drawRect(-x + 8 + textLength, -y, -x - 1 - 26F, -28F - y, backgroundColor.rgb)
-        
+    RenderUtils.drawBorderedRect(1F, 0F, width.get(), guiHeight, borderStrength.get(), borderColor.rgb, backgroundColor.rgb)
+    val backgroundColor = Color(backgroundRedValue.get(), backgroundGreenValue.get(), backgroundBlueValue.get(),
+                backgroundAlphaValue.get())
 
+        
         //Y-Axis Animation
         if(nowY!=realY){
             var pct=(nowTime-animeYTime)/animeTime.toDouble()
