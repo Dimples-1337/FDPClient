@@ -30,6 +30,7 @@ import net.minecraft.network.play.server.S19PacketEntityStatus;
 import net.minecraft.potion.Potion;
 import net.minecraft.util.*;
 import org.lwjgl.input.Keyboard;
+import net.minecraft.item.ItemEnderPearl;
 
 import java.awt.*;
 import java.math.BigDecimal;
@@ -43,6 +44,7 @@ public class Fly extends Module {
     public final ListValue modeValue = new ListValue("Mode", new String[]{
             "Vanilla",
             "SmoothVanilla",
+            "Pearl",
 
             // NCP
             "NCP",
@@ -167,6 +169,7 @@ public class Fly extends Module {
     private int aac4glideDelay;
 
     private boolean noFlag;
+    private int pearlState = 0;
 
     private final MSTimer mineSecureVClipTimer = new MSTimer();
 
@@ -307,6 +310,40 @@ public class Fly extends Module {
                 mc.thePlayer.motionX *= 0.1D;
                 mc.thePlayer.motionZ *= 0.1D;
                 mc.thePlayer.swingItem();
+                break;
+            case "pearl":
+                mc.thePlayer.capabilities.isFlying = false;
+                mc.thePlayer.motionX = mc.thePlayer.motionY = mc.thePlayer.motionZ = 0;
+
+                int enderPearlSlot = getPearlSlot();
+                if (pearlState == 0) {
+                    if (enderPearlSlot == -1) {
+                        pearlState = -1;
+                        this.setState(false);
+                        return;
+                    }
+
+                    if (mc.thePlayer.inventory.currentItem != enderPearlSlot) {
+                        mc.thePlayer.sendQueue.addToSendQueue(new C09PacketHeldItemChange(enderPearlSlot));
+                    }
+
+                    mc.thePlayer.sendQueue.addToSendQueue(new C03PacketPlayer.C05PacketPlayerLook(mc.thePlayer.rotationYaw, 90, mc.thePlayer.onGround));
+                    mc.thePlayer.sendQueue.addToSendQueue(new C08PacketPlayerBlockPlacement(new BlockPos(-1, -1, -1), 255, mc.thePlayer.inventoryContainer.getSlot(enderPearlSlot + 36).getStack(), 0, 0, 0));
+                    if (enderPearlSlot != mc.thePlayer.inventory.currentItem) {
+                        mc.thePlayer.sendQueue.addToSendQueue(new C09PacketHeldItemChange(mc.thePlayer.inventory.currentItem));
+                    }
+                    pearlState = 1;    
+                }
+
+                if (pearlState == 1 && mc.thePlayer.hurtTime > 0) pearlState = 2;
+
+                if (pearlState == 2) {
+                    if (mc.gameSettings.keyBindJump.isKeyDown())
+                        mc.thePlayer.motionY += vanillaSpeed;
+                    if (mc.gameSettings.keyBindSneak.isKeyDown())
+                        mc.thePlayer.motionY -= vanillaSpeed;
+                    MovementUtils.strafe(vanillaSpeed);
+                }
                 break;
             case "oldncp":
                 if(!mc.thePlayer.onGround)
@@ -1037,8 +1074,7 @@ public class Fly extends Module {
 
             final String mode = modeValue.get();
 
-            if (mode.equalsIgnoreCase("NCP") || mode.equalsIgnoreCase("Rewinside") || (mode.equalsIgnoreCase("Verus")&&verusFlyable) ||
-                (mode.equalsIgnoreCase("Verus2")&&verusFlyable) ||
+            if (mode.equalsIgnoreCase("NCP") || mode.equalsIgnoreCase("Rewinside") || (mode.equalsIgnoreCase("Verus")&&verusFlyable) || (mode.equalsIgnoreCase("pearl") && pearlState != -1)) {
                     (mode.equalsIgnoreCase("Mineplex") && mc.thePlayer.inventory.getCurrentItem() == null))
                 packetPlayer.onGround = true;
 
@@ -1239,6 +1275,24 @@ public class Fly extends Module {
             }
         }
         aac5C03List.clear();
+    }
+        
+    @EventTarget
+    public void onMove(final MoveEvent event) {
+        switch(modeValue.get().toLowerCase()) {
+            case "pearl": {
+                if (pearlState != 2) {
+                    event.cancelEvent();
+                }
+                
+    private int getPearlSlot() {
+        for(int i = 36; i < 45; ++i) {
+            ItemStack stack = mc.thePlayer.inventoryContainer.getSlot(i).getStack();
+            if (stack != null && stack.getItem() instanceof ItemEnderPearl) {
+                return i - 36;
+            }
+        }
+        return -1;
     }
 
     @Override
