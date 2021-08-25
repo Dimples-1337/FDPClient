@@ -65,6 +65,7 @@ public class Fly extends Module {
             "AAC3.3.12-Glide",
             "AAC3.3.13",
             "AAC4.X-Glide",
+            "AAC5-Vanilla",
             "AAC5.2.0",
             "AAC5.2.0-Fast",
             "AAC5.2.0-Vanilla",
@@ -142,6 +143,7 @@ public class Fly extends Module {
     private final FloatValue aac520AppendTimer = new FloatValue("AAC5.2.0FastAppendTimer",0.4f,0.1f,0.7f);
     private final FloatValue aac520MaxTimer = new FloatValue("AAC5.2.0FastMaxTimer",1.2f,1f,3f);
     private final IntegerValue aac520Purse = new IntegerValue("AAC5.2.0Purse",7,3,20);
+    private final BoolValue aac5NoClipValue = new BoolValue("AAC5-NoClip", true);
     private final BoolValue aac520UseC04 = new BoolValue("AAC5.2.0UseC04", false);
     private final BoolValue aac520view = new BoolValue("AAC5.2.0BetterView", false);
     private final BoolValue rssDropoff = new BoolValue("RSSmoothDropoffA", true);
@@ -883,6 +885,8 @@ public class Fly extends Module {
                 if(startY == new BigDecimal(mc.thePlayer.posY).setScale(3, RoundingMode.HALF_DOWN).doubleValue())
                     freeHypixelTimer.update();
                 break;
+                case "aac5-vanilla":
+                if (aac5NoClipValue.get()) mc.thePlayer.noClip = true;
             case "bugspartan":
                 mc.thePlayer.capabilities.isFlying = false;
                 mc.thePlayer.motionY = 0;
@@ -922,7 +926,7 @@ public class Fly extends Module {
         final String mode = modeValue.get();
         final String mark = markValue.get();
 
-        if (mark.equalsIgnoreCase("Off") || mode.equalsIgnoreCase("Vanilla") || mode.equalsIgnoreCase("SmoothVanilla"))
+        if (mark.equalsIgnoreCase("Off") || mode.equalsIgnoreCase("Vanilla") || mode.equalsIgnoreCase("AAC5-Vanilla")|| mode.equalsIgnoreCase("SmoothVanilla"))
             return;
 
         double y = mark.equalsIgnoreCase("Up") ? startY + 2D : startY;
@@ -1245,4 +1249,41 @@ public class Fly extends Module {
     public String getTag() {
         return modeValue.get();
     }
-}
+    
+if (mode.equalsIgnoreCase("AAC5-Vanilla")) {
+                if (mc.isIntegratedServerRunning()) {
+                    LiquidBounce.hud.addNotification(new Notification("This fly will CRASH your client in Singleplayer!", Notification.Type.WARNING, 2000L));
+                    this.setState(false);
+                    return;
+                }
+                aac5C03List.add(packetPlayer);
+                event.cancelEvent();
+                if(aac5C03List.size()>aac5PursePacketsValue.get())
+                    sendAAC5Packets();
+            }
+        }
+    }
+
+    private final ArrayList<C03PacketPlayer> aac5C03List=new ArrayList<>();
+
+    private void sendAAC5Packets(){
+        float yaw = mc.thePlayer.rotationYaw;
+        float pitch = mc.thePlayer.rotationPitch;
+        for(C03PacketPlayer packet : aac5C03List){
+            PacketUtils.sendPacketNoEvent(packet);
+            if(packet.isMoving()){
+                if (packet.getRotating()) {
+                    yaw = packet.yaw;
+                    pitch = packet.pitch;
+                }
+                if (aac5UseC04Packet.get()) {
+                    PacketUtils.sendPacketNoEvent(new C03PacketPlayer.C04PacketPlayerPosition(packet.x,1e+159,packet.z, true));
+                    PacketUtils.sendPacketNoEvent(new C03PacketPlayer.C04PacketPlayerPosition(packet.x,packet.y,packet.z, true));
+                } else {
+                    PacketUtils.sendPacketNoEvent(new C03PacketPlayer.C06PacketPlayerPosLook(packet.x,1e+159,packet.z, yaw, pitch, true));
+                    PacketUtils.sendPacketNoEvent(new C03PacketPlayer.C06PacketPlayerPosLook(packet.x,packet.y,packet.z, yaw, pitch, true));
+                }
+            }
+      }
+      aac5C03List.clear();
+  }
