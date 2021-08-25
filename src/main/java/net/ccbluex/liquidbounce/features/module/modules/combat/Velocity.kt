@@ -107,7 +107,7 @@ class Velocity : Module() {
     @EventTarget
     fun onUpdate(event: UpdateEvent) {
         if(redeCount<24) redeCount++
-        if (mc.thePlayer.isInWater || mc.thePlayer.isInLava || mc.thePlayer.isInWeb || (NoAir.get() && !mc.thePlayer.onGround))
+        if (mc.thePlayer.isInWater || mc.thePlayer.isInLava || mc.thePlayer.isInWeb || (noAirValue.get() && !mc.thePlayer.onGround))
             return
 
         when (modeValue.get().toLowerCase()) {
