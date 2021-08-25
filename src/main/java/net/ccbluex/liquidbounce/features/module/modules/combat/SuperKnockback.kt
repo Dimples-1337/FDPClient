@@ -23,7 +23,8 @@ class SuperKnockback : Module() {
     private val hurtTimeValue = IntegerValue("HurtTime", 10, 0, 10)
     private val modeValue = ListValue("Mode", arrayOf("ExtraPacket", "WTap", "Packet"), "ExtraPacket")
     
-    private val delay = IntegerValue("Delay", 0, 0, 500)
+    private val delayValue = IntegerValue("Delay",0,0,1000)
+    private val onlyMoveValue = BoolValue("OnlyMove", false)
 
     val timer = MSTimer()
 
@@ -31,7 +32,7 @@ class SuperKnockback : Module() {
     
     fun onAttack(event: AttackEvent) {
         if (event.targetEntity is EntityLivingBase) {
-            if (event.targetEntity.hurtTime > hurtTimeValue.get() || !timer.hasTimePassed(delay.get().toLong()))
+            if (!timer.hasTimePassed(delayValue.get().toLong())||event.targetEntity.hurtTime > hurtTimeValue.get()||(!MovementUtils.isMoving() && onlyMoveValue.get() || !timer.hasTimePassed(delay.get().toLong()))
                 return
             when (modeValue.get().toLowerCase()) {
                 "extrapacket" -> {
@@ -42,6 +43,7 @@ class SuperKnockback : Module() {
                     mc.netHandler.addToSendQueue(C0BPacketEntityAction(mc.thePlayer, C0BPacketEntityAction.Action.START_SPRINTING))
                     mc.netHandler.addToSendQueue(C0BPacketEntityAction(mc.thePlayer, C0BPacketEntityAction.Action.STOP_SPRINTING))
                     mc.netHandler.addToSendQueue(C0BPacketEntityAction(mc.thePlayer, C0BPacketEntityAction.Action.START_SPRINTING))
+                    mc.thePlayer.isSprinting = true
                     mc.thePlayer.serverSprintState = true
                 }
 
