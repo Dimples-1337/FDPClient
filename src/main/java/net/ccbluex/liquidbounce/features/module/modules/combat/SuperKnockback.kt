@@ -32,7 +32,7 @@ class SuperKnockback : Module() {
     
     fun onAttack(event: AttackEvent) {
         if (event.targetEntity is EntityLivingBase) {
-            if (!timer.hasTimePassed(delayValue.get().toLong())||event.targetEntity.hurtTime > hurtTimeValue.get()||(!MovementUtils.isMoving() && onlyMoveValue.get() || !timer.hasTimePassed(delay.get().toLong()))
+            if (event.targetEntity.hurtTime > hurtTimeValue.get() || !timer.hasTimePassed(delay.get().toLong()))
                 return
             when (modeValue.get().toLowerCase()) {
                 "extrapacket" -> {
