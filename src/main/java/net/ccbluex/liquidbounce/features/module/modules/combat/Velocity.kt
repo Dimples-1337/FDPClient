@@ -71,6 +71,9 @@ class Velocity : Module() {
         .displayable { modeValue.get().contains("RedeSky",true) }
     private val rspDengerValue = BoolValue("RedeskyOnlyDanger",false)
         .displayable { modeValue.get().contains("RedeSky",true) }
+    
+
+    private val noAirValue = BoolValue("NoAir",false)
 
     /**
      * VALUES
@@ -104,7 +107,7 @@ class Velocity : Module() {
     @EventTarget
     fun onUpdate(event: UpdateEvent) {
         if(redeCount<24) redeCount++
-        if (mc.thePlayer.isInWater || mc.thePlayer.isInLava || mc.thePlayer.isInWeb)
+        if (mc.thePlayer.isInWater || mc.thePlayer.isInLava || mc.thePlayer.isInWeb || (!NoAir.get() || mc.thePlayer.onGround))
             return
 
         when (modeValue.get().toLowerCase()) {
