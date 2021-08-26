@@ -1223,6 +1223,9 @@ public class Fly extends Module {
     private final ArrayList<C03PacketPlayer> aac5C03List=new ArrayList<>();
 
     private void sendAAC5Packets(){
+        if (mc.isSingleplayer()) 
+            return;
+        
         float yaw=mc.thePlayer.rotationYaw;
         float pitch=mc.thePlayer.rotationPitch;
         for(C03PacketPlayer packet : aac5C03List){
