@@ -11,6 +11,8 @@ import net.ccbluex.liquidbounce.features.module.EnumAutoDisableType;
 import net.ccbluex.liquidbounce.features.module.Module;
 import net.ccbluex.liquidbounce.features.module.ModuleCategory;
 import net.ccbluex.liquidbounce.features.module.ModuleInfo;
+import net.ccbluex.liquidbounce.ui.client.hud.element.elements.Notification;
+import net.ccbluex.liquidbounce.ui.client.hud.element.elements.NotifyType;
 import net.ccbluex.liquidbounce.utils.ClientUtils;
 import net.ccbluex.liquidbounce.utils.MovementUtils;
 import net.ccbluex.liquidbounce.utils.PacketUtils;
@@ -379,7 +381,16 @@ public class Fly extends Module {
             freeHypixelYaw = mc.thePlayer.rotationYaw;
             freeHypixelPitch = mc.thePlayer.rotationPitch;
         }
-        super.onEnable();
+
+        if(mode.equalsIgnoreCase("aac5.2.0")){
+            if(mc.isSingleplayer()){
+                LiquidBounce.hud.addNotification(new Notification("Fly","Use AAC5.2.0 Flys will crash single player", NotifyType.ERROR,2000,500));
+                return;
+            }
+            LiquidBounce.hud.addNotification(new Notification("Fly","Thanks Paolo V. for the rise crack!", NotifyType.INFO,3000,500));
+        }
+
+       super.onEnable();
     }
 
     @Override
@@ -1223,9 +1234,6 @@ public class Fly extends Module {
     private final ArrayList<C03PacketPlayer> aac5C03List=new ArrayList<>();
 
     private void sendAAC5Packets(){
-        if (mc.isSingleplayer()) 
-            return;
-        
         float yaw=mc.thePlayer.rotationYaw;
         float pitch=mc.thePlayer.rotationPitch;
         for(C03PacketPlayer packet : aac5C03List){
