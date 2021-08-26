@@ -9,6 +9,7 @@ import net.minecraft.block.Block
 import net.minecraft.client.gui.GuiScreen
 import net.minecraft.client.multiplayer.WorldClient
 import net.minecraft.entity.Entity
+import net.minecraft.entity.player.EntityPlayer
 import net.minecraft.network.Packet
 import net.minecraft.util.AxisAlignedBB
 import net.minecraft.util.BlockPos
@@ -52,7 +53,7 @@ data class EntityMovementEvent(val movedEntity: Entity) : Event()
 /**
  * Called when update da model lol
  */
-class UpdateModelEvent(val player: EntityPlayer, model: ModelPlayer) : Event()
+class UpdateModelEvent(val player: EntityPlayer, val model: ModelPlayer) : Event()
 
 /**
  * Called when player jumps
