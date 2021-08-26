@@ -50,6 +50,11 @@ class ClientShutdownEvent : Event()
 data class EntityMovementEvent(val movedEntity: Entity) : Event()
 
 /**
+ * Called when update da model lol
+ */
+class UpdateModelEvent(val player: EntityPlayer, val model: ModelPlayer) : Event()
+
+/**
  * Called when player jumps
  *
  * @param motion jump motion (y motion)
