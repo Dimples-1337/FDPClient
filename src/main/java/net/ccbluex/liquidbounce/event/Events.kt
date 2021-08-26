@@ -53,7 +53,7 @@ data class EntityMovementEvent(val movedEntity: Entity) : Event()
 /**
  * Called when update da model lol
  */
-class UpdateModelEvent(val player: EntityPlayer, val model: ModelPlayer) : Event()
+class UpdateModelEvent(val player: EntityPlayer, val model: EntityPlayer) : Event()
 
 /**
  * Called when player jumps
