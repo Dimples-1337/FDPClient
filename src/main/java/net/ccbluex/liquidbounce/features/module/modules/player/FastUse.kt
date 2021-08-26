@@ -50,7 +50,7 @@ class FastUse : Module() {
 
                     mc.playerController.onStoppedUsingItem(mc.thePlayer)
                 }
-                
+
                 "instant" -> {
                     repeat(35) {
                         mc.netHandler.addToSendQueue(C03PacketPlayer(mc.thePlayer.onGround))
@@ -64,17 +64,16 @@ class FastUse : Module() {
                     usedTimer = true
                 }
 
-                                "MinemoraTest" -> {
+                "MinemoraTest" -> {
                     mc.timer.timerSpeed = 0.5F
-                                    usedTimer = true
-                                    if(mc.thePlayer.ticksExisted % 2 == 0){
-                                    repeat(2) {
-                    mc.netHandler.addToSendQueue(C03PacketPlayer(mc.thePlayer.onGround))
-                                    }
-                                    }
-                    
+                    usedTimer = true
+                    if(mc.thePlayer.ticksExisted % 2 == 0){
+                        repeat(2) {
+                            mc.netHandler.addToSendQueue(C03PacketPlayer(mc.thePlayer.onGround))
+                        }
+                    }
                 }
-                
+
                 "customdelay" -> {
                     if (!msTimer.hasTimePassed(delayValue.get().toLong()))
                         return
