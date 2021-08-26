@@ -66,7 +66,7 @@ class AutoReport : Module() {
         val name=player.name
 
         // pass this if reported
-        if(reported.contains(name))
+        if(reported.contains(name) || name == mc.thePlayer.name)
             return false
 
         reported.add(name)
