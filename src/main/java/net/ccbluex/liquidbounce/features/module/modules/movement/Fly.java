@@ -385,6 +385,7 @@ public class Fly extends Module {
         if(mode.equalsIgnoreCase("aac5.2.0")){
             if(mc.isSingleplayer()){
                 LiquidBounce.hud.addNotification(new Notification("Fly","Use AAC5.2.0 Flys will crash single player", NotifyType.ERROR,2000,500));
+                setState(false);
                 return;
             }
             LiquidBounce.hud.addNotification(new Notification("Fly","Thanks Paolo V. for the rise crack!", NotifyType.INFO,3000,500));
