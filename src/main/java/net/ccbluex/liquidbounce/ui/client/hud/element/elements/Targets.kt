@@ -24,7 +24,7 @@ import kotlin.math.roundToInt
 
 @ElementInfo(name = "Targets", single = true)
 class Targets : Element(-46.0,-40.0,1F,Side(Side.Horizontal.MIDDLE,Side.Vertical.MIDDLE)) {
-    private val modeValue = ListValue("Mode", arrayOf("Novoline","Astolfo","Liquid","Flux","Rise"), "Rise")
+    private val modeValue = ListValue("Mode", arrayOf("Novoline","Astolfo","Liquid","Flux","Rise","Classic"), "Rise")
     private val switchModeValue = ListValue("SwitchMode", arrayOf("Slide","Zoom"), "Slide")
     private val animSpeedValue = IntegerValue("AnimSpeed",10,5,20)
     private val switchAnimSpeedValue = IntegerValue("SwitchAnimSpeed",20,5,40)
@@ -104,6 +104,7 @@ class Targets : Element(-46.0,-40.0,1F,Side(Side.Horizontal.MIDDLE,Side.Vertical
             "liquid" -> drawLiquid(prevTarget!!,nowAnimHP)
             "flux" -> drawFlux(prevTarget!!,nowAnimHP)
             "rise" -> drawRise(prevTarget!!,nowAnimHP)
+            "classic" -> drawClassic(prevTarget!!,nowAnimHP)
         }
 
         return getTBorder()
@@ -196,6 +197,33 @@ class Targets : Element(-46.0,-40.0,1F,Side(Side.Horizontal.MIDDLE,Side.Vertical
 
         font.drawString("Name ${target.name}", 40, 11,Color.WHITE.rgb)
         font.drawString("Distance: ${decimalFormat.format(mc.thePlayer.getDistanceToEntityBox(target))} Hurt ${target.hurtTime}", 40, 11+font.FONT_HEIGHT,Color.WHITE.rgb)
+        
+     private fun drawClassic(target: EntityLivingBase, easingHealth: Float){
+         val font=fontValue.get()
+         val fontHeight = font.FONT_HEIGHT
+                    val mainColor = barColor
+                    val percent = target.health.toFloat()/target.maxHealth.toFloat() * 100F
+                    val nameLength = (font.getStringWidth(target.name)).coerceAtLeast(font.getStringWidth("${decimalFormat2.format(percent)}%")).toFloat() + 10F
+                    val barWidth = (target.health / target.maxHealth).coerceIn(0F, target.maxHealth.toFloat()) * nameLength
+
+                    RenderUtils.drawRect(-2F, -2F, 3F + nameLength + 36F, 2F + 36F, Color(24, 24, 24, 255).rgb)
+                    RenderUtils.drawRect(-1F, -1F, 2F + nameLength + 36F, 1F + 36F, Color(31, 31, 31, 255).rgb)
+                    drawHead(mc.netHandler.getPlayerInfo(target.uniqueID).locationSkin, 0, 0, 36, 36)
+                    font.drawStringWithShadow(target.name, 2F + 36F, 2F, -1)
+                    RenderUtils.drawRect(1F + 36F, 14F, 1F + 36F + nameLength, 24F, Color(24, 24, 24, 255).rgb)
+
+                    easingHealth += ((target.health - easingHealth) / 2.0F.pow(10.0F)())) * RenderUtils.deltaTime
+
+                    val animateThingy = (easingHealth.coerceIn(target.health, target.maxHealth) / target.maxHealth) * nameLength
+
+                    if (easingHealth > target.health)
+                        RenderUtils.drawRect(1F + 36F, 14F, 1F + 36F + animateThingy, 24F, mainColor.darker().rgb)
+                    
+                    RenderUtils.drawRect(1F + 36F, 14F, 1F + 36F + barWidth, 24F, mainColor.rgb)
+                    
+                    font.drawStringWithShadow("${decimalFormat2.format(percent)}%", 1F + 36F + nameLength / 2F - font.getStringWidth("${decimalFormat2.format(percent)}%").toFloat() / 2F, 15F, -1)
+                }
+         
 
         // 渐变血量条
         GL11.glEnable(3042)
@@ -258,6 +286,7 @@ class Targets : Element(-46.0,-40.0,1F,Side(Side.Horizontal.MIDDLE,Side.Vertical
                 .coerceAtLeast(70)
                 .toFloat(),34F)
             "rise" -> Border(0F,0F,150F,50F)
+            "Classic" -> Border(-1F, -1F, 90F, 36F)
             else -> null
         }
     }
