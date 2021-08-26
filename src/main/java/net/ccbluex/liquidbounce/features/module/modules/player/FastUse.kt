@@ -65,7 +65,7 @@ class FastUse : Module() {
                 }
 
                                 "MinemoraTest" -> {
-                    mc.timer.timerSpeed = 0.5
+                    mc.timer.timerSpeed = 0.5F
                                     usedTimer = true
                                     if(mc.thePlayer.ticksExisted % 2 == 0){
                                     repeat(2) {
