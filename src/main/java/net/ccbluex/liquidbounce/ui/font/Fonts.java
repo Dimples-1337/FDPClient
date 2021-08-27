@@ -8,26 +8,46 @@ package net.ccbluex.liquidbounce.ui.font;
 import com.google.gson.*;
 import net.ccbluex.liquidbounce.LiquidBounce;
 import net.ccbluex.liquidbounce.utils.ClientUtils;
-import net.ccbluex.liquidbounce.utils.FileUtils;
+import net.ccbluex.liquidbounce.utils.misc.HttpUtils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 import java.awt.*;
 import java.io.*;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipInputStream;
 
+@SideOnly(Side.CLIENT)
 public class Fonts {
 
-    @FontDetails(fontName = "Small", fontSize = 35, fileName = "regular.ttf")
+    @FontDetails(fontName = "Roboto Medium", fontSize = 35)
     public static GameFontRenderer font35;
 
-    @FontDetails(fontName = "Medium", fontSize = 40, fileName = "regular.ttf")
+    @FontDetails(fontName = "Roboto Medium", fontSize = 40)
     public static GameFontRenderer font40;
 
-//    @FontDetails(fontName = "Huge", fontSize = 60, fileName = "regular.ttf")
-//    public static GameFontRenderer font60;
+    @FontDetails(fontName = "Roboto Medium", fontSize = 50)
+    public static GameFontRenderer font50;
+
+    @FontDetails(fontName = "Roboto Medium", fontSize = 60)
+    public static GameFontRenderer font60;
+
+    @FontDetails(fontName = "Roboto Medium", fontSize = 30)
+    public static GameFontRenderer fontSmall;
+
+    @FontDetails(fontName = "SFUI Regular", fontSize = 35)
+    public static GameFontRenderer fontSFUI35;
+
+    @FontDetails(fontName = "SFUI Regular", fontSize = 40)
+    public static GameFontRenderer fontSFUI40;
+
+    @FontDetails(fontName = "Roboto Bold", fontSize = 180)
+    public static GameFontRenderer fontBold180;
 
     @FontDetails(fontName = "Minecraft Font")
     public static final FontRenderer minecraftFont = Minecraft.getMinecraft().fontRendererObj;
@@ -39,21 +59,14 @@ public class Fonts {
 
         ClientUtils.getLogger().info("Loading Fonts.");
 
-        initFonts();
+        downloadFonts();
 
-        for(final Field field : Fonts.class.getDeclaredFields()) {
-            try {
-                field.setAccessible(true);
-                final FontDetails fontDetails = field.getAnnotation(FontDetails.class);
-
-                if(fontDetails!=null) {
-                    if(!fontDetails.fileName().isEmpty())
-                        field.set(null,new GameFontRenderer(getFont(fontDetails.fileName(), fontDetails.fontSize())));
-                }
-            }catch(final IllegalAccessException e) {
-                e.printStackTrace();
-            }
-        }
+        font35 = new GameFontRenderer(getFont("Roboto-Medium.ttf", 35));
+        font40 = new GameFontRenderer(getFont("Roboto-Medium.ttf", 40));
+        fontSmall = new GameFontRenderer(getFont("Roboto-Medium.ttf", 30));
+        fontSFUI35 = new GameFontRenderer(getFont("sfui.ttf", 35));
+        fontSFUI40 = new GameFontRenderer(getFont("sfui.ttf", 40));
+        fontBold180 = new GameFontRenderer(getFont("Roboto-Bold.ttf", 180));
 
         try {
             CUSTOM_FONT_RENDERERS.clear();
@@ -90,46 +103,73 @@ public class Fonts {
         ClientUtils.getLogger().info("Loaded Fonts. (" + (System.currentTimeMillis() - l) + "ms)");
     }
 
-    private static void initFonts() {
+    private static void downloadFonts() {
         try {
-            initSingleFont("regular.ttf","assets/minecraft/fdpclient/font/regular.ttf");
+            final File outputFile = new File(LiquidBounce.fileManager.fontsDir, "roboto.zip");
+
+            if(!outputFile.exists()) {
+                ClientUtils.getLogger().info("Downloading fonts...");
+                HttpUtils.download("https://wysi-foundation.github.io/LiquidCloud/LiquidBounce/fonts/fonts.zip", outputFile);
+                ClientUtils.getLogger().info("Extract fonts...");
+                extractZip(outputFile.getPath(), LiquidBounce.fileManager.fontsDir.getPath());
+            }
         }catch(IOException e) {
             e.printStackTrace();
         }
     }
 
-    private static void initSingleFont(String name, String resourcePath) throws IOException {
-        File file=new File(LiquidBounce.fileManager.fontsDir, name);
-        if(!file.exists())
-            FileUtils.unpackFile(file, resourcePath);
-    }
-
     public static FontRenderer getFontRenderer(final String name, final int size) {
-        if(name.equals("Minecraft")){
-            return minecraftFont;
+        for(final Field field : Fonts.class.getDeclaredFields()) {
+            try {
+                field.setAccessible(true);
+
+                final Object o = field.get(null);
+
+                if(o instanceof FontRenderer) {
+                    final FontDetails fontDetails = field.getAnnotation(FontDetails.class);
+
+                    if(fontDetails.fontName().equals(name) && fontDetails.fontSize() == size)
+                        return (FontRenderer) o;
+                }
+            }catch(final IllegalAccessException e) {
+                e.printStackTrace();
+            }
         }
 
-        for (final FontRenderer fontRenderer : getFonts()) {
-            if(fontRenderer instanceof GameFontRenderer){
-                GameFontRenderer liquidFontRenderer=(GameFontRenderer) fontRenderer;
-                final Font font = liquidFontRenderer.getDefaultFont().getFont();
+        for (final GameFontRenderer liquidFontRenderer : CUSTOM_FONT_RENDERERS) {
+            final Font font = liquidFontRenderer.getDefaultFont().getFont();
 
-                if(font.getName().equals(name) && font.getSize() == size)
-                    return liquidFontRenderer;
-            }
+            if(font.getName().equals(name) && font.getSize() == size)
+                return liquidFontRenderer;
         }
 
         return minecraftFont;
     }
 
     public static Object[] getFontDetails(final FontRenderer fontRenderer) {
+        for(final Field field : Fonts.class.getDeclaredFields()) {
+            try {
+                field.setAccessible(true);
+
+                final Object o = field.get(null);
+
+                if(o.equals(fontRenderer)) {
+                    final FontDetails fontDetails = field.getAnnotation(FontDetails.class);
+
+                    return new Object[] {fontDetails.fontName(), fontDetails.fontSize()};
+                }
+            }catch(final IllegalAccessException e) {
+                e.printStackTrace();
+            }
+        }
+
         if (fontRenderer instanceof GameFontRenderer) {
             final Font font = ((GameFontRenderer) fontRenderer).getDefaultFont().getFont();
 
             return new Object[] {font.getName(), font.getSize()};
         }
 
-        return new Object[] {"Minecraft", -1};
+        return null;
     }
 
     public static List<FontRenderer> getFonts() {
@@ -163,6 +203,38 @@ public class Fonts {
             e.printStackTrace();
 
             return new Font("default", Font.PLAIN, size);
+        }
+    }
+
+    private static void extractZip(final String zipFile, final String outputFolder) {
+        final byte[] buffer = new byte[1024];
+
+        try {
+            final File folder = new File(outputFolder);
+
+            if(!folder.exists()) folder.mkdir();
+
+            final ZipInputStream zipInputStream = new ZipInputStream(new FileInputStream(zipFile));
+
+            ZipEntry zipEntry = zipInputStream.getNextEntry();
+            while(zipEntry != null) {
+                File newFile = new File(outputFolder + File.separator + zipEntry.getName());
+                new File(newFile.getParent()).mkdirs();
+
+                FileOutputStream fileOutputStream = new FileOutputStream(newFile);
+
+                int i;
+                while((i = zipInputStream.read(buffer)) > 0)
+                    fileOutputStream.write(buffer, 0, i);
+
+                fileOutputStream.close();
+                zipEntry = zipInputStream.getNextEntry();
+            }
+
+            zipInputStream.closeEntry();
+            zipInputStream.close();
+        }catch(final IOException e) {
+            e.printStackTrace();
         }
     }
 }
