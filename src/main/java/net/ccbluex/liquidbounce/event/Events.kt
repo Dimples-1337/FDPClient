@@ -9,6 +9,7 @@ import net.minecraft.block.Block
 import net.minecraft.client.gui.GuiScreen
 import net.minecraft.client.multiplayer.WorldClient
 import net.minecraft.entity.Entity
+import net.minecraft.entity.player.EntityPlayer
 import net.minecraft.network.Packet
 import net.minecraft.util.AxisAlignedBB
 import net.minecraft.util.BlockPos
@@ -48,6 +49,11 @@ class ClientShutdownEvent : Event()
  * Called when an other entity moves
  */
 data class EntityMovementEvent(val movedEntity: Entity) : Event()
+
+/**
+ * Called when update da model lol
+ */
+class UpdateModelEvent(val player: EntityPlayer, val model: EntityPlayer) : Event()
 
 /**
  * Called when player jumps
