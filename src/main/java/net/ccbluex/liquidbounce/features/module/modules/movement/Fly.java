@@ -61,6 +61,7 @@ public class Fly extends Module {
             "Verus",
             "Verus2",
             "Verus3",
+            "VerusC",
 
             // AAC
             "AAC1.9.10",
@@ -132,6 +133,15 @@ public class Fly extends Module {
 
     private final FloatValue mineplexSpeedValue = new FloatValue("MineplexSpeed", 1F, 0.5F, 10F);
     private final IntegerValue neruxVaceTicks = new IntegerValue("NeruxVace-Ticks", 6, 0, 20);
+    
+    // Verus
+    private final ListValue verusDmgModeValue = new ListValue("Verus-DamageMode", new String[]{"None", "Instant", "One-Hit"}, "None");
+    private final ListValue verusBoostModeValue = new ListValue("Verus-BoostMode", new String[]{"Static", "Gradual"}, "Gradual");
+    private final BoolValue verusVisualValue = new BoolValue("Verus-VisualPos", false);
+    private final FloatValue verusVisualHeightValue = new FloatValue("Verus-VisualHeight", 0.42F, 0F, 1F);
+    private final FloatValue verusSpeedValue = new FloatValue("Verus-Speed", 5F, 0F, 10F);
+    private final FloatValue verusTimerValue = new FloatValue("Verus-Timer", 1F, 0.1F, 10F);
+    private final IntegerValue verusDmgTickValue = new IntegerValue("Verus-Ticks", 20, 0, 300);
 
     // RedeSky Collide
     private final FloatValue rscSpeedValue = new FloatValue("RSCollideSpeed", 15.5F, 0F, 30F);
@@ -240,6 +250,75 @@ public class Fly extends Module {
         double z = mc.thePlayer.posZ;
 
         final String mode = modeValue.get();
+        
+        if (mode.equalsIgnoreCase("Verus")) {
+            if (verusDmgModeValue.get().equalsIgnoreCase("Instant")) {
+                if (mc.thePlayer.onGround && mc.theWorld.getCollidingBoundingBoxes(mc.thePlayer, mc.thePlayer.getEntityBoundingBox().offset(0, 3.4, 0).expand(0, 0, 0)).isEmpty()) {
+                    mc.getNetHandler().addToSendQueue(new C03PacketPlayer.C04PacketPlayerPosition(mc.thePlayer.posX, y + 3.4, mc.thePlayer.posZ, false));
+                    mc.getNetHandler().addToSendQueue(new C03PacketPlayer.C04PacketPlayerPosition(mc.thePlayer.posX, y + 0.00125, mc.thePlayer.posZ, false));
+                    mc.getNetHandler().addToSendQueue(new C03PacketPlayer.C04PacketPlayerPosition(mc.thePlayer.posX, y, mc.thePlayer.posZ, false));
+                    mc.getNetHandler().addToSendQueue(new C03PacketPlayer.C04PacketPlayerPosition(mc.thePlayer.posX, y, mc.thePlayer.posZ, true));
+                    mc.thePlayer.motionX = mc.thePlayer.motionY = mc.thePlayer.motionZ = 0;
+                }
+            }
+
+            if (verusDmgModeValue.get().equalsIgnoreCase("One-Hit")) {
+                if (mc.thePlayer.onGround && mc.theWorld.getCollidingBoundingBoxes(mc.thePlayer, mc.thePlayer.getEntityBoundingBox().offset(0, 4, 0).expand(0, 0, 0)).isEmpty()) {
+                    mc.getNetHandler().addToSendQueue(new C03PacketPlayer.C04PacketPlayerPosition(mc.thePlayer.posX, y + 4, mc.thePlayer.posZ, false));
+                    mc.getNetHandler().addToSendQueue(new C03PacketPlayer.C04PacketPlayerPosition(mc.thePlayer.posX, y + 4, mc.thePlayer.posZ, false));
+                    mc.getNetHandler().addToSendQueue(new C03PacketPlayer.C04PacketPlayerPosition(mc.thePlayer.posX, y, mc.thePlayer.posZ, false));
+                    mc.getNetHandler().addToSendQueue(new C03PacketPlayer.C04PacketPlayerPosition(mc.thePlayer.posX, y, mc.thePlayer.posZ, true));
+                    mc.thePlayer.motionX = mc.thePlayer.motionY = mc.thePlayer.motionZ = 0;
+                }
+            }
+            if (verusVisualValue.get()) mc.thePlayer.setPosition(mc.thePlayer.posX, y + verusVisualHeightValue.get(), mc.thePlayer.posZ);
+        } else if (mode.equalsIgnoreCase("BugSpartan")) {
+            for(int i = 0; i < 65; ++i) {
+                mc.getNetHandler().addToSendQueue(new C03PacketPlayer.C04PacketPlayerPosition(x, y + 0.049D, z, false));
+                mc.getNetHandler().addToSendQueue(new C03PacketPlayer.C04PacketPlayerPosition(x, y, z, false));
+            }
+            mc.getNetHandler().addToSendQueue(new C03PacketPlayer.C04PacketPlayerPosition(x, y + 0.1D, z, true));
+            mc.thePlayer.motionX *= 0.1D;
+            mc.thePlayer.motionZ *= 0.1D;
+            mc.thePlayer.swingItem();
+        }
+
+        startY = mc.thePlayer.posY;
+        noPacketModify = false;
+        super.onEnable();
+    }
+
+    @Override
+    public void onDisable() {
+        wasDead = false;
+
+        if (mc.thePlayer == null)
+            return;
+
+        noFlag = false;
+
+        final String mode = modeValue.get();
+
+        if ((!mode.equalsIgnoreCase("Collide") && !mode.equalsIgnoreCase("Verusc")) {
+            mc.thePlayer.motionX = 0;
+            mc.thePlayer.motionY = 0;
+            mc.thePlayer.motionZ = 0;
+        }
+
+        if (boostTicks > 0 && mode.equalsIgnoreCase("Verusc")) {
+            mc.thePlayer.motionX = 0;
+            mc.thePlayer.motionZ = 0;
+        }
+
+        if (mode.equalsIgnoreCase("AAC5-Vanilla") && !mc.isIntegratedServerRunning()) {
+            sendAAC5Packets();
+        }
+
+        mc.thePlayer.capabilities.isFlying = false;
+
+        mc.timer.timerSpeed = 1F;
+        mc.thePlayer.speedInAir = 0.02F;
+    }
 
         switch(mode.toLowerCase()) {
             case "verus":
@@ -267,6 +346,27 @@ public class Fly extends Module {
                 mc.thePlayer.setPosition(mc.thePlayer.posX, mc.thePlayer.posY + 0.015625, mc.thePlayer.posZ);
                 launchY+=0.015625;
                 verusFlyable=true;
+                break;
+                case "verusc":
+                mc.thePlayer.capabilities.isFlying = false;
+                mc.thePlayer.motionX = mc.thePlayer.motionZ = mc.thePlayer.motionY = 0;
+
+                if (boostTicks <= 0 && mc.thePlayer.hurtTime > 0) boostTicks = verusDmgTickValue.get();
+
+                //if (verusGlideValue.get() && mc.thePlayer.ticksExisted % 6 == 0 && boostTicks <= 0) mc.thePlayer.motionY -= 0.2125;
+                //else mc.thePlayer.motionY = 0;
+                if (boostTicks > 0) {
+                    mc.timer.timerSpeed = verusTimerValue.get();
+                    float motion = 0F;
+                    
+                    if (verusBoostModeValue.get().equalsIgnoreCase("static")) motion = verusSpeedValue.get(); else motion = ((float)boostTicks / (float)verusDmgTickValue.get()) * verusSpeedValue.get();
+                    boostTicks--;
+
+                    MovementUtils.strafe(motion);
+                } else {
+                    mc.timer.timerSpeed = 1F;
+                    MovementUtils.strafe(0.18F);
+                }
                 break;
             case "aac5.2.0":
                 mc.thePlayer.motionX = 0;
@@ -951,6 +1051,17 @@ public class Fly extends Module {
             case "aac3.3.12":
                 RenderUtils.drawPlatform(-70, new Color(0, 0, 255, 90), 1);
                 break;
+        }
+     }
+
+    @EventTarget
+    public void onRender2D(final Render2DEvent event) {
+        final String mode = modeValue.get();
+        ScaledResolution scaledRes = new ScaledResolution(mc);
+        if (mode.equalsIgnoreCase("VerusC") && boostTicks > 0) {
+            float width = (float)(verusDmgTickValue.get() - boostTicks) / (float)verusDmgTickValue.get() * 60F;
+            RenderUtils.drawRect(scaledRes.getScaledWidth() / 2F - 31F, scaledRes.getScaledHeight() / 2F + 14F, scaledRes.getScaledWidth() / 2F + 31F, scaledRes.getScaledHeight() / 2F + 18F, 0xA0000000);
+            RenderUtils.drawRect(scaledRes.getScaledWidth() / 2F - 30F, scaledRes.getScaledHeight() / 2F + 15F, scaledRes.getScaledWidth() / 2F - 30F + width, scaledRes.getScaledHeight() / 2F + 17F, 0xFFFFFFFF);
         }
     }
 
