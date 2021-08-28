@@ -109,7 +109,8 @@ public class Fly extends Module {
             "KeepAlive",
             "Flag",
             "BlockWalk", //bypass horizon
-            "FakeGround"
+            "FakeGround",
+            "Collide"
 
     }, "Vanilla");
 
@@ -240,6 +241,12 @@ public class Fly extends Module {
         double z = mc.thePlayer.posZ;
 
         final String mode = modeValue.get();
+        
+        if ((!mode.equalsIgnoreCase("Collide")) {
+            mc.thePlayer.motionX = 0;
+            mc.thePlayer.motionY = 0;
+            mc.thePlayer.motionZ = 0;
+        }
 
         switch(mode.toLowerCase()) {
             case "verus":
@@ -1196,6 +1203,24 @@ public class Fly extends Module {
         if (mode.equalsIgnoreCase("Verus") || mode.equalsIgnoreCase("Verus2") || mode.equalsIgnoreCase("Hypixel") || mode.equalsIgnoreCase("BoostHypixel") ||
                 mode.equalsIgnoreCase("Rewinside") || (mode.equalsIgnoreCase("Mineplex") && mc.thePlayer.inventory.getCurrentItem() == null))
             e.cancelEvent();
+   }
+
+    @EventTarget
+    public void onBB(final BlockBBEvent event) {
+        if (mc.thePlayer == null) return;
+
+        final String mode = modeValue.get();
+
+        if (event.getBlock() instanceof BlockAir && mode.equalsIgnoreCase("Jump") && event.getY() < startY) {
+            event.setBoundingBox(AxisAlignedBB.fromBounds(event.getX(), event.getY(), event.getZ(), event.getX() + 1, startY, event.getZ() + 1));
+        }
+
+        if ((mode.equalsIgnoreCase("collide")) && !mc.thePlayer.isSneaking()) 
+            event.setBoundingBox(new AxisAlignedBB(-2, -1, -2, 2, 1, 2).offset(event.getX(), event.getY(), event.getZ()));
+
+        if (event.getBlock() instanceof BlockAir && (mode.equalsIgnoreCase("Rewinside") || mode.equalsIgnoreCase("Verus")) 
+            && event.getY() < mc.thePlayer.posY)
+            event.setBoundingBox(AxisAlignedBB.fromBounds(event.getX(), event.getY(), event.getZ(), event.getX() + 1, mc.thePlayer.posY, event.getZ() + 1));
     }
 
     @EventTarget
