@@ -242,7 +242,7 @@ public class Fly extends Module {
 
         final String mode = modeValue.get();
         
-        if ((!mode.equalsIgnoreCase("Collide")) {
+        if ((!mode.equalsIgnoreCase("Collide") && !mode.equalsIgnoreCase("Verus")) {
             mc.thePlayer.motionX = 0;
             mc.thePlayer.motionY = 0;
             mc.thePlayer.motionZ = 0;
