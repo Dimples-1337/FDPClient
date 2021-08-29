@@ -369,7 +369,7 @@ public class Fly extends Module {
             case "redeskysmooth":{
                 mc.thePlayer.addVelocity(0, rssMotionValue.get(), 0);
                 break;
-                case "creative":
+            case "creative":
                 mc.thePlayer.capabilities.isFlying = true;
             }
         }
