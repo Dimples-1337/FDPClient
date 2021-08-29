@@ -23,7 +23,7 @@ import net.minecraft.util.BlockPos
 @ModuleInfo(name = "HighJump", category = ModuleCategory.MOVEMENT)
 class HighJump : Module() {
     private val heightValue = FloatValue("Height", 2f, 1.1f, 7f)
-    private val modeValue = ListValue("Mode", arrayOf("Vanilla", "StableMotion", "Damage", "AACv3", "DAC", "Mineplex"), "Vanilla")
+    private val modeValue = ListValue("Mode", arrayOf("Vanilla", "StableMotion", "Damage", "AACv3", "DAC", "Mineplex", "MatrixWater"), "Vanilla")
     private val glassValue = BoolValue("OnlyGlassPane", false)
     private val stableMotionValue = FloatValue("StableMotion", 0.42f, 0.1f, 1f).displayable { modeValue.get().equals("StableMotion",true) }
     private var jumpY = 114514.0
@@ -52,7 +52,16 @@ class HighJump : Module() {
             "mineplex" -> {
                 if (!mc.thePlayer.onGround) MovementUtils.strafe(0.35f)
             }
-
+            
+            "matrixwater" -> {
+                if (mc.thePlayer.isInWater()) {
+                    if (mc.theWorld.getBlockState(new BlockPos(mc.thePlayer.posX, mc.thePlayer.posY + 1, mc.thePlayer.posZ)).getBlock() == Block.getBlockById(9)) {
+                        mc.thePlayer.motionY = 0.18;
+                    } else if (mc.theWorld.getBlockState(new BlockPos(mc.thePlayer.posX, mc.thePlayer.posY, mc.thePlayer.posZ)).getBlock() == Block.getBlockById(9)) {
+                        mc.thePlayer.motionY = heightValue.get();
+                        mc.thePlayer.onGround = true;
+             }   
+                        
             "stablemotion" -> {
                 if (jumpY != 114514.0) {
                     if (jumpY + heightValue.get() - 1 > mc.thePlayer.posY) {
