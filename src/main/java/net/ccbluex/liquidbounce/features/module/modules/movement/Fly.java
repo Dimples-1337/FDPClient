@@ -107,6 +107,7 @@ public class Fly extends Module {
             // Other
             "Jetpack",
             "KeepAlive",
+            "Creative",
             "Flag",
             "BlockWalk", //bypass horizon
             "FakeGround"
@@ -368,6 +369,8 @@ public class Fly extends Module {
             case "redeskysmooth":{
                 mc.thePlayer.addVelocity(0, rssMotionValue.get(), 0);
                 break;
+                case "creative":
+                mc.thePlayer.capabilities.isFlying = true;
             }
         }
 
@@ -937,7 +940,7 @@ public class Fly extends Module {
         final String mode = modeValue.get();
         final String mark = markValue.get();
 
-        if (mark.equalsIgnoreCase("Off") || mode.equalsIgnoreCase("Vanilla") || mode.equalsIgnoreCase("SmoothVanilla"))
+        if (mark.equalsIgnoreCase("Off") || mode.equalsIgnoreCase("Vanilla") || mode.equalsIgnoreCase("SmoothVanilla") || mode.equalsIgnoreCase("Creative"))
             return;
 
         double y = mark.equalsIgnoreCase("Up") ? startY + 2D : startY;
