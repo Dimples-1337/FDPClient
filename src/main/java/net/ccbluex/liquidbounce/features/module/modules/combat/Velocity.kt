@@ -235,7 +235,7 @@ class Velocity : Module() {
                     mc.thePlayer.motionZ *= 0.60
                }
             }}
-        }
+        
             "glitch" -> {
                 mc.thePlayer.noClip = velocityInput
 
