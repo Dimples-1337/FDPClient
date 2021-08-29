@@ -15,4 +15,5 @@ class Chams : Module() {
     val targetsValue = BoolValue("Targets", true)
     val chestsValue = BoolValue("Chests", true)
     val itemsValue = BoolValue("Items", true)
+    val colorModeValue = ListValue("Color", arrayOf("Custom", "Slowly", "Rise"), "Custom")
 }
