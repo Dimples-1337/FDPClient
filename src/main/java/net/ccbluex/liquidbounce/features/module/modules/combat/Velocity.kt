@@ -39,7 +39,7 @@ class Velocity : Module() {
     private val modeValue = ListValue("Mode", arrayOf("Simple", "AACPush", "AACZero", "AAC4Reduce", "AAC5Reduce",
                                                       "Redesky1", "Redesky2", 
                                                       "AAC5.2.0", "AAC5.2.0Combat", "HuaYuTing",
-                                                      "Reverse", "SmoothReverse", 
+                                                      "Reverse", "SmoothReverse", "Matrix",
                                                       "Jump", 
                                                       "Phase", "PacketPhase", "Glitch", "Spoof",
                                                       "Legit"), "Simple")
@@ -320,6 +320,24 @@ class Velocity : Module() {
                     packet.motionY = 0
                     packet.motionZ = 0
                 }
+                
+                "matrix" -> {
+                if (mc.thePlayer.hurtTime <= 0) {
+                    return
+                } 
+                if (mc.thePlayer.onGround) {
+                    if (mc.thePlayer.hurtTime <= 6) {
+                        mc.thePlayer.motionX *= 0.700054132
+                        mc.thePlayer.motionZ *= 0.700054132
+                    } 
+                    if (mc.thePlayer.hurtTime <= 5) {
+                        mc.thePlayer.motionX *= 0.803150645
+                        mc.thePlayer.motionZ *= 0.803150645
+                    }
+                } else if (mc.thePlayer.hurtTime <= 10) {
+                    mc.thePlayer.motionX *= 0.605001
+                    mc.thePlayer.motionZ *= 0.605001
+               }
 
                 "glitch" -> {
                     if (!mc.thePlayer.onGround)
