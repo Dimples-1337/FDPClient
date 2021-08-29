@@ -24,7 +24,7 @@ import kotlin.math.roundToInt
 
 @ElementInfo(name = "Targets", single = true)
 class Targets : Element(-46.0,-40.0,1F,Side(Side.Horizontal.MIDDLE,Side.Vertical.MIDDLE)) {
-    private val modeValue = ListValue("Mode", arrayOf("Novoline","Astolfo","Liquid","Flux","Rise"), "Rise")
+    private val modeValue = ListValue("Mode", arrayOf("Novoline","Astolfo","Liquid","Flux","Slowly","Rise"), "Rise")
     private val switchModeValue = ListValue("SwitchMode", arrayOf("Slide","Zoom"), "Slide")
     private val animSpeedValue = IntegerValue("AnimSpeed",10,5,20)
     private val switchAnimSpeedValue = IntegerValue("SwitchAnimSpeed",20,5,40)
@@ -247,6 +247,20 @@ class Targets : Element(-46.0,-40.0,1F,Side(Side.Horizontal.MIDDLE,Side.Vertical
             RenderUtils.drawHead(playerInfo.locationSkin, 2,2,16,16)
         }
     }
+    
+    "Slowly" -> {
+                    val font = Fonts.minecraftFont
+
+                    val length = 60.coerceAtLeast(font.getStringWidth(target.name)).coerceAtLeast(font.getStringWidth("${decimalFormat2.format(target.health)} ❤")).toFloat() + 10F
+                    RenderUtils.drawRect(0F, 0F, 32F + length, 36F, bgColor.rgb)
+                    drawHead(mc.netHandler.getPlayerInfo(target.uniqueID).locationSkin, 1, 1, 30, 30)
+                    font.drawStringWithShadow(target.name, 33F, 2F, -1)
+                    font.drawStringWithShadow("${decimalFormat2.format(target.health)} ❤", length + 32F - 1F - font.getStringWidth("${decimalFormat2.format(target.health)} ❤").toFloat(), 22F, barColor.rgb)
+
+                    easingHealth += ((target.health - easingHealth) / 2.0F.pow(10.0F - fadeSpeed.get())) * RenderUtils.deltaTime
+
+                    RenderUtils.drawRect(0F, 32F, (easingHealth / target.maxHealth.toFloat()).coerceIn(0F, target.maxHealth.toFloat()) * (length + 32F), 36F, barColor.rgb)
+                }
 
     private fun getTBorder():Border?{
         return when(modeValue.get().toLowerCase()){
@@ -257,6 +271,7 @@ class Targets : Element(-46.0,-40.0,1F,Side(Side.Horizontal.MIDDLE,Side.Vertical
             "flux" -> Border(0F,0F,(38 + mc.thePlayer.name.let(Fonts.font40::getStringWidth))
                 .coerceAtLeast(70)
                 .toFloat(),34F)
+            "slowly" -> Border(0F, 0F, 90F, 36F)
             "rise" -> Border(0F,0F,150F,50F)
             else -> null
         }
