@@ -29,7 +29,7 @@ import java.util.TimerTask;
 
 @ModuleInfo(name = "NoFall", category = ModuleCategory.PLAYER)
 public class NoFall extends Module {
-    public final ListValue modeValue = new ListValue("Mode", new String[]{"SpoofGround", "AlwaysSpoofGround", "NoGround", "Packet", "Packet1", "OldAAC", "LAAC", "AAC3.3.11", "AAC3.3.15", "AACv4", "AAC5.0.14", "Spartan", "CubeCraft", "Hypixel","HypSpoof","Phase", "Verus","Damage"}, "SpoofGround");
+    public final ListValue modeValue = new ListValue("Mode", new String[]{"SpoofGround", "AlwaysSpoofGround", "NoGround", "Packet", "Packet1", "OldAAC", "LAAC", "AAC3.3.11", "AAC3.3.15", "AACv4", "AAC5.0.14", "Spartan", "CubeCraft", "Hypixel","HypSpoof","Phase", "Verus", "Damage"}, "SpoofGround");
 
     private final IntegerValue phaseOffsetValue = (IntegerValue) new IntegerValue("PhaseOffset",1,0,5).displayable(() -> modeValue.get().equalsIgnoreCase("Phase"));
 
@@ -303,7 +303,7 @@ public class NoFall extends Module {
                 needSpoof = false;
             }
             if (mode.equalsIgnoreCase("Damage") && mc.thePlayer != null && mc.thePlayer.fallDistance > 3.5) 
-                playerPacket.onGround = true;
+                packet.onGround = true;
             
             if (mode.equalsIgnoreCase("Packet1") && packetModify) {
                 packet.onGround = true;
