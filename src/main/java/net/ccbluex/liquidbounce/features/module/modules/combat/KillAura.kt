@@ -178,7 +178,7 @@ class KillAura : Module() {
     private val circleGreen = IntegerValue("CircleGreen", 0, 0, 255).displayable { circleValue.get() }
     private val circleBlue = IntegerValue("CircleBlue", 0, 0, 255).displayable { circleValue.get() }
     private val circleAlpha = IntegerValue("CircleAlpha", 0, 0, 255).displayable { circleValue.get() }
-    private val circleAccuracy = IntegerValue("CircleAccuracy", 0, 0, 255).displayable { circleValue.get() }
+    private val circleAccuracy = IntegerValue("CircleAccuracy", 59, 0, 59).displayable { circleValue.get() }
 
     /**
      * MODULE
