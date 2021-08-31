@@ -204,6 +204,9 @@ class KillAura : Module() {
 
     // Fake block status
     var blockingStatus = false
+    
+    // Focus
+    var focusEntityName = mutableListOf<String>()
 
     /**
      * Enable kill aura module
@@ -642,7 +645,7 @@ class KillAura : Module() {
         discoveredTargets.clear()
 
         for (entity in mc.theWorld.loadedEntityList) {
-            if (entity !is EntityLivingBase || !EntityUtils.isSelected(entity, true) || (switchMode && prevTargetEntities.contains(entity.entityId)))
+            if (entity !is EntityLivingBase || !EntityUtils.isSelected(entity, true) || (switchMode && prevTargetEntities.contains(entity.entityId)) || (!focusEntityName.isEmpty() && !focusEntityName.contains(entity.name.toLowerCase())))
                 continue
 
             val distance = mc.thePlayer.getDistanceToEntityBox(entity)
