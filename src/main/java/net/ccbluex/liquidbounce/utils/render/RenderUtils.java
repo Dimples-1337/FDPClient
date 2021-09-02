@@ -294,6 +294,36 @@ public final class RenderUtils extends MinecraftInstance {
         glEnd();
         glPopMatrix();
     }
+    
+    public static void drawGradientSideways(final float left, final float top, final float right, final float bottom, final int col1, final int col2) {
+        final float f = (col1 >> 24 & 0xFF) / 255.0f;
+        final float f2 = (col1 >> 16 & 0xFF) / 255.0f;
+        final float f3 = (col1 >> 8 & 0xFF) / 255.0f;
+        final float f4 = (col1 & 0xFF) / 255.0f;
+        final float f5 = (col2 >> 24 & 0xFF) / 255.0f;
+        final float f6 = (col2 >> 16 & 0xFF) / 255.0f;
+        final float f7 = (col2 >> 8 & 0xFF) / 255.0f;
+        final float f8 = (col2 & 0xFF) / 255.0f;
+        glEnable(3042);
+        glDisable(3553);
+        glBlendFunc(770, 771);
+        glEnable(2848);
+        glShadeModel(7425);
+        glPushMatrix();
+        glBegin(7);
+        glColor4f(f2, f3, f4, f);
+        glVertex2f(left, top);
+        glVertex2f(left, bottom);
+        glColor4f(f6, f7, f8, f5);
+        glVertex2f(right, bottom);
+        glVertex2f(right, top);
+        glEnd();
+        glPopMatrix();
+        glEnable(3553);
+        glDisable(3042);
+        glDisable(2848);
+        glShadeModel(7424);
+    }
 
     public static void drawBlockBox(final BlockPos blockPos, final Color color, final boolean outline, final boolean box, final float outlineWidth) {
         final RenderManager renderManager = mc.getRenderManager();
