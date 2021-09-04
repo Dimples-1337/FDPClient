@@ -1,3 +1,9 @@
+
+/*
+ * FDPClient Hacked Client
+ * A free open source mixin-based injection hacked client for Minecraft using Minecraft Forge by LiquidBounce.
+ * https://github.com/UnlegitMC/FDPClient/
+ */ 
 package net.ccbluex.liquidbounce.ui.client.hud.element.elements
 
 import net.ccbluex.liquidbounce.LiquidBounce
@@ -40,9 +46,10 @@ class PlayerList : Element() {
     private val bggreenValue = IntegerValue("Background-Green", 0, 0, 255)
     private val bgblueValue = IntegerValue("Background-Blue", 0, 0, 255)
     private val bgalphaValue = IntegerValue("Background-Alpha", 120, 0, 255)
-    private val rainbowList = ListValue("Rainbow", arrayOf("Off", "Slowly"), "Off")
+    private val rainbowList = ListValue("Rainbow", arrayOf("Off", "Slowly", "Off")
     private val saturationValue = FloatValue("Saturation", 0.9f, 0f, 1f)
     private val brightnessValue = FloatValue("Brightness", 1f, 0f, 1f)
+    private val cRainbowSecValue = IntegerValue("Seconds", 2, 1, 10)
     private val distanceValue = IntegerValue("Line-Distance", 0, 0, 400)
     private val gradientAmountValue = IntegerValue("Gradient-Amount", 25, 1, 50)
 
@@ -80,12 +87,12 @@ class PlayerList : Element() {
             if (font.getStringWidth("${decimalFormat3.format(it.health)} HP") > hpLength)
                 hpLength = font.getStringWidth("${decimalFormat3.format(it.health)} HP").toFloat()
 
-            if (font.getStringWidth(decimalFormat3.format(mc.thePlayer.getDistanceToEntityBox(it))) > distLength)
-                distLength = font.getStringWidth(decimalFormat3.format(mc.thePlayer.getDistanceToEntityBox(it))).toFloat()
+            if (font.getStringWidth("${decimalFormat3.format(mc.thePlayer.getDistanceToEntityBox(it))}m") > distLength)
+                distLength = font.getStringWidth("${decimalFormat3.format(mc.thePlayer.getDistanceToEntityBox(it))}m").toFloat()
         }
 
         if (lineValue.get()) {
-            val barLength = (nameLength + hpLength + distLength + 40F).toDouble()
+            val barLength = (nameLength + hpLength + distLength + 50F).toDouble()
 
             for (i in 0..(gradientAmountValue.get()-1)) {
                 val barStart = i.toDouble() / gradientAmountValue.get().toDouble() * barLength
@@ -93,34 +100,31 @@ class PlayerList : Element() {
                 RenderUtils.drawGradientSideways(barStart, -1.0, barEnd, 0.0, 
                 when (rainbowType) {
                     "Slowly" -> ColorUtils.Slowly(System.nanoTime(), i * distanceValue.get(), saturationValue.get(), brightnessValue.get())!!.rgb
+             
                 },
                 when (rainbowType) {
-                    "CRainbow" -> RenderUtils.getRainbowOpaque(cRainbowSecValue.get(), saturationValue.get(), brightnessValue.get(), (i + 1) * distanceValue.get())
-                    "Sky" -> RenderUtils.SkyRainbow((i + 1) * distanceValue.get(), saturationValue.get(), brightnessValue.get())
-                    "LiquidSlowly" -> ColorUtils.LiquidSlowly(System.nanoTime(), (i + 1) * distanceValue.get(), saturationValue.get(), brightnessValue.get())!!.rgb
-                    "Mixer" -> ColorMixer.getMixedColor((i + 1) * distanceValue.get(), cRainbowSecValue.get()).rgb
-                    "Fade" -> ColorUtils.fade(Color(redValue.get(), greenValue.get(), blueValue.get()), (i + 1) * distanceValue.get(), 100).rgb
-                    else -> color
+                    "Slowly" -> ColorUtils.Slowly(System.nanoTime(), (i + 1) * distanceValue.get(), saturationValue.get(), brightnessValue.get())!!.rgb
+         
                 })
             }
         }
 
-        RenderUtils.drawRect(0F, 0F, nameLength + hpLength + distLength + 40F, 4F + font.FONT_HEIGHT.toFloat(), bgColor.rgb)
+        RenderUtils.drawRect(0F, 0F, nameLength + hpLength + distLength + 50F, 4F + font.FONT_HEIGHT.toFloat(), bgColor.rgb)
         
-        font.drawString("Name (${playerList.size})", 5F, 2F, -1, shadowValue.get())
-        font.drawString("Distance", 5F + nameLength + 5F, 2F, -1, shadowValue.get())
-        font.drawString("Health", 5F + nameLength + distLength + 5F, 2F, -1, shadowValue.get())
+        font.drawString("Name (${playerList.size})", 5F, 3F, -1, shadowValue.get())
+        font.drawString("Distance", 5F + nameLength + 10F, 3F, -1, shadowValue.get())
+        font.drawString("Health", 5F + nameLength + distLength + 20F, 3F, -1, shadowValue.get())
 
-        playerList.forEach {
-            RenderUtils.drawRect(0F, height, nameLength + hpLength + distLength + 40F, height + 2F + font.FONT_HEIGHT.toFloat(), bgColor.rgb)
+        playerList.forEachIndexed { index, player ->
+            RenderUtils.drawRect(0F, height, nameLength + hpLength + distLength + 50F, height + 2F + font.FONT_HEIGHT.toFloat(), bgColor.rgb)
 
-            font.drawString(it.name, 5F, height + 1F + fontOffset, -1, shadowValue.get())
-            font.drawString(decimalFormat3.format(mc.thePlayer.getDistanceToEntityBox(it)), 5F + nameLength + 5F, height + 1F + fontOffset, -1, shadowValue.get())
-            font.drawString("${decimalFormat3.format(it.health)} HP", 5F + nameLength + distLength + 10F, height + 1F + fontOffset, -1, shadowValue.get())
+            font.drawString(player.name, 5F, height + 1F + fontOffset, -1, shadowValue.get())
+            font.drawString("${decimalFormat3.format(mc.thePlayer.getDistanceToEntityBox(player))}m", 5F + nameLength + 10F, height + 1F + fontOffset, -1, shadowValue.get())
+            font.drawString("${decimalFormat3.format(player.health)} HP", 5F + nameLength + distLength + 20F, height + 1F + fontOffset, -1, shadowValue.get())
 
             height += 2F + font.FONT_HEIGHT.toFloat()
         }
 
-        return Border(0F, 0F, nameLength + hpLength + distLength + 40F, 4F + height + font.FONT_HEIGHT.toFloat())
+        return Border(0F, 0F, nameLength + hpLength + distLength + 50F, 4F + height + font.FONT_HEIGHT.toFloat())
     }
 }
