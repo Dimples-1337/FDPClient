@@ -48,6 +48,7 @@ class Arraylist(x: Double = 5.0, y: Double = 5.0, scale: Float = 1F,
     private val saturationValue = FloatValue("Random-Saturation", 0.9f, 0f, 1f)
     private val brightnessValue = FloatValue("Random-Brightness", 1f, 0f, 1f)
     private val tags = BoolValue("Tags", true)
+    private val tagsStyleValue = ListValue("TagsStyle", arrayOf("-", "|", "()", "[]", "<>", "Default"), "-")
     private val shadow = BoolValue("ShadowText", false)
     private val split = BoolValue("SplitName", false)
     private val slideInAnimation = BoolValue("SlideInAnimation", true)
@@ -313,4 +314,32 @@ class Arraylist(x: Double = 5.0, y: Double = 5.0, scale: Float = 1F,
             .filter { it.array && !shouldExpect(it) && (it.state || it.slide > 0 || !(it.yPosAnimation==null || it.yPosAnimation!!.state==Animation.EnumAnimationState.STOPPED)) }
             .sortedBy { -it.width }
     }
+
+    fun getModName(mod: Module): String {
+        var modTag : String = ""
+        if (tags.get() && mod.tag != null) {
+            // add space
+            modTag += " "
+
+            // check and add gray prefix if possible
+            if (!tagsArrayColor.get())
+                modTag += "§7"
+
+            // tag prefix, ignore default value
+            if (!tagsStyleValue.get().equals("default", true))
+                modTag += tagsStyleValue.get().get(0).toString() + if (tagsStyleValue.get().equals("-", true) || tagsStyleValue.get().equals("|", true)) " " else ""
+
+            // main tag value
+            modTag += mod.tag
+
+            // tag suffix, ignore default, -, | values
+            if (!tagsStyleValue.get().equals("default", true)
+                && !tagsStyleValue.get().equals("-", true)
+                && !tagsStyleValue.get().equals("|", true))
+                modTag += tagsStyleValue.get().get(1).toString()
+
+        }
+
+        var displayName : String = mod.name + modTag
+  }
 }
