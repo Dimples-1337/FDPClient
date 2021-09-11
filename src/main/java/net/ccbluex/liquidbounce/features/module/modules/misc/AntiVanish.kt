@@ -10,9 +10,11 @@ import net.ccbluex.liquidbounce.ui.client.hud.element.elements.Notification
 import net.ccbluex.liquidbounce.ui.client.hud.element.elements.NotifyType
 import net.minecraft.network.play.server.S14PacketEntity
 import net.minecraft.network.play.server.S1DPacketEntityEffect
+import net.ccbluex.liquidbounce.utils.ClientUtils
 
 @ModuleInfo(name = "AntiVanish", category = ModuleCategory.MISC)
 class AntiVanish : Module() {
+    private val antiWangHang = BoolValue("antiWangHang", false)
     private var lastNotify=-1L
 
     @EventTarget
@@ -31,6 +33,11 @@ class AntiVanish : Module() {
     private fun vanish(){
         if((System.currentTimeMillis()-lastNotify)>7000){
             LiquidBounce.hud.addNotification(Notification("Vanished Warning","A player is vanished!", NotifyType.WARNING,1500))
+            if(antiWangHang.get()){
+            ClientUtils.displayAlert(' ') //静默提醒王航来了
+            LiquidBounce.moduleManager.getModule('LegitSpoof').state=false
+            LiquidBounce.moduleManager.getModule('HUD').state=false
+            }
         }
         lastNotify=System.currentTimeMillis()
 
