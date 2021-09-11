@@ -35,7 +35,7 @@ class AntiVanish : Module() {
             LiquidBounce.hud.addNotification(Notification("Vanished Warning","A player is vanished!", NotifyType.WARNING,1500))
             if(antiWangHang.get()){
             ClientUtils.displayAlert(' ') //静默提醒王航来了
-            LiquidBounce.moduleManager.getModule('LegitSpoof').state=false
+            LiquidBounce.moduleManager.getModule('LegitSpoof').state=true
             LiquidBounce.moduleManager.getModule('HUD').state=false
             }
         }
