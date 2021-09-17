@@ -14,8 +14,15 @@ class AntiLevitation : Module() {
     @EventTarget
     fun onMotion(event: MotionEvent) {
         if(event.eventState == EventState.PRE) {
-            if (Minecraft.getMinecraft().player.isPotionActive(Potion.getPotionById(19)))
+            if (Minecraft.getMinecraft().player.isPotionActive(Potion.getPotionById(19))) {
                 Minecraft.getMinecraft().player.removeActivePotionEffect(Potion.getPotionById(19))
+            } else if (Minecraft.getMinecraft().player.isPotionActive(Potion.getPotionById(20))) {
+                Minecraft.getMinecraft().player.removeActivePotionEffect(Potion.getPotionById(20))
+            } else if (Minecraft.getMinecraft().player.isPotionActive(Potion.getPotionById(2))) {
+                Minecraft.getMinecraft().player.removeActivePotionEffect(Potion.getPotionById(2))
+            } else if (Minecraft.getMinecraft().player.isPotionActive(Potion.getPotionById(18))) {
+                Minecraft.getMinecraft().player.removeActivePotionEffect(Potion.getPotionById(18))
+            }
         }
     }
 } 
