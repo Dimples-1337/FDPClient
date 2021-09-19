@@ -690,8 +690,8 @@ module.LegitSpoof.value.Title.name=原版标题
 module.LightningDetect.name=雷击检测
 module.LightningDetect.description=检测雷击位置
 
-module.Jesus.name=水上行走
-module.Jesus.description=让你在液体上行走
+module.Jesus.name=耶稣
+module.Jesus.description=让你在液体上行走，耶稣在一万年之前使用了这个作弊
 module.Jesus.value.Mode.name=模式
 module.Jesus.value.NoJump.name=无跳跃
 
