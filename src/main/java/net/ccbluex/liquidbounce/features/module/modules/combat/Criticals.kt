@@ -163,7 +163,7 @@ class Criticals : Module() {
                             mc.thePlayer.onGround = false
                         }
                         "minemoratest" -> {
-                            mc.timer.timerSpeed = 0.82
+                            mc.timer.timerSpeed = 0.82f
                             mc.thePlayer.motionY = 0.124514
                         }
                     }
@@ -183,7 +183,7 @@ class Criticals : Module() {
                 "noground" -> packet.onGround = false
                 "motion" -> {
                     when (motionValue.get().lowercase()) {
-                        "minemoratest" -> if(!LiquidBounce.combatManager.inCombat) mc.timer.timerSpeed = 1.00
+                        "minemoratest" -> if(!LiquidBounce.combatManager.inCombat) mc.timer.timerSpeed = 1.00f
                     }
                 }
                 "hover" -> {
