@@ -52,7 +52,7 @@ class LongJump : Module() {
 
     // settings
     private val autoJumpValue = BoolValue("AutoJump", true)
-    private val autoDisableValue = BoolValue("autoDisable", true)
+    private val autoDisableValue = BoolValue("AutoDisable", true)
     private var jumped = false
     private var hasJumped=false
     private var canBoost = false
