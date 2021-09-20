@@ -31,6 +31,7 @@ object KillInsults : Module() {
         ), "RawWords"
     )
     private val waterMarkValue = BoolValue("WaterMark", true)
+    private val antiTDValue = BoolValue("antiTD", false)
     private val insultFile=File(LiquidBounce.fileManager.dir, "insult.json")
 
     init {
@@ -99,6 +100,13 @@ object KillInsults : Module() {
         var message = msg.replace("%name%",name)
         if (waterMarkValue.get()) {
             message = "[FDPClient] $message"
+        }
+                if (antiTDValue.get() && name.toLowerCase().contains("tw")) {
+        if (waterMarkValue.get()) {
+            message = "[FDPClient] 我就在台北，你他媽的坐捷运來打我啊？"+name
+        }else{
+            message = "我就在台北，你他媽的坐捷运來打我啊？"+name
+        }
         }
         mc.thePlayer.sendChatMessage(message)
     }
