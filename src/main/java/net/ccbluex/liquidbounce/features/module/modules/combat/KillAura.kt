@@ -98,7 +98,8 @@ class KillAura : Module() {
 
     // Bypass
     private val swingValue = ListValue("Swing", arrayOf("Normal", "Packet", "None"), "Normal")
-    private val keepSprintValue = BoolValue("KeepSprint", true)
+    private val keepSprintValue = BoolValue("KeepSprint",
+    private val aacPitchValue = IntegerValue("AAC-Pitch", 15, 0, 90)
 
     // AutoBlock
     val autoBlockValue = ListValue("AutoBlock", arrayOf("Range", "Fake", "Off"),"Off")
