@@ -43,6 +43,13 @@ data class Rotation(var yaw: Float, var pitch: Float) {
 
             yaw -= yaw % gcd
             pitch -= pitch % gcd
+                    if(Rotations.matrixValue.get()){
+            var mm = 0.005 * Rotations.matrixGCDValue.get();
+            var mf = mm * 0.6 + 0.2;
+            var mgcd = mm * mm * mm * 1.2;
+            pitch -= pitch % mgcd;
+            yaw -= yaw % mgcd;
+        }
             return
         }
         val f = sensitivity * 0.6F + 0.2F
@@ -60,6 +67,13 @@ data class Rotation(var yaw: Float, var pitch: Float) {
         var deltaPitch = pitch - rotation.pitch
         deltaPitch -= deltaPitch % gcd
         pitch = rotation.pitch + deltaPitch
+        if(Rotations.matrixValue.get()){
+            var mm = 0.005 * Rotations.matrixGCDValue.get();
+            var mf = mm * 0.6 + 0.2;
+            var mgcd = mm * mm * mm * 1.2;
+            pitch -= pitch % mgcd;
+            yaw -= yaw % mgcd;
+        }
     }
 
     /**
