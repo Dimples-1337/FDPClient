@@ -86,8 +86,14 @@ class Scaffold : Module() {
     // Rotations
     private val rotationsValue = ListValue("Rotations", arrayOf("None", "Vanilla", "AAC", "Test1", "Test2","Custom"), "AAC")
     private val aacYawValue = IntegerValue("AACYawOffset", 0, 0, 90).displayable { rotationsValue.equals("AAC") }
-    private val customYaw = IntegerValue("CustomYaw",-145,-180,180).displayable { rotationsValue.equals("Custom") }
+    private val customYawForward = IntegerValue("CustomYawForward",180,-180,180).displayable { rotationsValue.equals("Custom") }
+    private val customYawBack = IntegerValue("CustomYawBack",0,-180,180).displayable { rotationsValue.equals("Custom") }
     private val customPitch = IntegerValue("CustomPitch",79,-90,90).displayable { rotationsValue.equals("Custom") }
+    private val customTowerYawForward = IntegerValue("CustomTowerYawForward",180,-180,180).displayable { rotationsValue.equals("Custom") }
+    private val customTowerYawBack = IntegerValue("CustomTowerYawBack",0,-180,180).displayable { rotationsValue.equals("Custom") }
+    private val customTowerPitch = IntegerValue("CustomTowerPitch",79,-90,90).displayable { rotationsValue.equals("Custom") }
+    private val customVanillaMode = ListValue("CustomVanillaMode", arrayOf("Yaw", "Pitch", "All", "Disabled"), "Disabled").displayable { rotationsValue.equals("Custom") }
+    private val customTowerVanillaMode = ListValue("CustomTowerVanillaMode", arrayOf("Yaw", "Pitch", "All", "Disabled"), "All").displayable { rotationsValue.equals("Custom") }
     //private val tolleyBridgeValue = IntegerValue("TolleyBridgeTick", 0, 0, 10)
     //private val tolleyYawValue = IntegerValue("TolleyYaw", 0, 0, 90)
     private val silentRotationValue = BoolValue("SilentRotation", true).displayable { !rotationsValue.equals("None") }
@@ -832,8 +838,16 @@ class Scaffold : Module() {
                     rotation = Rotation(((MovementUtils.getDirection() * 180f / Math.PI).toFloat() + 135).toFloat(), placeRotation.rotation.pitch)
                 }
                 "custom" -> {
-                    rotation = Rotation(mc.thePlayer.rotationYaw + customYaw.get(), customPitch.get().toFloat())
+
+                                        if (!towerStatus) {
+
+                        rotation = Rotation((if(customVanillaMode.get()=="Yaw" || customVanillaMode.get()=="All") placeRotation.rotation.yaw else (mc.thePlayer.rotationYaw + (if (mc.thePlayer.movementInput.moveForward > 0) customYawForward.get() else customYawBack.get())), (if(customVanillaMode.get()=="Pitch" || customVanillaMode.get()=="All") placeRotation.rotation.pitch else customPitch.get().toFloat()))
+                    }else{
+                        rotation = Rotation((if(customTowerVanillaMode.get()=="Yaw" || customTowerVanillaMode.get()=="All") placeRotation.rotation.yaw else (mc.thePlayer.rotationYaw + (if (mc.thePlayer.movementInput.moveForward > 0) customTowerYawForward.get() else customTowerYawBack.get())), (if(customTowerVanillaMode.get()=="Pitch" || customTowerVanillaMode.get()=="All") placeRotation.rotation.pitch else customTowerPitch.get().toFloat()))
+                    }
+                    
                 }
+
             }
             if (rotation != null) {
                 /*if(tolleyBridgeValue.get() > tolleyStayTick && (mc.thePlayer.onGround || lastTickOnGround ||
