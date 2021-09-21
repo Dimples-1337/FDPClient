@@ -19,7 +19,8 @@ object Rotations : Module() {
 //    val rotationHumanizeType=EaseUtils.getEnumEasingList("HumanizeType")
 //    val rotationHumanizeOrder=EaseUtils.getEnumEasingOrderList("HumanizeOrder")
     val nanValue = BoolValue("NaNCheck", true)
-
+    val matrixValue = BoolValue("Matrix", true)
+    val matrixGCDValue = IntegerValue("MatrixGCD", 98, 0, 200)
 //    fun apply(value: Double):Double{
 //        return EaseUtils.apply(toEnumType(), toEnumOrder(),value)
 //    }
