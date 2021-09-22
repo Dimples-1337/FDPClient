@@ -12,7 +12,7 @@ import net.minecraft.client.gui.GuiMainMenu
 import net.minecraft.client.gui.GuiMultiplayer
 
 @ModuleInfo(name = "ServerSwitch", category = ModuleCategory.CLIENT)
-class ServerSwitcher : Module() {
+class ServerSwitch : Module() {
     override fun onEnable() {
         mc.displayGuiScreen(GuiMultiplayer(GuiMainMenu())
     }
