@@ -332,7 +332,7 @@ class Arraylist(x: Double = 5.0, y: Double = 5.0, scale: Float = 1F,
             // main tag value
             modTag += mod.tag
 
-            // tag suffix, ignore default, -, | values
+            // tags, ignore default, -, | values
             if (!tagsStyleValue.get().equals("default", true)
                 && !tagsStyleValue.get().equals("-", true)
                 && !tagsStyleValue.get().equals("|", true))
