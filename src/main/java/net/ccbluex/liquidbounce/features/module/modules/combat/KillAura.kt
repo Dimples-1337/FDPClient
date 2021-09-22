@@ -126,6 +126,7 @@ class KillAura : Module() {
 
     // Bypass
     private val aacValue = BoolValue("AAC", true)
+    private val aacPitchValue = IntegerValue("AAC-Pitch", 15, 0, 90)
     //TODO: Divide AAC Opinion into three separated opinions
     
     // Rotations
@@ -842,7 +843,7 @@ class KillAura : Module() {
         }
 
         if (silentRotationValue.get())
-            RotationUtils.setTargetRotation(rotation, if (aacValue.get()) 15 else 0)
+            RotationUtils.setTargetRotation(rotation, if (aacValue.get()) 90 - aacPitchValue.get() else 0)
         else
             rotation.toPlayer(mc.thePlayer)
 
