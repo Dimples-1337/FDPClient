@@ -21,6 +21,7 @@ import net.minecraft.network.play.client.C03PacketPlayer
 import net.minecraft.network.play.client.C0BPacketEntityAction
 import net.minecraft.network.play.client.C0DPacketCloseWindow
 import net.minecraft.network.play.client.C16PacketClientStatus
+import net.minecraft.network.play.client.C0EPacketClickWindow;
 import net.minecraft.network.play.server.S2DPacketOpenWindow
 import net.minecraft.network.play.server.S2EPacketCloseWindow
 import org.lwjgl.input.Keyboard
@@ -29,7 +30,7 @@ import org.lwjgl.input.Keyboard
 class InventoryMove : Module() {
 
     private val noDetectableValue = BoolValue("NoDetectable", false)
-    private val bypassValue = ListValue("Bypass", arrayOf("NoOpenPacket", "Blink", "None"), "None")
+    private val bypassValue = ListValue("Bypass", arrayOf("NoOpenPacket", "Blink", "FastPick", "None"), "None")
     private val rotateValue = BoolValue("Rotate", true)
     private val noMoveClicksValue = BoolValue("NoMoveClicks", false)
     val noSprint = ListValue("NoSprint", arrayOf("Real", "PacketSpoof", "None"), "None")
@@ -130,6 +131,26 @@ class InventoryMove : Module() {
                         blinkPacketList.clear()
                     }
                 }
+            }
+          "fastpick" -> {
+                if(packet is C16PacketClientStatus && packet.status==C16PacketClientStatus.EnumState.OPEN_INVENTORY_ACHIEVEMENT){
+                    if(InvOpen) blinkPacketList.add(packet)
+                    event.cancelEvent()
+                }
+        if(packet is C0EPacketClickWindow){
+
+                    if(InvOpen) blinkPacketList.add(packet)
+                    event.cancelEvent()
+                }
+        if(packet is C0DPacketCloseWindow){
+
+                    if(InvOpen) blinkPacketList.add(packet)
+                    event.cancelEvent()
+                                    for(p in blinkPacketList){
+                        PacketUtils.sendPacketNoEvent(packet)
+                    }
+                    blinkPacketList.clear()
+            }
             }
         }
     }
