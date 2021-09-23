@@ -135,22 +135,20 @@ class InventoryMove : Module() {
           "fastpick" -> {
                 if(packet is C16PacketClientStatus && packet.status==C16PacketClientStatus.EnumState.OPEN_INVENTORY_ACHIEVEMENT){
                     if(InvOpen) blinkPacketList.add(packet)
-                    event.cancelEvent()
+                        event.cancelEvent()
                 }
-        if(packet is C0EPacketClickWindow){
-
+                if(packet is C0EPacketClickWindow){
+                    if(InvOpen) blinkPacketList.add(packet)
+                        event.cancelEvent()
+                }
+                if(packet is C0DPacketCloseWindow) {
                     if(InvOpen) blinkPacketList.add(packet)
                     event.cancelEvent()
-                }
-        if(packet is C0DPacketCloseWindow){
-
-                    if(InvOpen) blinkPacketList.add(packet)
-                    event.cancelEvent()
-                                    for(p in blinkPacketList){
-                        PacketUtils.sendPacketNoEvent(packet)
+                    for(p in blinkPacketList){
+                        PacketUtils.sendPacketNoEvent(blinkPacketList[p])
                     }
                     blinkPacketList.clear()
-            }
+                }
             }
         }
     }
