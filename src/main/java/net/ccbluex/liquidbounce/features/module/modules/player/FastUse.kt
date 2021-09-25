@@ -21,7 +21,7 @@ import net.minecraft.network.play.client.C03PacketPlayer
 
 @ModuleInfo(name = "FastUse", category = ModuleCategory.PLAYER)
 class FastUse : Module() {
-    private val modeValue = ListValue("Mode", arrayOf("Instant", "Timer", "CustomDelay", "DelayedInstant","MinemoraTest","NCP"), "DelayedInstant")
+    private val modeValue = ListValue("Mode", arrayOf("Instant", "Timer", "CustomDelay", "DelayedInstant","Minemora","AAC","AAC4.2","NCP"), "DelayedInstant")
     private val timerValue = FloatValue("Timer", 1.22F, 0.1F, 2.0F).displayable { modeValue.equals("Timer") }
     private val durationValue = IntegerValue("InstantDelay", 14, 0, 35).displayable { modeValue.equals("DelayedInstant") }
     private val delayValue = IntegerValue("CustomDelay", 0, 0, 300).displayable { modeValue.equals("CustomDelay") }
@@ -64,6 +64,11 @@ class FastUse : Module() {
                     usedTimer = true
                 }
                 
+                "AAC" -> {
+                    mc.timer.timerSpeed = 1.1F
+                    usedTimer = true
+                }
+  
                 "NCP" -> if (mc.thePlayer.itemInUseDuration > 14) {
                      repeat(20) {
                         mc.netHandler.addToSendQueue(C03PacketPlayer(mc.thePlayer.onGround))
@@ -72,7 +77,7 @@ class FastUse : Module() {
                     mc.playerController.onStoppedUsingItem(mc.thePlayer)
                 }
 
-                "MinemoraTest" -> {
+                "Minemora" -> {
                     mc.timer.timerSpeed = 0.5F
                     usedTimer = true
                     if(mc.thePlayer.ticksExisted % 2 == 0){
@@ -89,10 +94,20 @@ class FastUse : Module() {
                     mc.netHandler.addToSendQueue(C03PacketPlayer(mc.thePlayer.onGround))
                     msTimer.reset()
                 }
-            }
-        }
-    }
+                "AAC4.2" -> {
+                    mc.timer.timerSpeed = 0.49F
+                    usedTimer = true
+                    if (mc.thePlayer.itemInUseDuration > 13) {
+                        repeat(23) {
+                            mc.netHandler.addToSendQueue(C03PacketPlayer(mc.thePlayer.onGround))
+                        }
 
+                        mc.playerController.onStoppedUsingItem(mc.thePlayer)
+                    }
+                 }
+              }
+           }
+        
     override fun onDisable() {
         if (usedTimer) {
             mc.timer.timerSpeed = 1F
