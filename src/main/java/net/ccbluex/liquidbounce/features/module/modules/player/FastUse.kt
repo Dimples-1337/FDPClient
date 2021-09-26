@@ -106,9 +106,9 @@ class FastUse : Module() {
     fun onMove(event: MoveEvent?) {
         if (event == null) return
 
-        if (!state || !mc.thePlayer.isUsingItem || !modeValue.get().lowercase()=='aac') return
-        val usingItem = mc.thePlayer.itemInUse.item
-        if ((usingItem is ItemFood || usingItem is ItemBucketMilk || usingItem is ItemPotion))
+        if (!mc.thePlayer.isUsingItem || !modeValue.get().lowercase()=="aac") return
+        val usingItem1 = mc.thePlayer.itemInUse.item
+        if ((usingItem1 is ItemFood || usingItem1 is ItemBucketMilk || usingItem1 is ItemPotion))
             event.zero()
     }
 
