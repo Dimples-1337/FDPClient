@@ -62,9 +62,9 @@ class PointerESP : Module() {
                     GlStateManager.translate(x, y, 0.0)
                     GlStateManager.rotate(angle, 0F, 0F, 1F)
                     GlStateManager.scale(1.5, 1.0, 1.0)
-                    drawTriAngle(0F, 0F, radiusValue.get(), 3F, color, modeValue.get().equals("solid", true))
                     when(modeValue.get().lowercase()){
                         "solid" -> {
+                            drawTriAngle(0F, 0F, radiusValue.get(), 3F, color, modeValue.get().equals("solid", true)
                             drawTriAngle(0F, 0F, 2.2F, 3F, color)
                             drawTriAngle(0F, 0F, 1.5F, 3F, color)
                             drawTriAngle(0F, 0F, 1.0F, 3F, color)
