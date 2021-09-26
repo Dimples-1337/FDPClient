@@ -102,15 +102,15 @@ class FastUse : Module() {
         }
     }
 
-    @EventTarget
-    fun onMove(event: MoveEvent?) {
-        if (event == null) return
+    // @EventTarget
+    // fun onMove(event: MoveEvent?) {
+    //     if (event == null) return
 
-        if (!mc.thePlayer.isUsingItem || !modeValue.get().lowercase()=="aac") return
-        val usingItem1 = mc.thePlayer.itemInUse.item
-        if ((usingItem1 is ItemFood || usingItem1 is ItemBucketMilk || usingItem1 is ItemPotion))
-            event.zero()
-    }
+    //     if (!mc.thePlayer.isUsingItem || !modeValue.get().lowercase()=="aac") return
+    //     val usingItem1 = mc.thePlayer.itemInUse.item
+    //     if ((usingItem1 is ItemFood || usingItem1 is ItemBucketMilk || usingItem1 is ItemPotion))
+    //         event.zero()
+    // }
 
     override fun onDisable() {
         if (usedTimer) {
