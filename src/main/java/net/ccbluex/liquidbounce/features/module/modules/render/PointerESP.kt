@@ -29,6 +29,8 @@ class PointerESP : Module() {
     private val greenValue = IntegerValue("Green",140,0,255)
     private val blueValue = IntegerValue("Blue",255,0,255)
     private val alphaValue = IntegerValue("Alpha",255,0,255)
+    private val sizeValue = IntegerValue("Size", 100, 50, 200)
+    private val radiusValue = FloatValue("TriangleRadius", 2.2F, 1F, 10F)
 
     @EventTarget
     fun onRender2D(event : Render2DEvent) {
@@ -36,9 +38,9 @@ class PointerESP : Module() {
         val color=Color(redValue.get(),greenValue.get(),blueValue.get(),alphaValue.get())
 
         GlStateManager.pushMatrix()
-        val size = 50
-        val xOffset = sr.scaledWidth / 2 - 24.5
-        val yOffset = sr.scaledHeight / 2 - 25.2
+        val size = 50 + sizeValue.get()
+        val xOffset = sr.scaledWidth / 2 - 24.5 - sizeValue.get() / 2.0
+        val yOffset = sr.scaledHeight / 2 - 25.2 - sizeValue.get() / 2.0
         val playerOffsetX = mc.thePlayer.posX
         val playerOffSetZ = mc.thePlayer.posZ
 
@@ -60,6 +62,7 @@ class PointerESP : Module() {
                     GlStateManager.translate(x, y, 0.0)
                     GlStateManager.rotate(angle, 0F, 0F, 1F)
                     GlStateManager.scale(1.5, 1.0, 1.0)
+                    drawTriAngle(0F, 0F, radiusValue.get(), 3F, color, modeValue.get().equals("solid", true))
                     when(modeValue.get().lowercase()){
                         "solid" -> {
                             drawTriAngle(0F, 0F, 2.2F, 3F, color)
