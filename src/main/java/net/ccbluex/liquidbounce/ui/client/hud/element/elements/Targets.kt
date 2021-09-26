@@ -26,7 +26,7 @@ import kotlin.math.roundToInt
 
 @ElementInfo(name = "Targets")
 class Targets : Element(-46.0,-40.0,1F,Side(Side.Horizontal.MIDDLE,Side.Vertical.MIDDLE)) {
-    private val modeValue = ListValue("Mode", arrayOf("Novoline","Astolfo","Liquid","Flux","Rise"), "Rise")
+    private val modeValue = ListValue("Mode", arrayOf("Novoline","NewNovoline","Astolfo","Liquid","Flux","Rise"), "Rise")
     private val switchModeValue = ListValue("SwitchMode", arrayOf("Slide","Zoom"), "Slide")
     private val animSpeedValue = IntegerValue("AnimSpeed",10,5,20)
     private val switchAnimSpeedValue = IntegerValue("SwitchAnimSpeed",20,5,40)
@@ -261,10 +261,37 @@ class Targets : Element(-46.0,-40.0,1F,Side(Side.Horizontal.MIDDLE,Side.Vertical
             RenderUtils.drawHead(playerInfo.locationSkin, 2,2,16,16)
         }
     }
+    
+    "Novoline" -> {
+       val font = Fonts.minecraftFont
+       val fontHeight = font.FONT_HEIGHT
+       val mainColor = barColor
+       val percent = convertedTarget.health.toFloat()/convertedTarget.maxHealth.toFloat() * 100F
+       val nameLength = (font.getStringWidth(convertedTarget.name)).coerceAtLeast(font.getStringWidth("${decimalFormat2.format(percent)}%")).toFloat() + 10F
+       val barWidth = (convertedTarget.health / convertedTarget.maxHealth).coerceIn(0F, convertedTarget.maxHealth.toFloat()) * (nameLength - 2F)
 
+        RenderUtils.drawRect(-2F, -2F, 3F + nameLength + 36F, 2F + 36F, Color(24, 24, 24, 255).rgb)
+        RenderUtils.drawRect(-1F, -1F, 2F + nameLength + 36F, 1F + 36F, Color(31, 31, 31, 255).rgb)
+        drawHead(mc.netHandler.getPlayerInfo(convertedTarget.uniqueID).locationSkin, 0, 0, 36, 36)
+        font.drawStringWithShadow(convertedTarget.name, 2F + 36F + 1F, 2F, -1)
+        RenderUtils.drawRect(2F + 36F, 15F, 36F + nameLength, 25F, Color(24, 24, 24, 255).rgb)
+
+        easingHealth += ((convertedTarget.health - easingHealth) / 2.0F.pow(10.0F - fadeSpeed.get())) * RenderUtils.deltaTime
+
+        val animateThingy = (easingHealth.coerceIn(convertedTarget.health, convertedTarget.maxHealth) / convertedTarget.maxHealth) * (nameLength - 2F)
+
+        if (easingHealth > convertedTarget.health)
+            RenderUtils.drawRect(2F + 36F, 15F, 2F + 36F + animateThingy, 25F, mainColor.darker().rgb)
+                    
+       RenderUtils.drawRect(2F + 36F, 15F, 2F + 36F + barWidth, 25F, mainColor.rgb)
+                    
+       font.drawStringWithShadow("${decimalFormat2.format(percent)}%", 2F + 36F + (nameLength - 2F) / 2F - font.getStringWidth("${decimalFormat2.format(percent)}%").toFloat() / 2F, 16F, -1
+    }
+    
     private fun getTBorder():Border?{
         return when(modeValue.get().lowercase()){
             "novoline" -> Border(0F,0F,140F,40F)
+            "newnovoline" -> Border(-1F, -2F, 90F, 38F)
             "astolfo" -> Border(0F,0F,140F,60F)
             "liquid" -> Border(0F,0F
                 ,(38 + mc.thePlayer.name.let(Fonts.font20::getStringWidth)).coerceAtLeast(118).toFloat(),36F)
