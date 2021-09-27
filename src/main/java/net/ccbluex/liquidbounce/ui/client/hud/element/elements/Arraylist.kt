@@ -177,18 +177,23 @@ class Arraylist(x: Double = 5.0, y: Double = 5.0, scale: Float = 1F,
                             "right" -> RenderUtils.drawRect(-3F, yPos, 0F,
                                 yPos + textHeight, rectColor)
                             "outline" -> {
-                                RenderUtils.drawRect(-1F, yPos - 1F, 0F,
-                                    yPos + textHeight, rectColor)
-                                RenderUtils.drawRect(xPos - 3, yPos, xPos - 2, yPos + textHeight,
-                                    rectColor)
-                                if (module != modules[0]) {
-                                    RenderUtils.drawRect(xPos - 3 - (modules[index-1].width - module.width), yPos, xPos - 2, yPos + 1,
+                                RenderUtils.drawRect(-1F, module.arrayY - 1F, 0F,
+                                        module.arrayY + textHeight, rectColor)
+                                RenderUtils.drawRect(xPos - 3, module.arrayY, xPos - 2, module.arrayY + textHeight,
                                         rectColor)
-                                    if (module == modules[modules.size - 1]) {
-                                        RenderUtils.drawRect(xPos - 3, yPos + textHeight, 0.0F, yPos + textHeight + 1,
+                                if (module != modules[0]) {
+                                    var displayStrings = getModName(modules[index - 1])
+
+                                    RenderUtils.drawRect(xPos - 3 - (fontRenderer.getStringWidth(displayStrings) - fontRenderer.getStringWidth(displayString)), module.arrayY, xPos - 2, module.arrayY + 1,
                                             rectColor)
+                                    if (module == modules[modules.size - 1]) {
+                                        RenderUtils.drawRect(xPos - 3, module.arrayY + textHeight, 0.0F, module.arrayY + textHeight + 1,
+                                                rectColor)
                                     }
+                                } else {
+                                    RenderUtils.drawRect(xPos - 3, module.arrayY, 0F, module.arrayY - 1, rectColor)
                                 }
+                              }
                             }
                             "special" -> {
                                 if (module == modules[0]) {
