@@ -65,17 +65,18 @@ class FastUse : Module() {
                     repeat(23) {
                         mc.netHandler.addToSendQueue(C03PacketPlayer(mc.thePlayer.onGround))
                     }
-                }
                     mc.playerController.onStoppedUsingItem(mc.thePlayer)
                 }
-                                "newaac" -> {
+                    
+                }
+                "newaac" -> {
                     mc.timer.timerSpeed = 0.49F
                     usedTimer = true
                     repeat(2) {
                         mc.netHandler.addToSendQueue(C03PacketPlayer(mc.thePlayer.onGround))
                     }
 
-                    mc.playerController.onStoppedUsingItem(mc.thePlayer)
+                    // mc.playerController.onStoppedUsingItem(mc.thePlayer)
                 }
                 "timer" -> {
                     mc.timer.timerSpeed = timerValue.get()
