@@ -58,9 +58,10 @@ public class Fly extends Module {
             "RedeSkySmooth",
 
             // Verus
-            "Verus",
+            "oldVerus",
             "Verus2",
             "Verus3",
+            "Verus",
 
             // AAC
             "AAC1.9.10",
@@ -123,6 +124,16 @@ public class Fly extends Module {
     private final BoolValue aacFast = new BoolValue("AAC3.0.5-Fast", true);
     private final FloatValue aacMotion = new FloatValue("AAC3.3.12-Motion", 10F, 0.1F, 10F);
     private final FloatValue aacMotion2 = new FloatValue("AAC3.3.13-Motion", 10F, 0.1F, 10F);
+    
+    // Verus
+    private final ListValue verusDmgModeValue = new ListValue("Verus-DamageMode", new String[]{"None", "Instant", "InstantC06"}, "None");
+    private final ListValue verusBoostModeValue = new ListValue("Verus-BoostMode", new String[]{"Static", "Gradual"}, "Gradual");
+    private final BoolValue verusVisualValue = new BoolValue("Verus-VisualPos", false);
+    private final FloatValue verusVisualHeightValue = new FloatValue("Verus-VisualHeight", 0.42F, 0F, 1F);
+    private final FloatValue verusSpeedValue = new FloatValue("Verus-Speed", 5F, 0F, 10F);
+    private final FloatValue verusTimerValue = new FloatValue("Verus-Timer", 1F, 0.1F, 10F);
+    private final IntegerValue verusDmgTickValue = new IntegerValue("Verus-Ticks", 20, 0, 300);
+    private final BoolValue verusSpoofGround = new BoolValue("Verus-SpoofGround", false);
 
     // Hypixel
     private final BoolValue hypixelBoost = new BoolValue("Hypixel-Boost", true);
@@ -191,6 +202,7 @@ public class Fly extends Module {
     private int boostHypixelState = 1;
     private double moveSpeed, lastDistance;
     private boolean failedStart = false;
+    private boolean verusDmged = false;
 
     private final TickTimer cubecraftTeleportTickTimer = new TickTimer();
 
@@ -250,7 +262,7 @@ public class Fly extends Module {
         }
 
         switch(mode.toLowerCase()) {
-            case "verus":
+            case "oldverus":
                 mc.getNetHandler().addToSendQueue(new C03PacketPlayer.C04PacketPlayerPosition(x, y+3.35, z, false));
                 mc.getNetHandler().addToSendQueue(new C03PacketPlayer.C04PacketPlayerPosition(x, y, z, false));
                 mc.getNetHandler().addToSendQueue(new C03PacketPlayer.C04PacketPlayerPosition(x, y, z, true));
@@ -275,6 +287,27 @@ public class Fly extends Module {
                 mc.thePlayer.setPosition(mc.thePlayer.posX, mc.thePlayer.posY + 0.015625, mc.thePlayer.posZ);
                 launchY+=0.015625;
                 verusFlyable=true;
+                break;
+            case "verus":
+                if (verusDmgModeValue.get().equalsIgnoreCase("Instant")) {
+                    if (mc.thePlayer.onGround && mc.theWorld.getCollidingBoundingBoxes(mc.thePlayer, mc.thePlayer.getEntityBoundingBox().offset(0, 4, 0).expand(0, 0, 0)).isEmpty()) {
+                        mc.getNetHandler().addToSendQueue(new C03PacketPlayer.C04PacketPlayerPosition(mc.thePlayer.posX, y + 4, mc.thePlayer.posZ, false));
+                        mc.getNetHandler().addToSendQueue(new C03PacketPlayer.C04PacketPlayerPosition(mc.thePlayer.posX, y, mc.thePlayer.posZ, false));
+                        mc.getNetHandler().addToSendQueue(new C03PacketPlayer.C04PacketPlayerPosition(mc.thePlayer.posX, y, mc.thePlayer.posZ, true));
+                        mc.thePlayer.motionX = mc.thePlayer.motionZ = 0;
+                    }
+                } else if (verusDmgModeValue.get().equalsIgnoreCase("InstantC06")) {
+                    if (mc.thePlayer.onGround && mc.theWorld.getCollidingBoundingBoxes(mc.thePlayer, mc.thePlayer.getEntityBoundingBox().offset(0, 4, 0).expand(0, 0, 0)).isEmpty()) {
+                        mc.getNetHandler().addToSendQueue(new C03PacketPlayer.C06PacketPlayerPosLook(mc.thePlayer.posX, y + 4, mc.thePlayer.posZ, mc.thePlayer.rotationYaw, mc.thePlayer.rotationPitch, false));
+                        mc.getNetHandler().addToSendQueue(new C03PacketPlayer.C06PacketPlayerPosLook(mc.thePlayer.posX, y, mc.thePlayer.posZ, mc.thePlayer.rotationYaw, mc.thePlayer.rotationPitch, false));
+                        mc.getNetHandler().addToSendQueue(new C03PacketPlayer.C06PacketPlayerPosLook(mc.thePlayer.posX, y, mc.thePlayer.posZ, mc.thePlayer.rotationYaw, mc.thePlayer.rotationPitch, true));
+                        mc.thePlayer.motionX = mc.thePlayer.motionZ = 0;
+                    }
+                } else {
+                    // set dmged = true since there's no damage method
+                    verusDmged = true;
+                }
+                if (verusVisualValue.get()) mc.thePlayer.setPosition(mc.thePlayer.posX, y + verusVisualHeightValue.get(), mc.thePlayer.posZ);
                 break;
             case "aac5.2.0":
                 mc.thePlayer.motionX = 0;
@@ -405,6 +438,28 @@ public class Fly extends Module {
         switch (mode.toLowerCase()){
             case "redeskycollide":
                 mc.thePlayer.motionY=0;
+                break;
+            case "verus":
+                mc.thePlayer.capabilities.isFlying = false;
+                mc.thePlayer.motionX = mc.thePlayer.motionZ = mc.thePlayer.motionY = 0;
+
+                if (!verusDmged && mc.thePlayer.hurtTime > 0) {
+                    verusDmged = true;
+                    boostTicks = verusDmgTickValue.get();
+                }
+
+                if (boostTicks > 0) {
+                    mc.timer.timerSpeed = verusTimerValue.get();
+                    float motion = 0F;
+                    
+                    if (verusBoostModeValue.get().equalsIgnoreCase("static")) motion = verusSpeedValue.get(); else motion = ((float)boostTicks / (float)verusDmgTickValue.get()) * verusSpeedValue.get();
+                    boostTicks--;
+
+                    MovementUtils.strafe(motion);
+                } else if (verusDmged) {
+                    mc.timer.timerSpeed = 1F;
+                    MovementUtils.strafe((float)MovementUtils.getBaseMoveSpeed() * 0.6F);
+                }
                 break;
             case "aac5.2.0-vanilla":
                 if(aac520view.get()){
@@ -537,7 +592,7 @@ public class Fly extends Module {
                     handleVanillaKickBypass();
 
                 break;
-            case "verus":
+            case "oldverus":
                 if(flyTimer.hasTimePassed(3000)) verusFlyable=false;
                 if(verusFlyable&&flyTimer.hasTimePassed(100)){
                     MovementUtils.strafe(1.5F);
@@ -950,6 +1005,17 @@ public class Fly extends Module {
                 break;
         }
     }
+    
+    @EventTarget
+    public void onRender2D(final Render2DEvent event) {
+        final String mode = modeValue.get();
+        ScaledResolution scaledRes = new ScaledResolution(mc);
+        if (mode.equalsIgnoreCase("Verus") && boostTicks > 0) {
+            float width = (float)(verusDmgTickValue.get() - boostTicks) / (float)verusDmgTickValue.get() * 60F;
+            RenderUtils.drawRect(scaledRes.getScaledWidth() / 2F - 31F, scaledRes.getScaledHeight() / 2F + 14F, scaledRes.getScaledWidth() / 2F + 31F, scaledRes.getScaledHeight() / 2F + 18F, 0xA0000000);
+            RenderUtils.drawRect(scaledRes.getScaledWidth() / 2F - 30F, scaledRes.getScaledHeight() / 2F + 15F, scaledRes.getScaledWidth() / 2F - 30F + width, scaledRes.getScaledHeight() / 2F + 17F, 0xFFFFFFFF);
+        }
+    }
 
     @EventTarget
     public void onPacket(PacketEvent event) {
@@ -1049,7 +1115,7 @@ public class Fly extends Module {
 
             final String mode = modeValue.get();
 
-            if (mode.equalsIgnoreCase("NCP") || mode.equalsIgnoreCase("Rewinside") || (mode.equalsIgnoreCase("Verus")&&verusFlyable) ||
+            if (mode.equalsIgnoreCase("NCP") || mode.equalsIgnoreCase("Rewinside") || (mode.equalsIgnoreCase("OldVerus")&&verusFlyable) ||
                 (mode.equalsIgnoreCase("Verus2")&&verusFlyable) ||
                     (mode.equalsIgnoreCase("Mineplex") && mc.thePlayer.inventory.getCurrentItem() == null))
                 packetPlayer.onGround = true;
@@ -1190,7 +1256,7 @@ public class Fly extends Module {
     public void onJump(final JumpEvent e) {
         final String mode = modeValue.get();
 
-        if (mode.equalsIgnoreCase("Verus") || mode.equalsIgnoreCase("Verus2") || mode.equalsIgnoreCase("Hypixel") || mode.equalsIgnoreCase("BoostHypixel") ||
+        if (mode.equalsIgnoreCase("oldVerus") || mode.equalsIgnoreCase("Verus2") || mode.equalsIgnoreCase("Hypixel") || mode.equalsIgnoreCase("BoostHypixel") ||
                 mode.equalsIgnoreCase("Rewinside") || (mode.equalsIgnoreCase("Mineplex") && mc.thePlayer.inventory.getCurrentItem() == null))
             e.cancelEvent();
     }
