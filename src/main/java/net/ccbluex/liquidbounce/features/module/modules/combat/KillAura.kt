@@ -129,7 +129,7 @@ class KillAura : Module() {
     //TODO: Divide AAC Opinion into three separated opinions
     
     // Rotations
-    private val rotationModeValue = ListValue("RotationMode", arrayOf("None", "LiquidBounce", "ForceCenter", "SmoothCenter", "SmoothLiquid", "LockView","b62"), "LiquidBounce")
+    private val rotationModeValue = ListValue("RotationMode", arrayOf("None", "LiquidBounce", "ForceCenter", "SmoothCenter", "SmoothLiquid", "LockView" /*,"b62"*/), "LiquidBounce")
     //TODO: RotationMode Bypass Intave
     
     private val maxTurnSpeed: FloatValue = object : FloatValue("MaxTurnSpeed", 180f, 1f, 180f) {
