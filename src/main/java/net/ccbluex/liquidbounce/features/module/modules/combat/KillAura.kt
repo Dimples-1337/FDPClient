@@ -910,7 +910,7 @@ class KillAura : Module() {
      */
     private fun stopBlocking() {
         if (blockingStatus) {
-            mc.netHandler.addToSendQueue(C07PacketPlayerDigging(C07PacketPlayerDigging.Action.RELEASE_USE_ITEM, if(MovementUtils.isMoving) WBlockPos(-1, -1, -1) else WBlockPos.ORIGIN, EnumFacing.DOWN))
+            mc.netHandler.addToSendQueue(C07PacketPlayerDigging(C07PacketPlayerDigging.Action.RELEASE_USE_ITEM, if(MovementUtils.isMoving) BlockPos(-1, -1, -1) else BlockPos.ORIGIN, EnumFacing.DOWN))
             blockingStatus = false
         }
     }
