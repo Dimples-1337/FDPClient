@@ -65,7 +65,6 @@ class FastUse : Module() {
                     repeat(23) {
                         mc.netHandler.addToSendQueue(C03PacketPlayer(mc.thePlayer.onGround))
                     }
-                    mc.playerController.onStoppedUsingItem(mc.thePlayer)
                 }
                     
                 }
