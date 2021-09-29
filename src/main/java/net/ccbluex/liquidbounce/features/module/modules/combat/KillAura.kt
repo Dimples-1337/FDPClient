@@ -106,7 +106,7 @@ class KillAura : Module() {
 
 	// Bypass
 	private val swingValue = ListValue("Swing", arrayOf("Normal", "Packet", "None"), "Normal")
-	private val attackTimingValue = ListValue("AttackTiming", arrayOf("All","Pre","Post","Both"), "Normal")
+	private val attackTimingValue = ListValue("AttackTiming", arrayOf("All","Pre","Post","Both"), "All")
 	private val keepSprintValue = BoolValue("KeepSprint", true)
 
 	// AutoBlock
@@ -280,7 +280,7 @@ class KillAura : Module() {
 		if (rotationStrafeValue.equals("Off"))
 			update()
 
-		if (target != null && currentTarget != null && ( (attackTimingValue.get()=="Pre" && event.eventState == EventState.PRE) || (attackTimingValue.get()=="Post" && event.eventState == EventState.POST) || attackTimingValue.get()=="Both")) {
+		if (target != null && currentTarget != null && ( (attackTimingValue.get()=="Pre" && event.eventState == EventState.PRE) || (attackTimingValue.get()=="Post" && event.eventState == EventState.POST) || attackTimingValue.get()=="Both" || attackTimingValue.get()=="All")) {
 			while (clicks > 0) {
 				runAttack()
 				clicks--
