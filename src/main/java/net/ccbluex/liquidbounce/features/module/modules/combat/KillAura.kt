@@ -897,8 +897,8 @@ class KillAura : Module() {
             return
 
         if (interact) {
-            // mc.netHandler.addToSendQueue(C02PacketUseEntity(interactEntity, interactEntity.positionVector))
-                        val positionEye = mc.renderViewEntity?.getPositionEyes(1F)
+            mc.netHandler.addToSendQueue(C02PacketUseEntity(interactEntity, interactEntity.positionVector))
+/*                        val positionEye = mc.renderViewEntity?.getPositionEyes(1F)
 
             val expandSize = interactEntity.collisionBorderSize.toDouble()
             val boundingBox = interactEntity.entityBoundingBox.expand(expandSize, expandSize, expandSize)
@@ -917,7 +917,7 @@ class KillAura : Module() {
                     hitVec.xCoord - interactEntity.posX,
                     hitVec.yCoord - interactEntity.posY,
                     hitVec.zCoord - interactEntity.posZ
-            )))
+            )))*/
             mc.netHandler.addToSendQueue(C02PacketUseEntity(interactEntity, C02PacketUseEntity.Action.INTERACT))
         }
 
