@@ -42,7 +42,7 @@ class Velocity : Module() {
                                                       "MatrixReduce", "MatrixSimple", "MatrixGround",
                                                       "Reverse", "SmoothReverse", 
                                                       "Jump", 
-                                                      "Phase", "PacketPhase", "Glitch", "Spoof","OldAC"
+                                                      "Phase", "PacketPhase", "Glitch", "Spoof","OldAC",
                                                       "Legit"), "Simple")
 
     // Reverse
