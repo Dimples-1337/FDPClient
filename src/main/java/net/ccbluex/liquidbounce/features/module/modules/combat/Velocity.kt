@@ -36,7 +36,7 @@ class Velocity : Module() {
      */
     private val horizontalValue = FloatValue("Horizontal", 0F, 0F, 1F)
     private val verticalValue = FloatValue("Vertical", 0F, 0F, 1F)
-    private val modeValue = ListValue("Mode", arrayOf("Simple", "Vanilla", "AACPush", "AACZero", "AAC4Reduce", "AAC5Reduce","AAC5Reduce2",
+    private val modeValue = ListValue("Mode", arrayOf("Simple", "Vanilla", "AACPush", "AACZero", "AAC4Reduce", "AAC5Reduce", "AAC5Reduce2",
                                                       "Redesky1", "Redesky2", 
                                                       "AAC5.2.0", "AAC5.2.0Combat",
                                                       "MatrixReduce", "MatrixSimple", "MatrixGround",
@@ -150,9 +150,11 @@ class Velocity : Module() {
                     reverseHurt = false
                 }
             }
-            "oldac" -> {if (mc.thePlayer.hurtTime > 0 && mc.thePlayer.onGround) {
-                mc.thePlayer.onGround=true
-            }}
+            "oldac" -> {
+                if (mc.thePlayer.hurtTime > 0 && mc.thePlayer.onGround) {
+                mc.thePlayer.onGround = true
+                }
+            }
             "aac4reduce" -> {
                 if (mc.thePlayer.hurtTime>0 && !mc.thePlayer.onGround && velocityInput && velocityTimer.hasTimePassed(80L)){
                     mc.thePlayer.motionX *= 0.62
