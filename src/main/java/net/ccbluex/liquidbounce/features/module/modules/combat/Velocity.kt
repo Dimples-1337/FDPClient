@@ -150,9 +150,9 @@ class Velocity : Module() {
                     reverseHurt = false
                 }
             }
-            "oldac" -> if (mc.thePlayer.hurtTime > 0 && mc.thePlayer.onGround) {
+            "oldac" -> {if (mc.thePlayer.hurtTime > 0 && mc.thePlayer.onGround) {
                 mc.thePlayer.onGround=true
-            }
+            }}
             "aac4reduce" -> {
                 if (mc.thePlayer.hurtTime>0 && !mc.thePlayer.onGround && velocityInput && velocityTimer.hasTimePassed(80L)){
                     mc.thePlayer.motionX *= 0.62
