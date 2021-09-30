@@ -20,11 +20,10 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 public abstract class MixinRenderItem {
     @Final
     @Shadow
-    private TextureManager textureManager;
-
+    private static ResourceLocation RES_ITEM_GLINT;
     @Final
     @Shadow
-    private static ResourceLocation RES_ITEM_GLINT;
+    private TextureManager textureManager;
 
     @Shadow
     public abstract void renderModel(IBakedModel model, int color);
@@ -32,7 +31,7 @@ public abstract class MixinRenderItem {
     @Inject(method = "renderEffect", at = @At("HEAD"))
     private void renderEffect(IBakedModel model, CallbackInfo callbackInfo) {
         EnchantEffect enchantEffect = LiquidBounce.moduleManager.getModule(EnchantEffect.class);
-        int color=enchantEffect.getColor().getRGB();
+        int color = enchantEffect.getColor().getRGB();
 
         GlStateManager.depthMask(false);
         GlStateManager.depthFunc(514);
@@ -42,10 +41,10 @@ public abstract class MixinRenderItem {
         GlStateManager.matrixMode(5890);
         GlStateManager.pushMatrix();
         GlStateManager.scale(8.0f, 8.0f, 8.0f);
-        float f = (float)(Minecraft.getSystemTime() % 3000L) / 3000.0f / 8.0f;
+        float f = (float) (Minecraft.getSystemTime() % 3000L) / 3000.0f / 8.0f;
         GlStateManager.translate(f, 0.0f, 0.0f);
         GlStateManager.rotate(-50.0f, 0.0f, 0.0f, 1.0f);
-        if(enchantEffect.getState()) {
+        if (enchantEffect.getState()) {
             this.renderModel(model, color);
         } else {
             this.renderModel(model, -8372020);
@@ -53,10 +52,10 @@ public abstract class MixinRenderItem {
         GlStateManager.popMatrix();
         GlStateManager.pushMatrix();
         GlStateManager.scale(8.0f, 8.0f, 8.0f);
-        float f1 = (float)(Minecraft.getSystemTime() % 4873L) / 4873.0f / 8.0f;
+        float f1 = (float) (Minecraft.getSystemTime() % 4873L) / 4873.0f / 8.0f;
         GlStateManager.translate(-f1, 0.0f, 0.0f);
         GlStateManager.rotate(10.0f, 0.0f, 0.0f, 1.0f);
-        if(enchantEffect.getState()) {
+        if (enchantEffect.getState()) {
             this.renderModel(model, color);
         } else {
             this.renderModel(model, -8372020);

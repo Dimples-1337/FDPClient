@@ -18,16 +18,13 @@ import org.spongepowered.asm.mixin.Shadow;
 public class MixinC00Handshake {
 
     @Shadow
-    private int protocolVersion;
-
-    @Shadow
     public int port;
-
-    @Shadow
-    private EnumConnectionState requestedState;
-
     @Shadow
     public String ip;
+    @Shadow
+    private int protocolVersion;
+    @Shadow
+    private EnumConnectionState requestedState;
 
     /**
      * @author CCBlueX

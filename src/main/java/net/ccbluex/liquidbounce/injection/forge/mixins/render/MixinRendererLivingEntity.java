@@ -67,11 +67,11 @@ public abstract class MixinRendererLivingEntity extends MixinRender {
         final TrueSight trueSight = LiquidBounce.moduleManager.getModule(TrueSight.class);
         boolean semiVisible = !visible && (!entitylivingbaseIn.isInvisibleToPlayer(Minecraft.getMinecraft().thePlayer) || (trueSight.getState() && trueSight.getEntitiesValue().get()));
 
-        if(visible || semiVisible) {
-            if(!this.bindEntityTexture(entitylivingbaseIn))
+        if (visible || semiVisible) {
+            if (!this.bindEntityTexture(entitylivingbaseIn))
                 return;
 
-            if(semiVisible) {
+            if (semiVisible) {
                 GlStateManager.pushMatrix();
                 GlStateManager.color(1.0F, 1.0F, 1.0F, 0.15F);
                 GlStateManager.depthMask(false);
@@ -81,7 +81,7 @@ public abstract class MixinRendererLivingEntity extends MixinRender {
             }
 
             final ESP esp = LiquidBounce.moduleManager.getModule(ESP.class);
-            if(esp.getState() && EntityUtils.isSelected(entitylivingbaseIn, false)) {
+            if (esp.getState() && EntityUtils.isSelected(entitylivingbaseIn, false)) {
                 Minecraft mc = Minecraft.getMinecraft();
                 boolean fancyGraphics = mc.gameSettings.fancyGraphics;
                 mc.gameSettings.fancyGraphics = false;
@@ -135,7 +135,7 @@ public abstract class MixinRendererLivingEntity extends MixinRender {
                 GL11.glPopMatrix();
             }
 
-            if(semiVisible) {
+            if (semiVisible) {
                 GlStateManager.disableBlend();
                 GlStateManager.alphaFunc(516, 0.1F);
                 GlStateManager.popMatrix();

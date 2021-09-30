@@ -9,10 +9,9 @@ import net.ccbluex.liquidbounce.launch.options.LegacyUiLaunchOption;
 
 public class ButtonElement extends Element {
 
+    public int hoverTime;
     protected String displayName;
     protected int color = 0xffffff;
-
-    public int hoverTime;
 
     public ButtonElement(String displayName) {
         createButton(displayName);
@@ -41,11 +40,11 @@ public class ButtonElement extends Element {
         return displayName;
     }
 
-    public void setColor(int color) {
-        this.color = color;
-    }
-
     public int getColor() {
         return color;
+    }
+
+    public void setColor(int color) {
+        this.color = color;
     }
 }

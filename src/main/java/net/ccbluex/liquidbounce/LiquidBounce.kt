@@ -42,7 +42,7 @@ object LiquidBounce {
     const val COLORED_NAME = "§c§lFDP§6§lClient"
     const val CLIENT_REAL_VERSION = "v2.0.0-PRE2"
     const val CLIENT_CREATOR = "CCBlueX & UnlegitMC"
-    const val CLIENT_WEBSITE="GetFDP.Today"
+    const val CLIENT_WEBSITE = "GetFDP.Today"
     const val CLIENT_STORAGE = "https://res.getfdp.today/"
     const val MINECRAFT_VERSION = "1.8.9"
 
@@ -78,22 +78,28 @@ object LiquidBounce {
     private val dynamicLaunchOptions: Array<LaunchOption>
         get() = ReflectUtils.getReflects("${LaunchOption::class.java.`package`.name}.options", LaunchOption::class.java)
             .filter {
-                val annotation=it.getDeclaredAnnotation(LaunchFilterInfo::class.java)
-                if(annotation!=null){
+                val annotation = it.getDeclaredAnnotation(LaunchFilterInfo::class.java)
+                if (annotation != null) {
                     return@filter annotation.filters.toMutableList() == launchFilters
                 }
                 false
             }
-            .map { try { it.newInstance() } catch (e: IllegalAccessException) { ClassUtils.getObjectInstance(it) as LaunchOption } }.toTypedArray()
+            .map {
+                try {
+                    it.newInstance()
+                } catch (e: IllegalAccessException) {
+                    ClassUtils.getObjectInstance(it) as LaunchOption
+                }
+            }.toTypedArray()
 
     init {
         // check if this artifact is build from github actions
-        val commitId=LiquidBounce::class.java.classLoader.getResourceAsStream("FDP_GIT_COMMIT_ID")
-        CLIENT_VERSION=if (commitId==null){
+        val commitId = LiquidBounce::class.java.classLoader.getResourceAsStream("FDP_GIT_COMMIT_ID")
+        CLIENT_VERSION = if (commitId == null) {
             CLIENT_REAL_VERSION
-        }else{
-            val str=IOUtils.toString(commitId,"utf-8").replace("\n","")
-            "git-"+(str.substring(0, 7.coerceAtMost(str.length)))
+        } else {
+            val str = IOUtils.toString(commitId, "utf-8").replace("\n", "")
+            "git-" + (str.substring(0, 7.coerceAtMost(str.length)))
         }
 
         // initialize dynamic launch options
@@ -102,7 +108,7 @@ object LiquidBounce {
 //        }else{
 //            launchFilters.add(EnumLaunchFilter.ULTRALIGHT)
 //        }
-        mainMenu=GuiLaunchOptionSelectMenu()
+        mainMenu = GuiLaunchOptionSelectMenu()
     }
 
     /**
@@ -110,7 +116,7 @@ object LiquidBounce {
      */
     fun initClient() {
         ClientUtils.logInfo("Loading $CLIENT_NAME $CLIENT_VERSION, by $CLIENT_CREATOR")
-        val startTime=System.currentTimeMillis()
+        val startTime = System.currentTimeMillis()
 
         // Create file manager
         fileManager = FileManager()
@@ -159,22 +165,22 @@ object LiquidBounce {
         tipSoundManager = TipSoundManager()
 
         // KeyBindManager
-        keyBindManager=KeyBindManager()
+        keyBindManager = KeyBindManager()
 
         // Set HUD
         hud = HUD.createDefault()
 
         // bstats.org user count display
-        metricsLite=MetricsLite(11076)
+        metricsLite = MetricsLite(11076)
 
-        combatManager=CombatManager()
+        combatManager = CombatManager()
         eventManager.registerListener(combatManager)
 
         eventManager.registerListener(PacketFixer())
 
         GuiCapeManager.load()
 
-        ClientUtils.logInfo("$CLIENT_NAME $CLIENT_VERSION loaded in ${(System.currentTimeMillis()-startTime)}ms!")
+        ClientUtils.logInfo("$CLIENT_NAME $CLIENT_VERSION loaded in ${(System.currentTimeMillis() - startTime)}ms!")
     }
 
     /**
@@ -188,11 +194,17 @@ object LiquidBounce {
         // Load configs
         configManager.loadLegacySupport()
         configManager.loadConfigSet()
-        fileManager.loadConfigs(fileManager.accountsConfig, fileManager.friendsConfig, fileManager.xrayConfig, fileManager.specialConfig, fileManager.hudConfig)
+        fileManager.loadConfigs(
+            fileManager.accountsConfig,
+            fileManager.friendsConfig,
+            fileManager.xrayConfig,
+            fileManager.specialConfig,
+            fileManager.hudConfig
+        )
 
         // Set is starting status
         isStarting = false
-        isLoadingConfig=false
+        isLoadingConfig = false
 
         ClientUtils.logInfo("$CLIENT_NAME $CLIENT_VERSION started!")
     }
@@ -201,7 +213,7 @@ object LiquidBounce {
      * Execute if client will be stopped
      */
     fun stopClient() {
-        if(!isStarting && !isLoadingConfig) {
+        if (!isStarting && !isLoadingConfig) {
             // Call client shutdown
             eventManager.callEvent(ClientShutdownEvent())
 

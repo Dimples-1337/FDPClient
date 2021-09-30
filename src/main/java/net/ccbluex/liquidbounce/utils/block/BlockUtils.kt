@@ -63,7 +63,7 @@ object BlockUtils : MinecraftInstance() {
     @JvmStatic
     fun isFullBlock(blockPos: BlockPos?): Boolean {
         val axisAlignedBB = getBlock(blockPos)?.getCollisionBoundingBox(mc.theWorld, blockPos, getState(blockPos))
-                ?: return false
+            ?: return false
         return axisAlignedBB.maxX - axisAlignedBB.minX == 1.0 && axisAlignedBB.maxY - axisAlignedBB.minY == 1.0 && axisAlignedBB.maxZ - axisAlignedBB.minZ == 1.0
     }
 
@@ -72,7 +72,7 @@ object BlockUtils : MinecraftInstance() {
      */
     @JvmStatic
     fun getCenterDistance(blockPos: BlockPos) =
-            mc.thePlayer.getDistance(blockPos.x + 0.5, blockPos.y + 0.5, blockPos.z + 0.5)
+        mc.thePlayer.getDistance(blockPos.x + 0.5, blockPos.y + 0.5, blockPos.z + 0.5)
 
     /**
      * Search blocks around the player in a specific [radius]
@@ -84,8 +84,10 @@ object BlockUtils : MinecraftInstance() {
         for (x in radius downTo -radius + 1) {
             for (y in radius downTo -radius + 1) {
                 for (z in radius downTo -radius + 1) {
-                    val blockPos = BlockPos(mc.thePlayer.posX.toInt() + x, mc.thePlayer.posY.toInt() + y,
-                            mc.thePlayer.posZ.toInt() + z)
+                    val blockPos = BlockPos(
+                        mc.thePlayer.posX.toInt() + x, mc.thePlayer.posY.toInt() + y,
+                        mc.thePlayer.posZ.toInt() + z
+                    )
                     val block = getBlock(blockPos) ?: continue
 
                     blocks[blockPos] = block
@@ -129,7 +131,7 @@ object BlockUtils : MinecraftInstance() {
 
                 if (collide(block)) {
                     val boundingBox = block?.getCollisionBoundingBox(mc.theWorld, blockPos, getState(blockPos))
-                            ?: continue
+                        ?: continue
 
                     if (mc.thePlayer.entityBoundingBox.intersectsWith(boundingBox))
                         return true
@@ -140,5 +142,5 @@ object BlockUtils : MinecraftInstance() {
     }
 
     @JvmStatic
-    fun floorVec3(vec3: Vec3) = Vec3(floor(vec3.xCoord),floor(vec3.yCoord),floor(vec3.zCoord))
+    fun floorVec3(vec3: Vec3) = Vec3(floor(vec3.xCoord), floor(vec3.yCoord), floor(vec3.zCoord))
 }

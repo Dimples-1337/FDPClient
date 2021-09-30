@@ -20,22 +20,28 @@ class SafeWalk : Module() {
 
     @EventTarget
     fun onMove(event: MoveEvent) {
-        if(onlyVoidValue.get() && !checkVoid()) {
+        if (onlyVoidValue.get() && !checkVoid()) {
             return
-        }else{
-            if(airSafeValue.get() || mc.thePlayer.onGround)
+        } else {
+            if (airSafeValue.get() || mc.thePlayer.onGround)
                 event.isSafeWalk = true
         }
     }
 
-    private fun checkVoid():Boolean {
-        var i= (-(mc.thePlayer.posY-1.4857625)).toInt()
-        var dangerous=true
-		while(i<=0) {
-			dangerous = mc.theWorld.getCollisionBoxes(mc.thePlayer.entityBoundingBox.offset(mc.thePlayer.motionX*1.4, i.toDouble(), mc.thePlayer.motionZ*1.4)).isEmpty()
-			i++
-			if(!dangerous) break
-		}
+    private fun checkVoid(): Boolean {
+        var i = (-(mc.thePlayer.posY - 1.4857625)).toInt()
+        var dangerous = true
+        while (i <= 0) {
+            dangerous = mc.theWorld.getCollisionBoxes(
+                mc.thePlayer.entityBoundingBox.offset(
+                    mc.thePlayer.motionX * 1.4,
+                    i.toDouble(),
+                    mc.thePlayer.motionZ * 1.4
+                )
+            ).isEmpty()
+            i++
+            if (!dangerous) break
+        }
         return dangerous
     }
 }

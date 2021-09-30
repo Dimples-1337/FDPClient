@@ -79,7 +79,7 @@ public abstract class FramebufferShader extends Shader {
      * @author TheSlowly
      */
     public Framebuffer setupFrameBuffer(Framebuffer frameBuffer) {
-        if(frameBuffer != null)
+        if (frameBuffer != null)
             frameBuffer.deleteFramebuffer();
 
         frameBuffer = new Framebuffer(mc.displayWidth, mc.displayHeight, true);

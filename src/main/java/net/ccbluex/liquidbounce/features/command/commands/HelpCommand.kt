@@ -51,7 +51,14 @@ class HelpCommand : Command("help", emptyArray()) {
         while (i < 8 * page && i < commands.size) {
             val command = commands[i]
 
-            ClientUtils.displayChatMessage("§6> §7${LiquidBounce.commandManager.prefix}${command.command}${if (command.alias.isEmpty()) "" else " §7(§8" + Strings.join(command.alias, "§7, §8") + "§7)"}")
+            ClientUtils.displayChatMessage(
+                "§6> §7${LiquidBounce.commandManager.prefix}${command.command}${
+                    if (command.alias.isEmpty()) "" else " §7(§8" + Strings.join(
+                        command.alias,
+                        "§7, §8"
+                    ) + "§7)"
+                }"
+            )
             i++
         }
 

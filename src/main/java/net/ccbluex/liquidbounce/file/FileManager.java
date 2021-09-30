@@ -25,23 +25,20 @@ import java.util.Map;
 
 public class FileManager extends MinecraftInstance {
 
+    public static final Gson PRETTY_GSON = new GsonBuilder().setPrettyPrinting().create();
     public final File dir = new File(mc.mcDataDir, LiquidBounce.CLIENT_NAME + "-1.8");
-    public final File cacheDir = new File(mc.mcDataDir,".cache/"+LiquidBounce.CLIENT_NAME);
+    public final File cacheDir = new File(mc.mcDataDir, ".cache/" + LiquidBounce.CLIENT_NAME);
     public final File fontsDir = new File(dir, "fonts");
     public final File configsDir = new File(dir, "configs");
     public final File soundsDir = new File(dir, "sounds");
     public final File legacySettingsDir = new File(dir, "legacy-settings");
     public final File capesDir = new File(dir, "capes");
-
     public final AccountsConfig accountsConfig = new AccountsConfig(new File(dir, "accounts.json"));
     public final FriendsConfig friendsConfig = new FriendsConfig(new File(dir, "friends.json"));
     public final XRayConfig xrayConfig = new XRayConfig(new File(dir, "xray-blocks.json"));
     public final HudConfig hudConfig = new HudConfig(new File(dir, "hud.json"));
     public final SpecialConfig specialConfig = new SpecialConfig(new File(dir, "special.json"));
-
     public final File backgroundFile = new File(dir, "userbackground.png");
-
-    public static final Gson PRETTY_GSON = new GsonBuilder().setPrettyPrinting().create();
 
     /**
      * Constructor of file manager
@@ -56,22 +53,22 @@ public class FileManager extends MinecraftInstance {
      * Setup folder
      */
     public void setupFolder() {
-        if(!dir.exists())
+        if (!dir.exists())
             dir.mkdir();
 
-        if(!fontsDir.exists())
+        if (!fontsDir.exists())
             fontsDir.mkdir();
 
-        if(!configsDir.exists())
+        if (!configsDir.exists())
             configsDir.mkdir();
 
-        if(!soundsDir.exists())
+        if (!soundsDir.exists())
             soundsDir.mkdir();
 
-        if(!capesDir.exists())
+        if (!capesDir.exists())
             capesDir.mkdir();
 
-        if(!cacheDir.exists())
+        if (!cacheDir.exists())
             cacheDir.mkdirs();
     }
 
@@ -79,15 +76,15 @@ public class FileManager extends MinecraftInstance {
      * Load all configs in file manager
      */
     public void loadAllConfigs() {
-        for(final Field field : getClass().getDeclaredFields()) {
-            if(field.getType() == FileConfig.class) {
+        for (final Field field : getClass().getDeclaredFields()) {
+            if (field.getType() == FileConfig.class) {
                 try {
-                    if(!field.isAccessible())
+                    if (!field.isAccessible())
                         field.setAccessible(true);
 
                     final FileConfig fileConfig = (FileConfig) field.get(this);
                     loadConfig(fileConfig);
-                }catch(final IllegalAccessException e) {
+                } catch (final IllegalAccessException e) {
                     ClientUtils.getLogger().error("Failed to load config file of field " + field.getName() + ".", e);
                 }
             }
@@ -100,7 +97,7 @@ public class FileManager extends MinecraftInstance {
      * @param configs list
      */
     public void loadConfigs(final FileConfig... configs) {
-        for(final FileConfig fileConfig : configs)
+        for (final FileConfig fileConfig : configs)
             loadConfig(fileConfig);
     }
 
@@ -110,7 +107,7 @@ public class FileManager extends MinecraftInstance {
      * @param config to load
      */
     public void loadConfig(final FileConfig config) {
-        if(!config.hasConfig()) {
+        if (!config.hasConfig()) {
             ClientUtils.getLogger().info("[FileManager] Skipped loading config: " + config.getFile().getName() + ".");
 
             saveConfig(config, true);
@@ -120,7 +117,7 @@ public class FileManager extends MinecraftInstance {
         try {
             config.loadConfig();
             ClientUtils.getLogger().info("[FileManager] Loaded config: " + config.getFile().getName() + ".");
-        }catch(final Throwable t) {
+        } catch (final Throwable t) {
             ClientUtils.getLogger().error("[FileManager] Failed to load config file: " + config.getFile().getName() + ".", t);
         }
     }
@@ -129,15 +126,15 @@ public class FileManager extends MinecraftInstance {
      * Save all configs in file manager
      */
     public void saveAllConfigs() {
-        for(final Field field : getClass().getDeclaredFields()) {
-            if(field.getType() == FileConfig.class) {
+        for (final Field field : getClass().getDeclaredFields()) {
+            if (field.getType() == FileConfig.class) {
                 try {
-                    if(!field.isAccessible())
+                    if (!field.isAccessible())
                         field.setAccessible(true);
 
                     final FileConfig fileConfig = (FileConfig) field.get(this);
                     saveConfig(fileConfig);
-                }catch(final IllegalAccessException e) {
+                } catch (final IllegalAccessException e) {
                     ClientUtils.getLogger().error("[FileManager] Failed to save config file of field " +
                             field.getName() + ".", e);
                 }
@@ -151,7 +148,7 @@ public class FileManager extends MinecraftInstance {
      * @param configs list
      */
     public void saveConfigs(final FileConfig... configs) {
-        for(final FileConfig fileConfig : configs)
+        for (final FileConfig fileConfig : configs)
             saveConfig(fileConfig);
     }
 
@@ -175,12 +172,12 @@ public class FileManager extends MinecraftInstance {
             return;
 
         try {
-            if(!config.hasConfig())
+            if (!config.hasConfig())
                 config.createConfig();
 
             config.saveConfig();
             ClientUtils.getLogger().info("[FileManager] Saved config: " + config.getFile().getName() + ".");
-        }catch(final Throwable t) {
+        } catch (final Throwable t) {
             ClientUtils.getLogger().error("[FileManager] Failed to save config file: " +
                     config.getFile().getName() + ".", t);
         }
@@ -190,29 +187,29 @@ public class FileManager extends MinecraftInstance {
      * Load background for background
      */
     public void loadBackground() {
-        if(backgroundFile.exists()) {
+        if (backgroundFile.exists()) {
             try {
                 final BufferedImage bufferedImage = ImageIO.read(new FileInputStream(backgroundFile));
 
-                if(bufferedImage == null)
+                if (bufferedImage == null)
                     return;
 
                 LiquidBounce.INSTANCE.setBackground(new ResourceLocation(LiquidBounce.CLIENT_NAME.toLowerCase() + "/background.png"));
                 mc.getTextureManager().loadTexture(LiquidBounce.INSTANCE.getBackground(), new DynamicTexture(bufferedImage));
                 ClientUtils.getLogger().info("[FileManager] Loaded background.");
-            }catch(final Exception e) {
+            } catch (final Exception e) {
                 ClientUtils.getLogger().error("[FileManager] Failed to load background.", e);
             }
         }
     }
 
     public boolean loadLegacy() throws IOException {
-        boolean modified=false;
+        boolean modified = false;
 
-        File modulesFile=new File(dir, "modules.json");
-        if(modulesFile.exists()){
-            modified=true;
-            FileReader fr=new FileReader(modulesFile);
+        File modulesFile = new File(dir, "modules.json");
+        if (modulesFile.exists()) {
+            modified = true;
+            FileReader fr = new FileReader(modulesFile);
 
             try {
                 final JsonElement jsonElement = new JsonParser().parse(new BufferedReader(fr));
@@ -233,7 +230,7 @@ public class FileManager extends MinecraftInstance {
                             module.setAutoDisable(EnumAutoDisableType.valueOf(jsonModule.get("AutoDisable").getAsString()));
                     }
                 }
-            } catch (Throwable t){
+            } catch (Throwable t) {
                 t.printStackTrace();
             }
 
@@ -243,13 +240,13 @@ public class FileManager extends MinecraftInstance {
                 e.printStackTrace();
             }
 
-            ClientUtils.logInfo("Deleted Legacy config "+modulesFile.getName()+" "+modulesFile.delete());
+            ClientUtils.logInfo("Deleted Legacy config " + modulesFile.getName() + " " + modulesFile.delete());
         }
 
-        File valuesFile=new File(dir, "values.json");
-        if(valuesFile.exists()){
-            modified=true;
-            FileReader fr=new FileReader(valuesFile);
+        File valuesFile = new File(dir, "values.json");
+        if (valuesFile.exists()) {
+            modified = true;
+            FileReader fr = new FileReader(valuesFile);
 
             try {
                 final JsonObject jsonObject = new JsonParser().parse(new BufferedReader(fr)).getAsJsonObject();
@@ -267,7 +264,7 @@ public class FileManager extends MinecraftInstance {
                         }
                     }
                 }
-            } catch (Throwable t){
+            } catch (Throwable t) {
                 t.printStackTrace();
             }
 
@@ -277,13 +274,13 @@ public class FileManager extends MinecraftInstance {
                 e.printStackTrace();
             }
 
-            ClientUtils.logInfo("Deleted Legacy config "+valuesFile.getName()+" "+valuesFile.delete());
+            ClientUtils.logInfo("Deleted Legacy config " + valuesFile.getName() + " " + valuesFile.delete());
         }
 
-        File macrosFile=new File(dir,"macros.json");
-        if(macrosFile.exists()) {
+        File macrosFile = new File(dir, "macros.json");
+        if (macrosFile.exists()) {
             modified = true;
-            FileReader fr=new FileReader(macrosFile);
+            FileReader fr = new FileReader(macrosFile);
 
             try {
                 final JsonArray jsonArray = new JsonParser().parse(new BufferedReader(fr)).getAsJsonArray();
@@ -293,7 +290,7 @@ public class FileManager extends MinecraftInstance {
                     LiquidBounce.macroManager.getMacros()
                             .add(new Macro(macroJson.get("key").getAsInt(), macroJson.get("command").getAsString()));
                 }
-            } catch (Throwable t){
+            } catch (Throwable t) {
                 t.printStackTrace();
             }
 
@@ -303,12 +300,12 @@ public class FileManager extends MinecraftInstance {
                 e.printStackTrace();
             }
 
-            ClientUtils.logInfo("Deleted Legacy config "+macrosFile.getName()+" "+macrosFile.delete());
+            ClientUtils.logInfo("Deleted Legacy config " + macrosFile.getName() + " " + macrosFile.delete());
         }
 
 
-        File shortcutsFile=new File(dir,"shortcuts.json");
-        if(shortcutsFile.exists())
+        File shortcutsFile = new File(dir, "shortcuts.json");
+        if (shortcutsFile.exists())
             shortcutsFile.delete();
 
         return modified;

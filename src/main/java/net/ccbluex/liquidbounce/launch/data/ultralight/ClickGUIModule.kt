@@ -13,6 +13,7 @@ import java.io.File
 object ClickGUIModule : Module() {
     @JvmField
     var openCategory: Int = -1 // index in the js array
+
     @JvmField
     var openModule: Int = -1 // index in the js array
 

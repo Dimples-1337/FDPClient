@@ -9,24 +9,64 @@ import java.util.ArrayList;
 import java.util.Comparator;
 
 public class AStarCustomPathFinder {
-    private Vec3 startVec3;
-    private Vec3 endVec3;
-    private ArrayList<Vec3> path = new ArrayList<>();
-    private ArrayList<Hub> hubs = new ArrayList<>();
-    private ArrayList<Hub> hubsToWork = new ArrayList<>();
-    private double minDistanceSquared = 9;
-    private boolean nearest = true;
-
     private static final Vec3[] flatCardinalDirections = {
             new Vec3(1, 0, 0),
             new Vec3(-1, 0, 0),
             new Vec3(0, 0, 1),
             new Vec3(0, 0, -1)
     };
+    private final Vec3 startVec3;
+    private final Vec3 endVec3;
+    private ArrayList<Vec3> path = new ArrayList<>();
+    private final ArrayList<Hub> hubs = new ArrayList<>();
+    private final ArrayList<Hub> hubsToWork = new ArrayList<>();
+    private final double minDistanceSquared = 9;
+    private final boolean nearest = true;
 
     public AStarCustomPathFinder(Vec3 startVec3, Vec3 endVec3) {
         this.startVec3 = BlockUtils.floorVec3(startVec3.addVector(0, 0, 0));
         this.endVec3 = BlockUtils.floorVec3(endVec3.addVector(0, 0, 0));
+    }
+
+    public static boolean checkPositionValidity(Vec3 loc, boolean checkGround) {
+        return checkPositionValidity((int) loc.xCoord, (int) loc.yCoord, (int) loc.zCoord, checkGround);
+    }
+
+    public static boolean checkPositionValidity(int x, int y, int z, boolean checkGround) {
+        BlockPos block1 = new BlockPos(x, y, z);
+        BlockPos block2 = new BlockPos(x, y + 1, z);
+        BlockPos block3 = new BlockPos(x, y - 1, z);
+        return !isBlockSolid(block1) && !isBlockSolid(block2) && (isBlockSolid(block3) || !checkGround) && isSafeToWalkOn(block3);
+    }
+
+    private static boolean isBlockSolid(BlockPos blockPos) {
+        Block block = BlockUtils.getBlock(blockPos);
+        if (block == null) return false;
+
+        return block.isFullBlock() ||
+                (block instanceof BlockSlab) ||
+                (block instanceof BlockStairs) ||
+                (block instanceof BlockCactus) ||
+                (block instanceof BlockChest) ||
+                (block instanceof BlockEnderChest) ||
+                (block instanceof BlockSkull) ||
+                (block instanceof BlockPane) ||
+                (block instanceof BlockFence) ||
+                (block instanceof BlockWall) ||
+                (block instanceof BlockGlass) ||
+                (block instanceof BlockPistonBase) ||
+                (block instanceof BlockPistonExtension) ||
+                (block instanceof BlockPistonMoving) ||
+                (block instanceof BlockStainedGlass) ||
+                (block instanceof BlockTrapDoor);
+    }
+
+    private static boolean isSafeToWalkOn(BlockPos blockPos) {
+        Block block = BlockUtils.getBlock(blockPos);
+        if (block == null) return false;
+
+        return !(block instanceof BlockFence) &&
+                !(block instanceof BlockWall);
     }
 
     public ArrayList<Vec3> getPath() {
@@ -87,47 +127,6 @@ public class AStarCustomPathFinder {
             hubs.sort(new CompareHub());
             path = hubs.get(0).getPath();
         }
-    }
-
-    public static boolean checkPositionValidity(Vec3 loc, boolean checkGround) {
-        return checkPositionValidity((int) loc.xCoord, (int) loc.yCoord, (int) loc.zCoord, checkGround);
-    }
-
-    public static boolean checkPositionValidity(int x, int y, int z, boolean checkGround) {
-        BlockPos block1 = new BlockPos(x, y, z);
-        BlockPos block2 = new BlockPos(x, y + 1, z);
-        BlockPos block3 = new BlockPos(x, y - 1, z);
-        return !isBlockSolid(block1) && !isBlockSolid(block2) && (isBlockSolid(block3) || !checkGround) && isSafeToWalkOn(block3);
-    }
-
-    private static boolean isBlockSolid(BlockPos blockPos) {
-        Block block=BlockUtils.getBlock(blockPos);
-        if(block==null) return false;
-
-        return block.isFullBlock() ||
-                (block instanceof BlockSlab) ||
-                (block instanceof BlockStairs)||
-                (block instanceof BlockCactus)||
-                (block instanceof BlockChest)||
-                (block instanceof BlockEnderChest)||
-                (block instanceof BlockSkull)||
-                (block instanceof BlockPane)||
-                (block instanceof BlockFence)||
-                (block instanceof BlockWall)||
-                (block instanceof BlockGlass)||
-                (block instanceof BlockPistonBase)||
-                (block instanceof BlockPistonExtension)||
-                (block instanceof BlockPistonMoving)||
-                (block instanceof BlockStainedGlass)||
-                (block instanceof BlockTrapDoor);
-    }
-
-    private static boolean isSafeToWalkOn(BlockPos blockPos) {
-        Block block=BlockUtils.getBlock(blockPos);
-        if(block==null) return false;
-
-        return !(block instanceof BlockFence) &&
-                !(block instanceof BlockWall);
     }
 
     public Hub isHubExisting(Vec3 loc) {
@@ -195,36 +194,36 @@ public class AStarCustomPathFinder {
             return loc;
         }
 
-        public Hub getParent() {
-            return parent;
-        }
-
-        public ArrayList<Vec3> getPath() {
-            return path;
-        }
-
-        public double getSquareDistanceToFromTarget() {
-            return squareDistanceToFromTarget;
-        }
-
-        public double getCost() {
-            return cost;
-        }
-
         public void setLoc(Vec3 loc) {
             this.loc = loc;
+        }
+
+        public Hub getParent() {
+            return parent;
         }
 
         public void setParent(Hub parent) {
             this.parent = parent;
         }
 
+        public ArrayList<Vec3> getPath() {
+            return path;
+        }
+
         public void setPath(ArrayList<Vec3> path) {
             this.path = path;
         }
 
+        public double getSquareDistanceToFromTarget() {
+            return squareDistanceToFromTarget;
+        }
+
         public void setSquareDistanceToFromTarget(double squareDistanceToFromTarget) {
             this.squareDistanceToFromTarget = squareDistanceToFromTarget;
+        }
+
+        public double getCost() {
+            return cost;
         }
 
         public void setCost(double cost) {

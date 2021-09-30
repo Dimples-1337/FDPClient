@@ -16,11 +16,13 @@ import kotlin.math.min
 /**
  * CustomHUD element
  */
-abstract class Element(var x: Double = 2.0, var y: Double = 2.0, var scale: Float = 1F,
-                       var side: Side = Side.default()) : MinecraftInstance() {
+abstract class Element(
+    var x: Double = 2.0, var y: Double = 2.0, var scale: Float = 1F,
+    var side: Side = Side.default()
+) : MinecraftInstance() {
 
     val info = javaClass.getAnnotation(ElementInfo::class.java)
-            ?: throw IllegalArgumentException("Passed element with missing element info")
+        ?: throw IllegalArgumentException("Passed element with missing element info")
 
     val name: String
         get() = info.name

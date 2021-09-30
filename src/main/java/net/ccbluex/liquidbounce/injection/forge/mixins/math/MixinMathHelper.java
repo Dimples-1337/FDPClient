@@ -16,18 +16,18 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 @Mixin(MathHelper.class)
 public class MixinMathHelper {
     @Inject(method = "sin", at = @At("HEAD"), cancellable = true)
-    private static void sin(float value, CallbackInfoReturnable<Float> callbackInfoReturnable){
-        Float result=LiquidBounce.moduleManager.getModule(BetterFPS.class).sin(value);
+    private static void sin(float value, CallbackInfoReturnable<Float> callbackInfoReturnable) {
+        Float result = LiquidBounce.moduleManager.getModule(BetterFPS.class).sin(value);
 
-        if(result!=null)
+        if (result != null)
             callbackInfoReturnable.setReturnValue(result);
     }
 
     @Inject(method = "cos", at = @At("HEAD"), cancellable = true)
-    private static void cos(float value, CallbackInfoReturnable<Float> callbackInfoReturnable){
-        Float result=LiquidBounce.moduleManager.getModule(BetterFPS.class).cos(value);
+    private static void cos(float value, CallbackInfoReturnable<Float> callbackInfoReturnable) {
+        Float result = LiquidBounce.moduleManager.getModule(BetterFPS.class).cos(value);
 
-        if(result!=null)
+        if (result != null)
             callbackInfoReturnable.setReturnValue(result);
     }
 }

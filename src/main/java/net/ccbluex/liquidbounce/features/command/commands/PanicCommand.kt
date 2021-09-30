@@ -14,11 +14,11 @@ class PanicCommand : Command("panic", emptyArray()) {
     private val selections: Array<String>
 
     init {
-        val list=mutableListOf<String>()
+        val list = mutableListOf<String>()
         list.add("all")
         list.add("norender")
         list.addAll(ModuleCategory.values().map { it.configName.lowercase() })
-        selections=list.toTypedArray()
+        selections = list.toTypedArray()
     }
 
     /**

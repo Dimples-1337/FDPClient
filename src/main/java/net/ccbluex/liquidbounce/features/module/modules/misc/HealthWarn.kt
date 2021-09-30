@@ -18,20 +18,21 @@ class HealthWarn : Module() {
     override fun onEnable() {
         canWarn = true
     }
-    
+
     override fun onDisable() {
         canWarn = true
     }
 
     @EventTarget
-    fun onUpdate(event: UpdateEvent){
-        if(mc.thePlayer.health <= healthValue.get()){
-            if(canWarn){
+    fun onUpdate(event: UpdateEvent) {
+        if (mc.thePlayer.health <= healthValue.get()) {
+            if (canWarn) {
                 LiquidBounce.hud.addNotification(
-                    Notification("HP Warning", "YOU ARE AT LOW HP!", NotifyType.ERROR, 3000))
+                    Notification("HP Warning", "YOU ARE AT LOW HP!", NotifyType.ERROR, 3000)
+                )
                 canWarn = false
             }
-        }else{
+        } else {
             canWarn = true
         }
     }

@@ -31,9 +31,9 @@ object ClassUtils {
     }
 
     @JvmStatic
-    fun getObjectInstance(clazz: Class<*>):Any{
+    fun getObjectInstance(clazz: Class<*>): Any {
         clazz.declaredFields.forEach {
-            if(it.name.equals("INSTANCE")){
+            if (it.name.equals("INSTANCE")) {
                 return it.get(null)
             }
         }

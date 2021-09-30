@@ -9,7 +9,7 @@ import java.util.Random;
 
 public final class RandomUtils {
 
-    private static Random random=new Random();
+    private static final Random random = new Random();
 
     public static int nextInt(final int startInclusive, final int endExclusive) {
         if (endExclusive - startInclusive <= 0)
@@ -19,14 +19,14 @@ public final class RandomUtils {
     }
 
     public static double nextDouble(final double startInclusive, final double endInclusive) {
-        if(startInclusive == endInclusive || endInclusive - startInclusive <= 0D)
+        if (startInclusive == endInclusive || endInclusive - startInclusive <= 0D)
             return startInclusive;
 
         return startInclusive + ((endInclusive - startInclusive) * Math.random());
     }
 
     public static float nextFloat(final float startInclusive, final float endInclusive) {
-        if(startInclusive == endInclusive || endInclusive - startInclusive <= 0F)
+        if (startInclusive == endInclusive || endInclusive - startInclusive <= 0F)
             return startInclusive;
 
         return (float) (startInclusive + ((endInclusive - startInclusive) * Math.random()));
@@ -46,7 +46,7 @@ public final class RandomUtils {
 
     public static String random(final int length, final char[] chars) {
         final StringBuilder stringBuilder = new StringBuilder();
-        for(int i = 0; i < length; i++)
+        for (int i = 0; i < length; i++)
             stringBuilder.append(chars[random.nextInt(chars.length)]);
         return stringBuilder.toString();
     }

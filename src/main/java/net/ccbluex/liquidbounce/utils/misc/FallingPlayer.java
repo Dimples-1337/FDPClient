@@ -10,7 +10,7 @@ import net.minecraft.util.*;
 import org.jetbrains.annotations.Nullable;
 
 public class FallingPlayer extends MinecraftInstance {
-    
+
     private double x;
     private double y;
     private double z;
@@ -19,14 +19,14 @@ public class FallingPlayer extends MinecraftInstance {
     private double motionY;
     private double motionZ;
 
-    private float yaw;
+    private final float yaw;
 
     private float strafe;
     private float forward;
-    private float jumpMovementFactor;
+    private final float jumpMovementFactor;
 
     // support old codes
-    public FallingPlayer(double x, double y, double z, double motionX, double motionY, double motionZ, float yaw, float strafe, float forward){
+    public FallingPlayer(double x, double y, double z, double motionX, double motionY, double motionZ, float yaw, float strafe, float forward) {
         this(x, y, z, motionX, motionY, motionZ, yaw, strafe, forward, mc.thePlayer.jumpMovementFactor);
     }
 

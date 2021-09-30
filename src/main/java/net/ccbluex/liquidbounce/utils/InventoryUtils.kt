@@ -22,10 +22,29 @@ import net.minecraft.network.play.client.C16PacketClientStatus
 object InventoryUtils : MinecraftInstance(), Listenable {
     val CLICK_TIMER = MSTimer()
     val INV_TIMER = MSTimer()
-    val BLOCK_BLACKLIST = listOf(Blocks.enchanting_table, Blocks.chest, Blocks.ender_chest, Blocks.trapped_chest,
-        Blocks.anvil, Blocks.sand, Blocks.web, Blocks.torch, Blocks.crafting_table, Blocks.furnace, Blocks.waterlily,
-        Blocks.dispenser, Blocks.stone_pressure_plate, Blocks.wooden_pressure_plate, Blocks.red_flower, Blocks.flower_pot, Blocks.yellow_flower,
-        Blocks.noteblock, Blocks.dropper, Blocks.standing_banner, Blocks.wall_banner)
+    val BLOCK_BLACKLIST = listOf(
+        Blocks.enchanting_table,
+        Blocks.chest,
+        Blocks.ender_chest,
+        Blocks.trapped_chest,
+        Blocks.anvil,
+        Blocks.sand,
+        Blocks.web,
+        Blocks.torch,
+        Blocks.crafting_table,
+        Blocks.furnace,
+        Blocks.waterlily,
+        Blocks.dispenser,
+        Blocks.stone_pressure_plate,
+        Blocks.wooden_pressure_plate,
+        Blocks.red_flower,
+        Blocks.flower_pot,
+        Blocks.yellow_flower,
+        Blocks.noteblock,
+        Blocks.dropper,
+        Blocks.standing_banner,
+        Blocks.wall_banner
+    )
 
     fun findItem(startSlot: Int, endSlot: Int, item: Item): Int {
         for (i in startSlot until endSlot) {
@@ -79,11 +98,11 @@ object InventoryUtils : MinecraftInstance(), Listenable {
             CLICK_TIMER.reset()
     }
 
-    fun openPacket(){
+    fun openPacket() {
         mc.netHandler.addToSendQueue(C16PacketClientStatus(C16PacketClientStatus.EnumState.OPEN_INVENTORY_ACHIEVEMENT))
     }
 
-    fun closePacket(){
+    fun closePacket() {
         mc.netHandler.addToSendQueue(C0DPacketCloseWindow())
     }
 

@@ -18,7 +18,10 @@ class Boost : SpeedMode("Boost") {
         var offset = 4.69
         var shouldOffset = true
 
-        for (o in mc.theWorld.getCollidingBoundingBoxes(mc.thePlayer, mc.thePlayer.entityBoundingBox.offset(mc.thePlayer.motionX / offset, 0.0, mc.thePlayer.motionZ / offset))) {
+        for (o in mc.theWorld.getCollidingBoundingBoxes(
+            mc.thePlayer,
+            mc.thePlayer.entityBoundingBox.offset(mc.thePlayer.motionX / offset, 0.0, mc.thePlayer.motionZ / offset)
+        )) {
             if (o is AxisAlignedBB) {
                 shouldOffset = false
                 break
@@ -57,5 +60,6 @@ class Boost : SpeedMode("Boost") {
         }
     }
 
-    private fun shouldSpeedUp() = !mc.thePlayer.isInWater && !mc.thePlayer.isOnLadder && !mc.thePlayer.isSneaking && MovementUtils.isMoving()
+    private fun shouldSpeedUp() =
+        !mc.thePlayer.isInWater && !mc.thePlayer.isOnLadder && !mc.thePlayer.isSneaking && MovementUtils.isMoving()
 }

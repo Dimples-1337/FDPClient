@@ -9,8 +9,10 @@ import net.minecraft.util.BlockPos
 import net.minecraft.util.EnumFacing
 import net.minecraft.util.Vec3
 
-class PlaceInfo(val blockPos: BlockPos, val enumFacing: EnumFacing,
-                var vec3: Vec3 = Vec3(blockPos.x + 0.5, blockPos.y + 0.5, blockPos.z + 0.5)) {
+class PlaceInfo(
+    val blockPos: BlockPos, val enumFacing: EnumFacing,
+    var vec3: Vec3 = Vec3(blockPos.x + 0.5, blockPos.y + 0.5, blockPos.z + 0.5)
+) {
 
     companion object {
 

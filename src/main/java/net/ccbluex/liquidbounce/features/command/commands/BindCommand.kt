@@ -33,11 +33,11 @@ class BindCommand : Command("bind", emptyArray()) {
                 // Response to user
                 chat("Bound module §a§l${module.name}§3 to key §a§l${Keyboard.getKeyName(key)}§3.")
                 LiquidBounce.hud.addNotification(
-                    Notification("KeyBind","Bound ${module.name} to ${Keyboard.getKeyName(key)}.", NotifyType.INFO)
+                    Notification("KeyBind", "Bound ${module.name} to ${Keyboard.getKeyName(key)}.", NotifyType.INFO)
                 )
                 playEdit()
-            }else{
-                LiquidBounce.moduleManager.pendingBindModule=module
+            } else {
+                LiquidBounce.moduleManager.pendingBindModule = module
                 chat("Press any key to bind module ${module.name}")
             }
             return
@@ -53,9 +53,9 @@ class BindCommand : Command("bind", emptyArray()) {
 
         return when (args.size) {
             1 -> LiquidBounce.moduleManager.modules
-                    .map { it.name }
-                    .filter { it.startsWith(moduleName, true) }
-                    .toList()
+                .map { it.name }
+                .filter { it.startsWith(moduleName, true) }
+                .toList()
             else -> emptyList()
         }
     }

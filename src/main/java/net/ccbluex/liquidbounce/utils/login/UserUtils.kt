@@ -43,7 +43,7 @@ object UserUtils {
         val body = JsonObject()
         body.addProperty("accessToken", token)
         request.entity = StringEntity(Gson().toJson(body))
-        println(Gson().toJson(body));
+        println(Gson().toJson(body))
 
         val response = client.execute(request)
 
@@ -67,29 +67,33 @@ object UserUtils {
     /**
      * Get UUID of username
      */
-    fun getUUID(username : String) : String {
+    fun getUUID(username: String): String {
         try {
             // Make a http connection to Mojang API and ask for UUID of username
-            val httpConnection = URL("https://api.mojang.com/users/profiles/minecraft/$username").openConnection() as HttpsURLConnection
+            val httpConnection =
+                URL("https://api.mojang.com/users/profiles/minecraft/$username").openConnection() as HttpsURLConnection
             httpConnection.connectTimeout = 2000
             httpConnection.readTimeout = 2000
             httpConnection.requestMethod = "GET"
-            httpConnection.setRequestProperty("User-Agent", "Mozilla/5.0 (Windows NT 6.1; WOW64; rv:25.0) Gecko/20100101 Firefox/25.0")
+            httpConnection.setRequestProperty(
+                "User-Agent",
+                "Mozilla/5.0 (Windows NT 6.1; WOW64; rv:25.0) Gecko/20100101 Firefox/25.0"
+            )
             HttpURLConnection.setFollowRedirects(true)
             httpConnection.doOutput = true
 
-            if(httpConnection.responseCode != 200)
+            if (httpConnection.responseCode != 200)
                 return ""
 
             // Read response content and get id from json
             InputStreamReader(httpConnection.inputStream).use {
                 val jsonElement = JsonParser().parse(it)
 
-                if(jsonElement.isJsonObject) {
+                if (jsonElement.isJsonObject) {
                     return jsonElement.asJsonObject.get("id").asString
                 }
             }
-        } catch(ignored : Throwable) {
+        } catch (ignored: Throwable) {
         }
 
         return ""

@@ -25,7 +25,8 @@ import net.minecraft.network.play.server.S38PacketPlayerListItem
 object AntiBot : Module() {
 
     private val tabValue = BoolValue("Tab", true)
-    private val tabModeValue = ListValue("TabMode", arrayOf("Equals", "Contains"), "Contains").displayable { tabValue.get() }
+    private val tabModeValue =
+        ListValue("TabMode", arrayOf("Equals", "Contains"), "Contains").displayable { tabValue.get() }
     private val entityIDValue = BoolValue("EntityID", true)
     private val colorValue = BoolValue("Color", false)
     private val livingTimeValue = BoolValue("LivingTime", false)
@@ -44,7 +45,8 @@ object AntiBot : Module() {
     private val duplicateInTabValue = BoolValue("DuplicateInTab", false)
     private val matrixValue = BoolValue("MatrixBot", false)
     private val alwaysInRadiusValue = BoolValue("AlwaysInRadius", false)
-    private val alwaysRadiusValue = FloatValue("AlwaysInRadiusBlocks", 20f, 5f, 30f).displayable { alwaysInRadiusValue.get() }
+    private val alwaysRadiusValue =
+        FloatValue("AlwaysInRadiusBlocks", 20f, 5f, 30f).displayable { alwaysInRadiusValue.get() }
 
     private val ground = mutableListOf<Int>()
     private val air = mutableListOf<Int>()
@@ -95,7 +97,8 @@ object AntiBot : Module() {
 
         if (armorValue.get()) {
             if (entity.inventory.armorInventory[0] == null && entity.inventory.armorInventory[1] == null &&
-                entity.inventory.armorInventory[2] == null && entity.inventory.armorInventory[3] == null)
+                entity.inventory.armorInventory[2] == null && entity.inventory.armorInventory[3] == null
+            )
                 return true
         }
 
@@ -127,11 +130,14 @@ object AntiBot : Module() {
         }
 
         if (duplicateInWorldValue.get() &&
-                mc.theWorld!!.loadedEntityList.filter { it is EntityPlayer && it.displayNameString == it.displayNameString }.count() > 1)
+            mc.theWorld!!.loadedEntityList.filter { it is EntityPlayer && it.displayNameString == it.displayNameString }
+                .count() > 1
+        )
             return true
 
         if (duplicateInTabValue.get() &&
-                mc.netHandler.playerInfoMap.filter { entity.name == stripColor(it.getFullName()) }.count() > 1)
+            mc.netHandler.playerInfoMap.filter { entity.name == stripColor(it.getFullName()) }.count() > 1
+        )
             return true
 
         if (alwaysInRadiusValue.get() && !notAlwaysInRadius.contains(entity.entityId))
@@ -195,8 +201,11 @@ object AntiBot : Module() {
                 if (entity.isInvisible && !invisible.contains(entity.entityId))
                     invisible.add(entity.entityId)
 
-                if ((!livingTimeValue.get() || entity.ticksExisted > livingTimeTicksValue.get()) && !notAlwaysInRadius.contains(entity.entityId) && mc.thePlayer!!.getDistanceToEntity(entity) > alwaysRadiusValue.get())
-                    notAlwaysInRadius.add(entity.entityId);
+                if ((!livingTimeValue.get() || entity.ticksExisted > livingTimeTicksValue.get()) && !notAlwaysInRadius.contains(
+                        entity.entityId
+                    ) && mc.thePlayer!!.getDistanceToEntity(entity) > alwaysRadiusValue.get()
+                )
+                    notAlwaysInRadius.add(entity.entityId)
             }
         }
 
@@ -204,7 +213,8 @@ object AntiBot : Module() {
             val entity = mc.theWorld!!.getEntityByID(packet.entityID)
 
             if (entity != null && entity is EntityLivingBase && packet.animationType == 0
-                    && !swing.contains(entity.entityId))
+                && !swing.contains(entity.entityId)
+            )
                 swing.add(entity.entityId)
         }
     }
@@ -239,7 +249,7 @@ object AntiBot : Module() {
         ground.clear()
         invalidGround.clear()
         invisible.clear()
-        notAlwaysInRadius.clear();
+        notAlwaysInRadius.clear()
     }
 
 }

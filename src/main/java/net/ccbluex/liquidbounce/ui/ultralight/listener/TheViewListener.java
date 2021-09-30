@@ -19,8 +19,8 @@ import net.ccbluex.liquidbounce.ui.ultralight.UltralightEngine;
 public class TheViewListener implements UltralightViewListener {
     private final UltralightView view;
 
-    public TheViewListener(UltralightView view){
-        this.view=view;
+    public TheViewListener(UltralightView view) {
+        this.view = view;
     }
 
     /**
@@ -45,7 +45,7 @@ public class TheViewListener implements UltralightViewListener {
 
     /**
      * Called by Ultralight when the displayed tooltip changes.
-     *
+     * <p>
      * THIS WILL SPAM THE SAME MESSAGE
      *
      * @param tooltip The new page tooltip
@@ -58,7 +58,7 @@ public class TheViewListener implements UltralightViewListener {
     /**
      * Called by Ultralight when the cursor changes. Ultralight supports a lot of cursors, but currently not a custom
      * one.
-     *
+     * <p>
      * THIS WILL SPAM THE SAME MESSAGE
      *
      * @param cursor The new page cursor

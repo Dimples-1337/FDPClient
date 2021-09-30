@@ -21,8 +21,16 @@ class BetterFPS : Module() {
     val taylor = TaylorMath()
     val newMC = NewMCMath()
 
-    val sinMode = ListValue("SinMode", arrayOf("Vanilla", "Taylor", "LibGDX", "RivensFull", "RivensHalf", "Rivens", "Java", "1.16"), "Vanilla")
-    val cosMode = ListValue("CosMode", arrayOf("Vanilla", "Taylor", "LibGDX", "RivensFull", "RivensHalf", "Rivens", "Java", "1.16"), "Vanilla")
+    val sinMode = ListValue(
+        "SinMode",
+        arrayOf("Vanilla", "Taylor", "LibGDX", "RivensFull", "RivensHalf", "Rivens", "Java", "1.16"),
+        "Vanilla"
+    )
+    val cosMode = ListValue(
+        "CosMode",
+        arrayOf("Vanilla", "Taylor", "LibGDX", "RivensFull", "RivensHalf", "Rivens", "Java", "1.16"),
+        "Vanilla"
+    )
 
     fun sin(value: Float) = when (sinMode.get().lowercase()) {
         "taylor" -> taylor.sin(value)

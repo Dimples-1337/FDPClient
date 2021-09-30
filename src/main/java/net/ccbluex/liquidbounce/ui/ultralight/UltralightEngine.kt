@@ -29,19 +29,19 @@ object UltralightEngine {
 
     const val ULTRALIGHT_NATIVE_VERSION = "0.4.6"
 
-    val views=mutableListOf<View>()
+    val views = mutableListOf<View>()
 
-    val inDevMode=System.getProperty("dev-mode")!=null
+    val inDevMode = System.getProperty("dev-mode") != null
 
     init {
-        if(!pagesPath.exists())
+        if (!pagesPath.exists())
             pagesPath.mkdirs()
 
-        if(!cachePath.exists())
+        if (!cachePath.exists())
             cachePath.mkdirs()
     }
 
-    fun initEngine(){
+    fun initEngine() {
         platform = UltralightPlatform.instance()
         platform.setConfig(
             UltralightConfig()
@@ -68,7 +68,7 @@ object UltralightEngine {
         renderer.logMemoryUsage()
     }
 
-    fun initResources(){
+    fun initResources() {
         // download ultralight natives and resources from web
         checkNativeResources()
         checkPageResources()
@@ -77,21 +77,24 @@ object UltralightEngine {
         UltralightJava.load(resourcePath.toPath())
     }
 
-    private fun checkNativeResources(){
+    private fun checkNativeResources() {
         val versionFile = File(resourcePath, "VERSION")
 
         // Check if library version is matching the resources version
         if (versionFile.exists() && versionFile.readText() == ULTRALIGHT_NATIVE_VERSION)
             return
 
-        if(resourcePath.exists())
+        if (resourcePath.exists())
             resourcePath.deleteRecursively()
 
         resourcePath.mkdirs()
 
         // download the natives
         val resourcesZip = File(resourcePath, "resources.zip")
-        HttpUtils.download("${LiquidBounce.CLIENT_STORAGE}ultralight/$ULTRALIGHT_NATIVE_VERSION/${ClientUtils.osType.friendlyName}-x64.zip", resourcesZip)
+        HttpUtils.download(
+            "${LiquidBounce.CLIENT_STORAGE}ultralight/$ULTRALIGHT_NATIVE_VERSION/${ClientUtils.osType.friendlyName}-x64.zip",
+            resourcesZip
+        )
         FileUtils.extractZip(resourcesZip, resourcePath)
         resourcesZip.delete()
 
@@ -99,27 +102,27 @@ object UltralightEngine {
         versionFile.writeText(ULTRALIGHT_NATIVE_VERSION)
     }
 
-    private fun checkPageResources(){
-        if(File(pagesPath, "NO_UPDATE").exists()) {
+    private fun checkPageResources() {
+        if (File(pagesPath, "NO_UPDATE").exists()) {
             logger.warn("PASSED RESOURCE CHECK BY \"NO_UPDATE\" FILE")
             return
         }
 
-        if(inDevMode){
-            if(pagesPath.exists())
+        if (inDevMode) {
+            if (pagesPath.exists())
                 pagesPath.deleteRecursively()
 
             pagesPath.mkdirs()
 
-            val projectDir=File(File("./").canonicalFile.parentFile,"ui")
-            val srcDir=File(projectDir,"src") // this should not have issues
-            val depsDir=File(projectDir,"deps")
+            val projectDir = File(File("./").canonicalFile.parentFile, "ui")
+            val srcDir = File(projectDir, "src") // this should not have issues
+            val depsDir = File(projectDir, "deps")
 
-            if(!depsDir.exists())
+            if (!depsDir.exists())
                 throw NullPointerException("deps dir not exists, please run \"./gradlew ui:build\" first!")
 
-            FileUtils.copyDir(srcDir,pagesPath)
-            FileUtils.copyDir(depsDir,File(pagesPath,"lib"))
+            FileUtils.copyDir(srcDir, pagesPath)
+            FileUtils.copyDir(depsDir, File(pagesPath, "lib"))
 
             return
         }
@@ -129,23 +132,26 @@ object UltralightEngine {
         if (versionFile.exists() && versionFile.readText() == LiquidBounce.CLIENT_VERSION)
             return
 
-        if(pagesPath.exists())
+        if (pagesPath.exists())
             pagesPath.deleteRecursively()
 
         pagesPath.mkdirs()
 
         // packaged file in project "ui"
-        FileUtils.extractZip(UltralightEngine::class.java.classLoader.getResourceAsStream("ui_resources.zip"), pagesPath)
+        FileUtils.extractZip(
+            UltralightEngine::class.java.classLoader.getResourceAsStream("ui_resources.zip"),
+            pagesPath
+        )
 
         versionFile.createNewFile()
         versionFile.writeText(LiquidBounce.CLIENT_VERSION)
     }
 
-    fun registerView(view: View){
+    fun registerView(view: View) {
         views.add(view)
     }
 
-    fun unregisterView(view: View){
+    fun unregisterView(view: View) {
         views.remove(view)
         view.close()
     }

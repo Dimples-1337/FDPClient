@@ -27,7 +27,7 @@ class EventManager : MinecraftInstance() {
                     val invokableEventTargets = registry.getOrDefault(eventClass, ArrayList())
                     invokableEventTargets.add(EventHook(listener, method, eventTarget))
                     registry[eventClass] = invokableEventTargets
-                }catch (t: Throwable){
+                } catch (t: Throwable) {
                     t.printStackTrace()
                 }
             }

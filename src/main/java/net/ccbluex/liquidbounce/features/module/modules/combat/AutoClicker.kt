@@ -71,11 +71,18 @@ class AutoClicker : Module() {
     @EventTarget
     fun onUpdate(event: UpdateEvent) {
         if (jitterValue.get() && (leftValue.get() && mc.gameSettings.keyBindAttack.isKeyDown && mc.playerController.curBlockDamageMP == 0F
-                        || rightValue.get() && mc.gameSettings.keyBindUseItem.isKeyDown && !mc.thePlayer.isUsingItem)) {
-            if (Random.nextBoolean()) mc.thePlayer.rotationYaw += if (Random.nextBoolean()) -RandomUtils.nextFloat(0F, 1F) else RandomUtils.nextFloat(0F, 1F)
+                    || rightValue.get() && mc.gameSettings.keyBindUseItem.isKeyDown && !mc.thePlayer.isUsingItem)
+        ) {
+            if (Random.nextBoolean()) mc.thePlayer.rotationYaw += if (Random.nextBoolean()) -RandomUtils.nextFloat(
+                0F,
+                1F
+            ) else RandomUtils.nextFloat(0F, 1F)
 
             if (Random.nextBoolean()) {
-                mc.thePlayer.rotationPitch += if (Random.nextBoolean()) -RandomUtils.nextFloat(0F, 1F) else RandomUtils.nextFloat(0F, 1F)
+                mc.thePlayer.rotationPitch += if (Random.nextBoolean()) -RandomUtils.nextFloat(
+                    0F,
+                    1F
+                ) else RandomUtils.nextFloat(0F, 1F)
 
                 // Make sure pitch is not going into unlegit values
                 if (mc.thePlayer.rotationPitch > 90)

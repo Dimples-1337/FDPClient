@@ -16,20 +16,24 @@ import java.util.*
 
 @ModuleInfo(name = "AutoAdvertise", category = ModuleCategory.CLIENT, array = false, defaultOn = true)
 class AutoAdvertise : Module() {
-    var waiting=false
+    var waiting = false
 
     @EventTarget
-    fun onWorld(event: WorldEvent){
-        if(waiting) return
+    fun onWorld(event: WorldEvent) {
+        if (waiting) return
 
-        Timer().schedule(object : TimerTask(){
+        Timer().schedule(object : TimerTask() {
             override fun run() {
-                waiting=false
-                if(mc.thePlayer!=null){
-                    mc.thePlayer.sendChatMessage("["+ RandomUtils.randomString(3)+"] Try FDPClient! ${LiquidBounce.CLIENT_WEBSITE} ["+ RandomUtils.randomString(3)+"]")
+                waiting = false
+                if (mc.thePlayer != null) {
+                    mc.thePlayer.sendChatMessage(
+                        "[" + RandomUtils.randomString(3) + "] Try FDPClient! ${LiquidBounce.CLIENT_WEBSITE} [" + RandomUtils.randomString(
+                            3
+                        ) + "]"
+                    )
                 }
             }
-        },2000L)
-        waiting=true
+        }, 2000L)
+        waiting = true
     }
 }

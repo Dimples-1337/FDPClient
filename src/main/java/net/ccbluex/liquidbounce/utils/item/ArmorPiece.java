@@ -10,8 +10,8 @@ import net.minecraft.item.ItemStack;
 
 public class ArmorPiece {
 
-    private ItemStack itemStack;
-    private int slot;
+    private final ItemStack itemStack;
+    private final int slot;
 
     public ArmorPiece(ItemStack itemStack, int slot) {
         this.itemStack = itemStack;

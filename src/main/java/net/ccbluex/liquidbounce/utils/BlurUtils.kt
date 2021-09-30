@@ -12,7 +12,8 @@ import org.lwjgl.opengl.GL11
  * @author potion, liuli
  */
 object BlurUtils : MinecraftInstance() {
-    private val blurShader = ShaderGroup(mc.textureManager, mc.resourceManager, mc.framebuffer, ResourceLocation("fdpclient/blur.json"))
+    private val blurShader =
+        ShaderGroup(mc.textureManager, mc.resourceManager, mc.framebuffer, ResourceLocation("fdpclient/blur.json"))
     private var lastScale = 0
     private var lastScaleWidth = 0
     private var lastScaleHeight = 0
@@ -83,7 +84,15 @@ object BlurUtils : MinecraftInstance() {
         RenderHelper.enableGUIStandardItemLighting()
     }
 
-    fun blurAreaBoarder(x: Float, f: Float, width: Float, height: Float, intensity: Float, blurWidth: Float, blurHeight: Float) {
+    fun blurAreaBoarder(
+        x: Float,
+        f: Float,
+        width: Float,
+        height: Float,
+        intensity: Float,
+        blurWidth: Float,
+        blurHeight: Float
+    ) {
         val scale = ScaledResolution(mc)
         val factor = scale.scaleFactor
         val factor2 = scale.scaledWidth
@@ -108,7 +117,16 @@ object BlurUtils : MinecraftInstance() {
         GL11.glDisable(3089)
     }
 
-    fun blurAreaBoarder(x: Float, f: Float, width: Float, height: Float, intensity: Float, opacity: Float, blurWidth: Float, blurHeight: Float) {
+    fun blurAreaBoarder(
+        x: Float,
+        f: Float,
+        width: Float,
+        height: Float,
+        intensity: Float,
+        opacity: Float,
+        blurWidth: Float,
+        blurHeight: Float
+    ) {
         val scale = ScaledResolution(mc)
         val factor = scale.scaleFactor
         val factor2 = scale.scaledWidth

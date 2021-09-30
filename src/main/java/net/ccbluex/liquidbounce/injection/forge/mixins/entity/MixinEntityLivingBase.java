@@ -33,6 +33,11 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 public abstract class MixinEntityLivingBase extends MixinEntity {
 
     @Shadow
+    protected boolean isJumping;
+    @Shadow
+    private int jumpTicks;
+
+    @Shadow
     protected abstract float getJumpUpwardsMotion();
 
     @Shadow
@@ -42,13 +47,8 @@ public abstract class MixinEntityLivingBase extends MixinEntity {
     public abstract boolean isPotionActive(Potion potionIn);
 
     @Shadow
-    private int jumpTicks;
-
-    @Shadow
-    protected boolean isJumping;
-
-    @Shadow
-    public void onLivingUpdate() {}
+    public void onLivingUpdate() {
+    }
 
     @Shadow
     protected abstract void updateFallState(double y, boolean onGroundIn, Block blockIn, BlockPos pos);
@@ -59,7 +59,8 @@ public abstract class MixinEntityLivingBase extends MixinEntity {
     @Shadow
     public abstract ItemStack getHeldItem();
 
-    @Shadow protected abstract void updateAITick();
+    @Shadow
+    protected abstract void updateAITick();
 
     /**
      * @author CCBlueX
@@ -68,15 +69,15 @@ public abstract class MixinEntityLivingBase extends MixinEntity {
     protected void jump() {
         final JumpEvent jumpEvent = new JumpEvent(this.getJumpUpwardsMotion());
         LiquidBounce.eventManager.callEvent(jumpEvent);
-        if(jumpEvent.isCancelled())
+        if (jumpEvent.isCancelled())
             return;
 
         this.motionY = jumpEvent.getMotion();
 
-        if(this.isPotionActive(Potion.jump))
-            this.motionY += (double) ((float) (this.getActivePotionEffect(Potion.jump).getAmplifier() + 1) * 0.1F);
+        if (this.isPotionActive(Potion.jump))
+            this.motionY += (float) (this.getActivePotionEffect(Potion.jump).getAmplifier() + 1) * 0.1F;
 
-        if(this.isSprinting()) {
+        if (this.isSprinting()) {
             float f = this.rotationYaw * 0.017453292F;
             this.motionX -= MathHelper.sin(f) * 0.2F;
             this.motionZ += MathHelper.cos(f) * 0.2F;
@@ -95,7 +96,7 @@ public abstract class MixinEntityLivingBase extends MixinEntity {
     private void onJumpSection(CallbackInfo callbackInfo) {
         final Jesus jesus = LiquidBounce.moduleManager.getModule(Jesus.class);
 
-        if(jesus.getState() && !isJumping && !isSneaking() && isInWater() &&
+        if (jesus.getState() && !isJumping && !isSneaking() && isInWater() &&
                 jesus.getModeValue().equals("Legit")) {
             this.updateAITick();
         }
@@ -103,7 +104,7 @@ public abstract class MixinEntityLivingBase extends MixinEntity {
 
     @Inject(method = "getLook", at = @At("HEAD"), cancellable = true)
     private void getLook(CallbackInfoReturnable<Vec3> callbackInfoReturnable) {
-        if(((EntityLivingBase) (Object) this) instanceof EntityPlayerSP)
+        if (((EntityLivingBase) (Object) this) instanceof EntityPlayerSP)
             callbackInfoReturnable.setReturnValue(getVectorForRotation(this.rotationPitch, this.rotationYaw));
     }
 
@@ -111,7 +112,7 @@ public abstract class MixinEntityLivingBase extends MixinEntity {
     private void isPotionActive(Potion p_isPotionActive_1_, final CallbackInfoReturnable<Boolean> callbackInfoReturnable) {
         final AntiBlind antiBlind = LiquidBounce.moduleManager.getModule(AntiBlind.class);
 
-        if((p_isPotionActive_1_ == Potion.confusion || p_isPotionActive_1_ == Potion.blindness) && antiBlind.getState() && antiBlind.getConfusionEffect().get())
+        if ((p_isPotionActive_1_ == Potion.confusion || p_isPotionActive_1_ == Potion.blindness) && antiBlind.getState() && antiBlind.getConfusionEffect().get())
             callbackInfoReturnable.setReturnValue(false);
     }
 
@@ -123,8 +124,8 @@ public abstract class MixinEntityLivingBase extends MixinEntity {
         int speed = this.isPotionActive(Potion.digSpeed) ? 6 - (1 + this.getActivePotionEffect(Potion.digSpeed).getAmplifier()) : (this.isPotionActive(Potion.digSlowdown) ? 6 + (1 + this.getActivePotionEffect(Potion.digSlowdown).getAmplifier()) * 2 : 6);
 
         if (this.equals(Minecraft.getMinecraft().thePlayer)) {
-            Animations animations=LiquidBounce.moduleManager.getModule(Animations.class);
-            if(animations.getState())
+            Animations animations = LiquidBounce.moduleManager.getModule(Animations.class);
+            if (animations.getState())
                 speed = (int) (speed * animations.getSwingSpeed().get());
         }
 

@@ -33,10 +33,8 @@ import static org.lwjgl.opengl.GL11.*;
 
 public final class RenderUtils extends MinecraftInstance {
     private static final Map<Integer, Boolean> glCapMap = new HashMap<>();
-
-    public static int deltaTime;
-
     private static final int[] DISPLAY_LISTS_2D = new int[4];
+    public static int deltaTime;
 
     static {
         for (int i = 0; i < DISPLAY_LISTS_2D.length; i++) {
@@ -112,7 +110,7 @@ public final class RenderUtils extends MinecraftInstance {
         glPushMatrix();
         glLineWidth(1F);
         glBegin(GL_POLYGON);
-        for(int i = 0; i <= 360; i++)
+        for (int i = 0; i <= 360; i++)
             glVertex2d(x + Math.sin(i * Math.PI / 180.0D) * radius, y + Math.cos(i * Math.PI / 180.0D) * radius);
         glEnd();
         glPopMatrix();
@@ -161,7 +159,7 @@ public final class RenderUtils extends MinecraftInstance {
         GL11.glBegin(GL11.GL_TRIANGLE_FAN);
 
         GL11.glVertex2d(x, y);
-        for(double i = end; i >= start; i-=4) {
+        for (double i = end; i >= start; i -= 4) {
             double ldx = Math.cos(i * Math.PI / 180.0) * w;
             double ldy = Math.sin(i * Math.PI / 180.0) * h;
             GL11.glVertex2d(x + ldx, y + ldy);
@@ -183,7 +181,7 @@ public final class RenderUtils extends MinecraftInstance {
 
         GL11.glBegin(GL11.GL_TRIANGLE_FAN);
         GL11.glVertex2d(x, y);
-        for(double i = end; i >= start; i-=4) {
+        for (double i = end; i >= start; i -= 4) {
             double ldx = Math.cos(i * Math.PI / 180.0) * w;
             double ldy = Math.sin(i * Math.PI / 180.0) * h;
             GL11.glVertex2d(x + ldx, y + ldy);
@@ -192,7 +190,7 @@ public final class RenderUtils extends MinecraftInstance {
         GL11.glEnd();
     }
 
-    public static void drawCircleRect(float x, float y, float x1, float y1, float radius, int color){
+    public static void drawCircleRect(float x, float y, float x1, float y1, float radius, int color) {
         GlStateManager.color(0, 0, 0);
         GL11.glColor4f(0, 0, 0, 0);
 
@@ -207,38 +205,38 @@ public final class RenderUtils extends MinecraftInstance {
         GlStateManager.color(var6, var7, var8, var11);
 
         // 圆角
-        quickRenderCircle(x1-radius,y1-radius,0,90,radius,radius);
-        quickRenderCircle(x+radius,y1-radius,90,180,radius,radius);
-        quickRenderCircle(x+radius,y+radius,180,270,radius,radius);
-        quickRenderCircle(x1-radius,y+radius,270,360,radius,radius);
+        quickRenderCircle(x1 - radius, y1 - radius, 0, 90, radius, radius);
+        quickRenderCircle(x + radius, y1 - radius, 90, 180, radius, radius);
+        quickRenderCircle(x + radius, y + radius, 180, 270, radius, radius);
+        quickRenderCircle(x1 - radius, y + radius, 270, 360, radius, radius);
 
         // 矩形
-        quickDrawRect(x+radius,y+radius,x1-radius,y1-radius);
-        quickDrawRect(x,y+radius,x+radius,y1-radius);
-        quickDrawRect(x1-radius,y+radius,x1,y1-radius);
-        quickDrawRect(x+radius,y,x1-radius,y+radius);
-        quickDrawRect(x+radius,y1-radius,x1-radius,y1);
+        quickDrawRect(x + radius, y + radius, x1 - radius, y1 - radius);
+        quickDrawRect(x, y + radius, x + radius, y1 - radius);
+        quickDrawRect(x1 - radius, y + radius, x1, y1 - radius);
+        quickDrawRect(x + radius, y, x1 - radius, y + radius);
+        quickDrawRect(x + radius, y1 - radius, x1 - radius, y1);
 
         GlStateManager.enableTexture2D();
         GlStateManager.disableBlend();
     }
-    
-    public static int drawText(String text, GameFontRenderer fontRenderer, int width, int height, float scale, int color, boolean shadow){
-        return drawText(text, fontRenderer, width, height, scale, color,  false, shadow);
+
+    public static int drawText(String text, GameFontRenderer fontRenderer, int width, int height, float scale, int color, boolean shadow) {
+        return drawText(text, fontRenderer, width, height, scale, color, false, shadow);
     }
 
-    public static int drawCenterText(String text, GameFontRenderer fontRenderer, int width, int height, float scale, int color, boolean shadow){
-        return drawText(text, fontRenderer, width, height, scale, color,  true, shadow);
+    public static int drawCenterText(String text, GameFontRenderer fontRenderer, int width, int height, float scale, int color, boolean shadow) {
+        return drawText(text, fontRenderer, width, height, scale, color, true, shadow);
     }
 
     public static int drawText(String text, GameFontRenderer fontRenderer, int width, int height, float scale, int color, boolean center, boolean shadow) {
         GlStateManager.pushMatrix();
         //set scale
         GlStateManager.scale(scale, scale, scale);
-        int length=0;
-        if(center){
+        int length = 0;
+        if (center) {
             length = fontRenderer.drawCenteredString(text, Math.round(width / scale), Math.round(height / scale), color, shadow);
-        }else{
+        } else {
             length = fontRenderer.drawString(text, Math.round(width / scale), Math.round(height / scale), color, shadow);
         }
         GlStateManager.popMatrix();
@@ -276,7 +274,7 @@ public final class RenderUtils extends MinecraftInstance {
         glDisable(3042);
         glDisable(2848);
         glShadeModel(7424);
-        glColor4f(1f,1f,1f,1f);
+        glColor4f(1f, 1f, 1f, 1f);
     }
 
     public static void quickDrawGradientSideways(double left, double top, double right, double bottom, int col1, int col2) {
@@ -330,7 +328,7 @@ public final class RenderUtils extends MinecraftInstance {
         disableGlCap(GL_TEXTURE_2D, GL_DEPTH_TEST);
         glDepthMask(false);
 
-        if(box) {
+        if (box) {
             glColor(color.getRed(), color.getGreen(), color.getBlue(), color.getAlpha() != 255 ? color.getAlpha() : outline ? 26 : 35);
             drawFilledBox(axisAlignedBB);
         }
@@ -410,11 +408,11 @@ public final class RenderUtils extends MinecraftInstance {
         if (outline) {
             glLineWidth(outlineWidth);
             enableGlCap(GL_LINE_SMOOTH);
-            glColor(color.getRed(), color.getGreen(), color.getBlue(), box?170:255);
+            glColor(color.getRed(), color.getGreen(), color.getBlue(), box ? 170 : 255);
             drawSelectionBoundingBox(axisAlignedBB);
         }
 
-        if(box) {
+        if (box) {
             glColor(color.getRed(), color.getGreen(), color.getBlue(), outline ? 26 : 35);
             drawFilledBox(axisAlignedBB);
         }
@@ -440,7 +438,7 @@ public final class RenderUtils extends MinecraftInstance {
             drawSelectionBoundingBox(axisAlignedBB);
         }
 
-        if(box) {
+        if (box) {
             glColor(color.getRed(), color.getGreen(), color.getBlue(), outline ? 26 : 35);
             drawFilledBox(axisAlignedBB);
         }
@@ -456,7 +454,7 @@ public final class RenderUtils extends MinecraftInstance {
         final RenderManager renderManager = mc.getRenderManager();
         final double renderY = y - renderManager.renderPosY;
 
-        drawAxisAlignedBB(new AxisAlignedBB(size, renderY + 0.02D, size, -size, renderY, -size), color,false,true,2F);
+        drawAxisAlignedBB(new AxisAlignedBB(size, renderY + 0.02D, size, -size, renderY, -size), color, false, true, 2F);
     }
 
     public static void drawPlatform(final Entity entity, final Color color) {
@@ -475,7 +473,7 @@ public final class RenderUtils extends MinecraftInstance {
                 .offset(x, y, z);
 
         drawAxisAlignedBB(new AxisAlignedBB(axisAlignedBB.minX, axisAlignedBB.maxY + 0.2, axisAlignedBB.minZ, axisAlignedBB.maxX, axisAlignedBB.maxY + 0.26, axisAlignedBB.maxZ),
-                color,false,true,2F);
+                color, false, true, 2F);
     }
 
     public static void drawFilledBox(final AxisAlignedBB axisAlignedBB) {
@@ -653,7 +651,7 @@ public final class RenderUtils extends MinecraftInstance {
         glPopAttrib();
     }
 
-    public static void drawLimitedCircle(final float lx, final float ly, final float x2, final float y2,final int xx, final int yy, final float radius, final Color color) {
+    public static void drawLimitedCircle(final float lx, final float ly, final float x2, final float y2, final int xx, final int yy, final float radius, final Color color) {
         int sections = 50;
         double dAngle = 2 * Math.PI / sections;
         float x, y;
@@ -671,7 +669,7 @@ public final class RenderUtils extends MinecraftInstance {
             y = (float) (radius * Math.cos((i * dAngle)));
 
             glColor4f(color.getRed() / 255F, color.getGreen() / 255F, color.getBlue() / 255F, color.getAlpha() / 255F);
-            glVertex2f(Math.min(x2,Math.max(xx + x,lx)), Math.min(y2,Math.max(yy + y,ly)));
+            glVertex2f(Math.min(x2, Math.max(xx + x, lx)), Math.min(y2, Math.max(yy + y, ly)));
         }
 
         GlStateManager.color(0, 0, 0);
@@ -708,7 +706,7 @@ public final class RenderUtils extends MinecraftInstance {
     }
 
     public static void glColor(final Color color, final int alpha) {
-        glColor(color, alpha/255F);
+        glColor(color, alpha / 255F);
     }
 
     public static void glColor(final Color color, final float alpha) {
@@ -850,7 +848,7 @@ public final class RenderUtils extends MinecraftInstance {
 
     public static void makeScissorBox(final float x, final float y, final float x2, final float y2, final float scaleOffset) {
         final ScaledResolution scaledResolution = new ScaledResolution(mc);
-        final float factor = scaledResolution.getScaleFactor()*scaleOffset;
+        final float factor = scaledResolution.getScaleFactor() * scaleOffset;
         glScissor((int) (x * factor), (int) ((scaledResolution.getScaledHeight() - y2) * factor), (int) ((x2 - x) * factor), (int) ((y2 - y) * factor));
     }
 
@@ -1020,7 +1018,7 @@ public final class RenderUtils extends MinecraftInstance {
         Gui.drawRect(0, 0, 0, 0, 0);
     }
 
-    public static void drawTriAngle(float cx,float cy,float r,float n,Color color){
+    public static void drawTriAngle(float cx, float cy, float r, float n, Color color) {
         GL11.glPushMatrix();
         cx *= 2.0;
         cy *= 2.0;
@@ -1039,7 +1037,7 @@ public final class RenderUtils extends MinecraftInstance {
         GL11.glHint(3154, 4354);
         GL11.glHint(3155, 4354);
         GL11.glScalef(0.5f, 0.5f, 0.5f);
-        GlStateManager.color(0,0,0);
+        GlStateManager.color(0, 0, 0);
         GlStateManager.resetColor();
         glColor(color);
         GL11.glBegin(2);

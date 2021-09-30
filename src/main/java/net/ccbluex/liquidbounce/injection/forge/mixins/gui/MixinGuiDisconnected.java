@@ -38,13 +38,13 @@ public abstract class MixinGuiDisconnected extends MixinGuiScreen {
     private GuiSlider autoReconnectDelaySlider;
     private GuiButton forgeBypassButton;
     private int reconnectTimer;
-    private String infoStr="null";
+    private String infoStr = "null";
 
     @Inject(method = "initGui", at = @At("RETURN"))
     private void initGui(CallbackInfo callbackInfo) {
         reconnectTimer = 0;
-        final ServerData server=ServerUtils.serverData;
-        infoStr="§fPlaying on: "+mc.session.getUsername()+" | "+server.serverIP;
+        final ServerData server = ServerUtils.serverData;
+        infoStr = "§fPlaying on: " + mc.session.getUsername() + " | " + server.serverIP;
         buttonList.add(reconnectButton = new GuiButton(1, this.width / 2 - 100, this.height / 2 + field_175353_i / 2 + this.fontRendererObj.FONT_HEIGHT + 22, 98, 20, "%ui.reconnect%"));
 
         this.drawReconnectDelaySlider();
@@ -93,7 +93,7 @@ public abstract class MixinGuiDisconnected extends MixinGuiScreen {
 
     @Inject(method = "drawScreen", at = @At("RETURN"))
     private void drawScreen(CallbackInfo callbackInfo) {
-        Fonts.font20.drawCenteredString(infoStr, this.width / 2F, this.height / 2F + field_175353_i / 2F + this.fontRendererObj.FONT_HEIGHT + 100, 0,false);
+        Fonts.font20.drawCenteredString(infoStr, this.width / 2F, this.height / 2F + field_175353_i / 2F + this.fontRendererObj.FONT_HEIGHT + 100, 0, false);
         if (AutoReconnect.INSTANCE.isEnabled()) {
             this.updateReconnectButton();
         }

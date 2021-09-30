@@ -31,18 +31,19 @@ import java.util.Random;
 
 public class GuiAltManager extends GuiScreen {
 
+    public static GuiTextField randomAltField;
+
+    static {
+        randomAltField = new GuiTextField(2, Fonts.font20, 0, 0, 0, 0);
+        randomAltField.setText("F%nD%nP%n_%s%s%s");
+        randomAltField.setMaxStringLength(Integer.MAX_VALUE);
+    }
+
     private final GuiScreen prevGui;
     public String status = "§7%ui.alt.idle%";
     private GuiButton loginButton;
     private GuiButton randomAltButton;
     private GuiList altsList;
-    public static GuiTextField randomAltField;
-
-    static {
-        randomAltField = new GuiTextField(2, Fonts.font20, 0,0,0,0);
-        randomAltField.setText("F%nD%nP%n_%s%s%s");
-        randomAltField.setMaxStringLength(Integer.MAX_VALUE);
-    }
 
     public GuiAltManager(final GuiScreen prevGui) {
         this.prevGui = prevGui;
@@ -54,7 +55,7 @@ public class GuiAltManager extends GuiScreen {
 
         if (minecraftAccount.isCracked()) {
             LoginUtils.loginCracked(minecraftAccount.getName());
-            return LanguageManager.INSTANCE.getAndFormat("ui.alt.nameChanged",minecraftAccount.getName());
+            return LanguageManager.INSTANCE.getAndFormat("ui.alt.nameChanged", minecraftAccount.getName());
         }
 
         LoginUtils.LoginResult result = LoginUtils.login(minecraftAccount.getName(), minecraftAccount.getPassword());
@@ -62,7 +63,7 @@ public class GuiAltManager extends GuiScreen {
             String userName = Minecraft.getMinecraft().getSession().getUsername();
             minecraftAccount.setAccountName(userName);
             LiquidBounce.fileManager.saveConfig(LiquidBounce.fileManager.accountsConfig);
-            return LanguageManager.INSTANCE.getAndFormat("ui.alt.nameChanged",userName);
+            return LanguageManager.INSTANCE.getAndFormat("ui.alt.nameChanged", userName);
         }
 
         if (result == LoginUtils.LoginResult.WRONG_PASSWORD)
@@ -116,10 +117,10 @@ public class GuiAltManager extends GuiScreen {
         this.buttonList.add(randomAltButton = new GuiButton(4, 5, j + 24 * 2, 90, 20, "%ui.disconnect.randomAlt%"));
         this.buttonList.add(new GuiButton(89, 5, j + 24 * 3, 90, 20, "%ui.disconnect.randomOffline%"));
         this.buttonList.add(new GuiButton(6, 5, j + 24 * 4, 90, 20, "%ui.alt.directLogin%"));
-        randomAltField.xPosition=5;
-        randomAltField.yPosition=j + 24 * 5;
-        randomAltField.width=90;
-        randomAltField.height=20;
+        randomAltField.xPosition = 5;
+        randomAltField.yPosition = j + 24 * 5;
+        randomAltField.width = 90;
+        randomAltField.height = 20;
     }
 
     @Override
@@ -129,13 +130,13 @@ public class GuiAltManager extends GuiScreen {
         altsList.drawScreen(mouseX, mouseY, partialTicks);
 
         Fonts.font20.drawCenteredString("%ui.altmanager%", width / 2, 6, 0xffffff);
-        Fonts.font18.drawCenteredString( LanguageManager.INSTANCE.getAndFormat("ui.alt.alts",LiquidBounce.fileManager.accountsConfig.altManagerMinecraftAccounts.size()), width / 2, 18, 0xffffff);
+        Fonts.font18.drawCenteredString(LanguageManager.INSTANCE.getAndFormat("ui.alt.alts", LiquidBounce.fileManager.accountsConfig.altManagerMinecraftAccounts.size()), width / 2, 18, 0xffffff);
         Fonts.font18.drawCenteredString(status, width / 2, 32, 0xffffff);
-        Fonts.font18.drawStringWithShadow(LanguageManager.INSTANCE.getAndFormat("ui.alt.username",mc.getSession().getUsername()), 6, 6, 0xffffff);
-        Fonts.font18.drawStringWithShadow(LanguageManager.INSTANCE.getAndFormat("ui.alt.type",(UserUtils.INSTANCE.isValidTokenOffline(mc.getSession().getToken()) ? "%ui.alt.type.premium%" : "%ui.alt.type.cracked%")), 6, 15, 0xffffff);
+        Fonts.font18.drawStringWithShadow(LanguageManager.INSTANCE.getAndFormat("ui.alt.username", mc.getSession().getUsername()), 6, 6, 0xffffff);
+        Fonts.font18.drawStringWithShadow(LanguageManager.INSTANCE.getAndFormat("ui.alt.type", (UserUtils.INSTANCE.isValidTokenOffline(mc.getSession().getToken()) ? "%ui.alt.type.premium%" : "%ui.alt.type.cracked%")), 6, 15, 0xffffff);
 
         randomAltField.drawTextBox();
-        if(randomAltField.getText().isEmpty() && !randomAltField.isFocused())
+        if (randomAltField.getText().isEmpty() && !randomAltField.isFocused())
             drawCenteredString(Fonts.font20, "§7%ui.alt.randomAltField%", width / 2 - 55, 66, 0xffffff);
 
         super.drawScreen(mouseX, mouseY, partialTicks);
@@ -300,7 +301,7 @@ public class GuiAltManager extends GuiScreen {
             }
         }
 
-        if(randomAltField.isFocused())
+        if (randomAltField.isFocused())
             randomAltField.textboxKeyTyped(typedChar, keyCode);
 
         super.keyTyped(typedChar, keyCode);

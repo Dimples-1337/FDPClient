@@ -31,19 +31,19 @@ object KillInsults : Module() {
         ), "RawWords"
     )
     private val waterMarkValue = BoolValue("WaterMark", true)
-    private val insultFile=File(LiquidBounce.fileManager.dir, "insult.json")
+    private val insultFile = File(LiquidBounce.fileManager.dir, "insult.json")
 
     init {
         loadFile()
     }
 
-    fun loadFile(){
-        fun convertJson(){
+    fun loadFile() {
+        fun convertJson() {
             insultWords.clear()
-            insultWords.addAll(IOUtils.toString(FileInputStream(insultFile),"utf-8").split("\n")
+            insultWords.addAll(IOUtils.toString(FileInputStream(insultFile), "utf-8").split("\n")
                 .filter { it.isNotBlank() })
             val writer = BufferedWriter(OutputStreamWriter(FileOutputStream(insultFile), StandardCharsets.UTF_8))
-            val json=JsonArray()
+            val json = JsonArray()
             insultWords.map { JsonPrimitive(it) }.forEach(json::add)
             writer.write(FileManager.PRETTY_GSON.toJson(json))
             writer.close()
@@ -51,17 +51,17 @@ object KillInsults : Module() {
 
         try {
             //check file exists
-            if(!insultFile.exists()){
+            if (!insultFile.exists()) {
                 FileUtils.unpackFile(insultFile, "assets/minecraft/fdpclient/misc/insult.json")
             }
             //read it
-            val json=JsonParser().parse(IOUtils.toString(FileInputStream(insultFile),"utf-8"))
-            if(json.isJsonArray){
+            val json = JsonParser().parse(IOUtils.toString(FileInputStream(insultFile), "utf-8"))
+            if (json.isJsonArray) {
                 insultWords.clear()
-                json.asJsonArray.forEach{
+                json.asJsonArray.forEach {
                     insultWords.add(it.asString)
                 }
-            }else{
+            } else {
                 // not jsonArray convert it to jsonArray
                 convertJson()
             }
@@ -71,15 +71,15 @@ object KillInsults : Module() {
         }
     }
 
-    fun getRandomOne():String{
-        return insultWords[RandomUtils.nextInt(0, insultWords.size-1)]
+    fun getRandomOne(): String {
+        return insultWords[RandomUtils.nextInt(0, insultWords.size - 1)]
     }
 
     @EventTarget
     fun onKilled(event: EntityKilledEvent) {
-        val target=event.targetEntity
+        val target = event.targetEntity
 
-        if(target !is EntityPlayer)
+        if (target !is EntityPlayer)
             return
 
         when (modeValue.get().lowercase()) {
@@ -96,7 +96,7 @@ object KillInsults : Module() {
     }
 
     private fun sendInsultWords(msg: String, name: String) {
-        var message = msg.replace("%name%",name)
+        var message = msg.replace("%name%", name)
         if (waterMarkValue.get()) {
             message = "[FDPClient] $message"
         }

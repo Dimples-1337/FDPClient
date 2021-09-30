@@ -39,7 +39,7 @@ public class LiquidBounceStyle extends Style {
         float textWidth = Fonts.font18.getStringWidth("§f" + StringUtils.stripControlCodes(panel.getName()));
         Fonts.font18.drawString("§f" + panel.getName(), (int) (panel.getX() - (textWidth - 100.0F) / 2F), panel.getY() + 7, -16777216);
 
-        if(panel.getScrollbar() && panel.getFade() > 0) {
+        if (panel.getScrollbar() && panel.getFade() > 0) {
             RenderUtils.drawRect(panel.getX() - 2, panel.getY() + 21, panel.getX(), panel.getY() + 16 + panel.getFade(), Integer.MAX_VALUE);
             RenderUtils.drawRect(panel.getX() - 2, panel.getY() + 30 + (panel.getFade() - 24F) / (panel.getElements().size() - LiquidBounce.moduleManager.getModule(ClickGUIModule.class).maxElementsValue.get()) * panel.getDragged() - 10.0f, panel.getX(), panel.getY() + 40 + (panel.getFade() - 24.0f) / (panel.getElements().size() - LiquidBounce.moduleManager.getModule(ClickGUIModule.class).maxElementsValue.get()) * panel.getDragged(), Integer.MIN_VALUE);
         }
@@ -68,13 +68,13 @@ public class LiquidBounceStyle extends Style {
 
         final List<Value<?>> moduleValues = moduleElement.getModule().getValues();
 
-        if(!moduleValues.isEmpty()) {
+        if (!moduleValues.isEmpty()) {
             Fonts.font18.drawString("+", moduleElement.getX() + moduleElement.getWidth() - 8, moduleElement.getY() + (moduleElement.getHeight() / 2), Color.WHITE.getRGB());
 
-            if(moduleElement.isShowSettings()) {
+            if (moduleElement.isShowSettings()) {
                 int yPos = moduleElement.getY() + 4;
-                for(final Value value : moduleValues) {
-                    if(!value.getDisplayable())
+                for (final Value value : moduleValues) {
+                    if (!value.getDisplayable())
                         continue;
 
                     if (value instanceof BoolValue) {
@@ -98,13 +98,13 @@ public class LiquidBounceStyle extends Style {
                         GlStateManager.resetColor();
                         Fonts.font18.drawString(text, moduleElement.getX() + moduleElement.getWidth() + 6, yPos + 4, ((BoolValue) value).get() ? guiColor : Integer.MAX_VALUE);
                         yPos += 12;
-                    }else if(value instanceof ListValue) {
+                    } else if (value instanceof ListValue) {
                         ListValue listValue = (ListValue) value;
 
                         final String text = value.getName();
                         final float textWidth = Fonts.font18.getStringWidth(text);
 
-                        if(moduleElement.getSettingsWidth() < textWidth + 16)
+                        if (moduleElement.getSettingsWidth() < textWidth + 16)
                             moduleElement.setSettingsWidth(textWidth + 16);
 
                         RenderUtils.drawRect(moduleElement.getX() + moduleElement.getWidth() + 4, yPos + 2, moduleElement.getX() + moduleElement.getWidth() + moduleElement.getSettingsWidth(), yPos + 14, Integer.MIN_VALUE);
@@ -112,8 +112,8 @@ public class LiquidBounceStyle extends Style {
                         Fonts.font18.drawString("§c" + text, moduleElement.getX() + moduleElement.getWidth() + 6, yPos + 4, 0xffffff);
                         Fonts.font18.drawString(listValue.openList ? "-" : "+", (int) (moduleElement.getX() + moduleElement.getWidth() + moduleElement.getSettingsWidth() - (listValue.openList ? 5 : 6)), yPos + 4, 0xffffff);
 
-                        if(mouseX >= moduleElement.getX() + moduleElement.getWidth() + 4 && mouseX <= moduleElement.getX() + moduleElement.getWidth() + moduleElement.getSettingsWidth() && mouseY >= yPos + 2 && mouseY <= yPos + 14) {
-                            if(Mouse.isButtonDown(0) && moduleElement.isntPressed()) {
+                        if (mouseX >= moduleElement.getX() + moduleElement.getWidth() + 4 && mouseX <= moduleElement.getX() + moduleElement.getWidth() + moduleElement.getSettingsWidth() && mouseY >= yPos + 2 && mouseY <= yPos + 14) {
+                            if (Mouse.isButtonDown(0) && moduleElement.isntPressed()) {
                                 listValue.openList = !listValue.openList;
                                 mc.getSoundHandler().playSound(PositionedSoundRecord.create(new ResourceLocation("gui.button.press"), 1.0F));
                             }
@@ -121,17 +121,17 @@ public class LiquidBounceStyle extends Style {
 
                         yPos += 12;
 
-                        for(final String valueOfList : listValue.getValues()) {
+                        for (final String valueOfList : listValue.getValues()) {
                             final float textWidth2 = Fonts.font18.getStringWidth(">" + valueOfList);
 
-                            if(moduleElement.getSettingsWidth() < textWidth2 + 8)
+                            if (moduleElement.getSettingsWidth() < textWidth2 + 8)
                                 moduleElement.setSettingsWidth(textWidth2 + 8);
 
                             if (listValue.openList) {
                                 RenderUtils.drawRect(moduleElement.getX() + moduleElement.getWidth() + 4, yPos + 2, moduleElement.getX() + moduleElement.getWidth() + moduleElement.getSettingsWidth(), yPos + 14, Integer.MIN_VALUE);
 
-                                if(mouseX >= moduleElement.getX() + moduleElement.getWidth() + 4 && mouseX <= moduleElement.getX() + moduleElement.getWidth() + moduleElement.getSettingsWidth() && mouseY >= yPos + 2 && mouseY <= yPos + 14) {
-                                    if(Mouse.isButtonDown(0) && moduleElement.isntPressed()) {
+                                if (mouseX >= moduleElement.getX() + moduleElement.getWidth() + 4 && mouseX <= moduleElement.getX() + moduleElement.getWidth() + moduleElement.getSettingsWidth() && mouseY >= yPos + 2 && mouseY <= yPos + 14) {
+                                    if (Mouse.isButtonDown(0) && moduleElement.isntPressed()) {
                                         listValue.set(valueOfList);
                                         mc.getSoundHandler().playSound(PositionedSoundRecord.create(new ResourceLocation("gui.button.press"), 1.0F));
                                     }
@@ -143,12 +143,12 @@ public class LiquidBounceStyle extends Style {
                                 yPos += 12;
                             }
                         }
-                    }else if(value instanceof FloatValue) {
+                    } else if (value instanceof FloatValue) {
                         final FloatValue floatValue = (FloatValue) value;
                         final String text = value.getName() + "§f: §c" + round(floatValue.get());
                         final float textWidth = Fonts.font18.getStringWidth(text);
 
-                        if(moduleElement.getSettingsWidth() < textWidth + 8)
+                        if (moduleElement.getSettingsWidth() < textWidth + 8)
                             moduleElement.setSettingsWidth(textWidth + 8);
 
                         RenderUtils.drawRect(moduleElement.getX() + moduleElement.getWidth() + 4, yPos + 2, moduleElement.getX() + moduleElement.getWidth() + moduleElement.getSettingsWidth(), yPos + 24, Integer.MIN_VALUE);
@@ -156,8 +156,8 @@ public class LiquidBounceStyle extends Style {
                         final float sliderValue = moduleElement.getX() + moduleElement.getWidth() + ((moduleElement.getSettingsWidth() - 12) * (floatValue.get() - floatValue.getMinimum()) / (floatValue.getMaximum() - floatValue.getMinimum()));
                         RenderUtils.drawRect(8 + sliderValue, yPos + 15, sliderValue + 11, yPos + 21, guiColor);
 
-                        if(mouseX >= moduleElement.getX() + moduleElement.getWidth() + 4 && mouseX <= moduleElement.getX() + moduleElement.getWidth() + moduleElement.getSettingsWidth() - 4 && mouseY >= yPos + 15 && mouseY <= yPos + 21) {
-                            if(Mouse.isButtonDown(0)) {
+                        if (mouseX >= moduleElement.getX() + moduleElement.getWidth() + 4 && mouseX <= moduleElement.getX() + moduleElement.getWidth() + moduleElement.getSettingsWidth() - 4 && mouseY >= yPos + 15 && mouseY <= yPos + 21) {
+                            if (Mouse.isButtonDown(0)) {
                                 double i = MathHelper.clamp_double((mouseX - moduleElement.getX() - moduleElement.getWidth() - 8) / (moduleElement.getSettingsWidth() - 12), 0, 1);
                                 floatValue.set(round((float) (floatValue.getMinimum() + (floatValue.getMaximum() - floatValue.getMinimum()) * i)).floatValue());
                             }
@@ -166,12 +166,12 @@ public class LiquidBounceStyle extends Style {
                         GlStateManager.resetColor();
                         Fonts.font18.drawString(text, moduleElement.getX() + moduleElement.getWidth() + 6, yPos + 4, 0xffffff);
                         yPos += 22;
-                    }else if(value instanceof IntegerValue) {
+                    } else if (value instanceof IntegerValue) {
                         final IntegerValue integerValue = (IntegerValue) value;
                         final String text = value.getName() + "§f: §c" + (value instanceof BlockValue ? BlockUtils.getBlockName(integerValue.get()) + " (" + integerValue.get() + ")" : integerValue.get());
                         final float textWidth = Fonts.font18.getStringWidth(text);
 
-                        if(moduleElement.getSettingsWidth() < textWidth + 8)
+                        if (moduleElement.getSettingsWidth() < textWidth + 8)
                             moduleElement.setSettingsWidth(textWidth + 8);
 
                         RenderUtils.drawRect(moduleElement.getX() + moduleElement.getWidth() + 4, yPos + 2, moduleElement.getX() + moduleElement.getWidth() + moduleElement.getSettingsWidth(), yPos + 24, Integer.MIN_VALUE);
@@ -179,8 +179,8 @@ public class LiquidBounceStyle extends Style {
                         final float sliderValue = moduleElement.getX() + moduleElement.getWidth() + ((moduleElement.getSettingsWidth() - 12) * (integerValue.get() - integerValue.getMinimum()) / (integerValue.getMaximum() - integerValue.getMinimum()));
                         RenderUtils.drawRect(8 + sliderValue, yPos + 15, sliderValue + 11, yPos + 21, guiColor);
 
-                        if(mouseX >= moduleElement.getX() + moduleElement.getWidth() + 4 && mouseX <= moduleElement.getX() + moduleElement.getWidth() + moduleElement.getSettingsWidth() && mouseY >= yPos + 15 && mouseY <= yPos + 21) {
-                            if(Mouse.isButtonDown(0)) {
+                        if (mouseX >= moduleElement.getX() + moduleElement.getWidth() + 4 && mouseX <= moduleElement.getX() + moduleElement.getWidth() + moduleElement.getSettingsWidth() && mouseY >= yPos + 15 && mouseY <= yPos + 21) {
+                            if (Mouse.isButtonDown(0)) {
                                 double i = MathHelper.clamp_double((mouseX - moduleElement.getX() - moduleElement.getWidth() - 8) / (moduleElement.getSettingsWidth() - 12), 0, 1);
                                 integerValue.set((int) (integerValue.getMinimum() + (integerValue.getMaximum() - integerValue.getMinimum()) * i));
                             }
@@ -189,7 +189,7 @@ public class LiquidBounceStyle extends Style {
                         GlStateManager.resetColor();
                         Fonts.font18.drawString(text, moduleElement.getX() + moduleElement.getWidth() + 6, yPos + 4, 0xffffff);
                         yPos += 22;
-                    }else if(value instanceof FontValue) {
+                    } else if (value instanceof FontValue) {
                         final FontValue fontValue = (FontValue) value;
                         final FontRenderer fontRenderer = fontValue.get();
 
@@ -201,12 +201,12 @@ public class LiquidBounceStyle extends Style {
                             final GameFontRenderer liquidFontRenderer = (GameFontRenderer) fontRenderer;
 
                             displayString = "Font: " + liquidFontRenderer.getDefaultFont().getFont().getName() + " - " + liquidFontRenderer.getDefaultFont().getFont().getSize();
-                        }else if(fontRenderer == Fonts.minecraftFont)
+                        } else if (fontRenderer == Fonts.minecraftFont)
                             displayString = "Font: Minecraft";
-                        else{
+                        else {
                             final Object[] objects = Fonts.getFontDetails(fontRenderer);
 
-                            if(objects != null) {
+                            if (objects != null) {
                                 displayString = objects[0] + ((int) objects[1] != -1 ? " - " + objects[1] : "");
                             }
                         }
@@ -214,37 +214,37 @@ public class LiquidBounceStyle extends Style {
                         Fonts.font18.drawString(displayString, moduleElement.getX() + moduleElement.getWidth() + 6, yPos + 4, Color.WHITE.getRGB());
                         int stringWidth = Fonts.font18.getStringWidth(displayString);
 
-                        if(moduleElement.getSettingsWidth() < stringWidth + 8)
+                        if (moduleElement.getSettingsWidth() < stringWidth + 8)
                             moduleElement.setSettingsWidth(stringWidth + 8);
 
-                        if((Mouse.isButtonDown(0) && !mouseDown || Mouse.isButtonDown(1) && !rightMouseDown) && mouseX >= moduleElement.getX() + moduleElement.getWidth() + 4 && mouseX <= moduleElement.getX() + moduleElement.getWidth() + moduleElement.getSettingsWidth() && mouseY >= yPos + 4 && mouseY <= yPos + 12) {
+                        if ((Mouse.isButtonDown(0) && !mouseDown || Mouse.isButtonDown(1) && !rightMouseDown) && mouseX >= moduleElement.getX() + moduleElement.getWidth() + 4 && mouseX <= moduleElement.getX() + moduleElement.getWidth() + moduleElement.getSettingsWidth() && mouseY >= yPos + 4 && mouseY <= yPos + 12) {
                             final List<FontRenderer> fonts = Fonts.getFonts();
 
-                            if(Mouse.isButtonDown(0)) {
-                                for(int i = 0; i < fonts.size(); i++) {
+                            if (Mouse.isButtonDown(0)) {
+                                for (int i = 0; i < fonts.size(); i++) {
                                     final FontRenderer font = fonts.get(i);
 
-                                    if(font == fontRenderer) {
+                                    if (font == fontRenderer) {
                                         i++;
 
-                                        if(i >= fonts.size())
+                                        if (i >= fonts.size())
                                             i = 0;
 
                                         fontValue.set(fonts.get(i));
                                         break;
                                     }
                                 }
-                            }else{
-                                for(int i = fonts.size() - 1; i >= 0; i--) {
+                            } else {
+                                for (int i = fonts.size() - 1; i >= 0; i--) {
                                     final FontRenderer font = fonts.get(i);
 
-                                    if(font == fontRenderer) {
+                                    if (font == fontRenderer) {
                                         i--;
 
-                                        if(i >= fonts.size())
+                                        if (i >= fonts.size())
                                             i = 0;
 
-                                        if(i < 0)
+                                        if (i < 0)
                                             i = fonts.size() - 1;
 
                                         fontValue.set(fonts.get(i));
@@ -255,7 +255,7 @@ public class LiquidBounceStyle extends Style {
                         }
 
                         yPos += 11;
-                    }else{
+                    } else {
                         String text = value.getName() + "§f: §c" + value.get();
                         float textWidth = Fonts.font18.getStringWidth(text);
 
@@ -273,7 +273,7 @@ public class LiquidBounceStyle extends Style {
                 mouseDown = Mouse.isButtonDown(0);
                 rightMouseDown = Mouse.isButtonDown(1);
 
-                if(moduleElement.getSettingsWidth() > 0F && yPos > moduleElement.getY() + 4)
+                if (moduleElement.getSettingsWidth() > 0F && yPos > moduleElement.getY() + 4)
                     RenderUtils.drawBorderedRect(moduleElement.getX() + moduleElement.getWidth() + 4, moduleElement.getY() + 6, moduleElement.getX() + moduleElement.getWidth() + moduleElement.getSettingsWidth(), yPos + 2, 1F, Integer.MIN_VALUE, 0);
             }
         }

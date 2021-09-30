@@ -22,15 +22,20 @@ import java.util.*
 object LoginUtils : MinecraftInstance() {
     @JvmStatic
     fun login(username: String?, password: String?): LoginResult {
-        val userAuthentication = YggdrasilAuthenticationService(Proxy.NO_PROXY, "").createUserAuthentication(Agent.MINECRAFT) as YggdrasilUserAuthentication
+        val userAuthentication = YggdrasilAuthenticationService(
+            Proxy.NO_PROXY,
+            ""
+        ).createUserAuthentication(Agent.MINECRAFT) as YggdrasilUserAuthentication
 
         userAuthentication.setUsername(username)
         userAuthentication.setPassword(password)
 
         return try {
             userAuthentication.logIn()
-            mc.session = Session(userAuthentication.selectedProfile.name,
-                    userAuthentication.selectedProfile.id.toString(), userAuthentication.authenticatedToken, "mojang")
+            mc.session = Session(
+                userAuthentication.selectedProfile.name,
+                userAuthentication.selectedProfile.id.toString(), userAuthentication.authenticatedToken, "mojang"
+            )
             LoginResult.LOGGED
         } catch (exception: AuthenticationUnavailableException) {
             LoginResult.NO_CONTACT
@@ -52,15 +57,15 @@ object LoginUtils : MinecraftInstance() {
     }
 
     @JvmStatic
-    fun randomCracked(){
-        var name=GuiAltManager.randomAltField.text
+    fun randomCracked() {
+        var name = GuiAltManager.randomAltField.text
 
-        while(name.contains("%n") || name.contains("%s")){
-            if(name.contains("%n"))
-                name=name.replaceFirst("%n",RandomUtils.nextInt(0,9).toString())
+        while (name.contains("%n") || name.contains("%s")) {
+            if (name.contains("%n"))
+                name = name.replaceFirst("%n", RandomUtils.nextInt(0, 9).toString())
 
-            if(name.contains("%s"))
-                name=name.replaceFirst("%s",RandomUtils.randomString(1))
+            if (name.contains("%s"))
+                name = name.replaceFirst("%s", RandomUtils.randomString(1))
         }
 
         loginCracked(name)
@@ -76,7 +81,7 @@ object LoginUtils : MinecraftInstance() {
 
         val sessionObject = try {
             JsonParser().parse(decodedSessionData).asJsonObject
-        } catch (e: java.lang.Exception){
+        } catch (e: java.lang.Exception) {
             return LoginResult.FAILED_PARSE_TOKEN
         }
         val uuid = sessionObject.get("spr").asString

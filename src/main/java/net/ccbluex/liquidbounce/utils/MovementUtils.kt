@@ -69,7 +69,11 @@ object MovementUtils : MinecraftInstance() {
     @JvmStatic
     fun forward(length: Double) {
         val yaw = Math.toRadians(mc.thePlayer.rotationYaw.toDouble())
-        mc.thePlayer.setPosition(mc.thePlayer.posX + -sin(yaw) * length, mc.thePlayer.posY, mc.thePlayer.posZ + cos(yaw) * length)
+        mc.thePlayer.setPosition(
+            mc.thePlayer.posX + -sin(yaw) * length,
+            mc.thePlayer.posY,
+            mc.thePlayer.posZ + cos(yaw) * length
+        )
     }
 
     @JvmStatic
@@ -133,7 +137,13 @@ object MovementUtils : MinecraftInstance() {
     }
 
     @JvmStatic
-    fun setSpeed(moveEvent: MoveEvent, moveSpeed: Double, pseudoYaw: Float, pseudoStrafe: Double, pseudoForward: Double) {
+    fun setSpeed(
+        moveEvent: MoveEvent,
+        moveSpeed: Double,
+        pseudoYaw: Float,
+        pseudoStrafe: Double,
+        pseudoForward: Double
+    ) {
         var forward = pseudoForward
         var strafe = pseudoStrafe
         var yaw = pseudoYaw
@@ -167,7 +177,14 @@ object MovementUtils : MinecraftInstance() {
         var blockHeight = 1.0
         var ground = mc.thePlayer.posY
         while (ground > 0.0) {
-            val customBox = AxisAlignedBB(playerBoundingBox.maxX, ground + blockHeight, playerBoundingBox.maxZ, playerBoundingBox.minX, ground, playerBoundingBox.minZ)
+            val customBox = AxisAlignedBB(
+                playerBoundingBox.maxX,
+                ground + blockHeight,
+                playerBoundingBox.maxZ,
+                playerBoundingBox.minX,
+                ground,
+                playerBoundingBox.minZ
+            )
             if (mc.theWorld.checkBlockCollision(customBox)) {
                 if (blockHeight <= 0.05) return ground + blockHeight
                 ground += blockHeight

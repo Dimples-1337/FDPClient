@@ -19,11 +19,11 @@ class ScriptManager {
      * Loads all scripts inside the scripts folder.
      */
     fun loadScripts() {
-        if(!scriptsFolder.exists())
+        if (!scriptsFolder.exists())
             scriptsFolder.mkdir()
 
         scriptsFolder.listFiles().forEach {
-            if(it.name.endsWith(".js",true)){
+            if (it.name.endsWith(".js", true)) {
                 loadJsScript(it)
             }
         }
@@ -39,11 +39,11 @@ class ScriptManager {
     /**
      * Loads a script from a file.
      */
-    fun loadJsScript(scriptFile : File) {
+    fun loadJsScript(scriptFile: File) {
         try {
             scripts.add(Script(scriptFile))
             ClientUtils.getLogger().info("[ScriptAPI] Successfully loaded script '${scriptFile.name}'.")
-        } catch(t : Throwable) {
+        } catch (t: Throwable) {
             ClientUtils.getLogger().error("[ScriptAPI] Failed to load script '${scriptFile.name}'.", t)
         }
     }

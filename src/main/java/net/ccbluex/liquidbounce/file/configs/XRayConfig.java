@@ -42,7 +42,7 @@ public class XRayConfig extends FileConfig {
 
         xRay.getXrayBlocks().clear();
 
-        for(final JsonElement jsonElement : jsonArray) {
+        for (final JsonElement jsonElement : jsonArray) {
             try {
                 final Block block = Block.getBlockFromName(jsonElement.getAsString());
 
@@ -52,7 +52,7 @@ public class XRayConfig extends FileConfig {
                 }
 
                 xRay.getXrayBlocks().add(block);
-            }catch(final Throwable throwable) {
+            } catch (final Throwable throwable) {
                 ClientUtils.getLogger().error("[FileManager] Failed to add block to xray.", throwable);
             }
         }

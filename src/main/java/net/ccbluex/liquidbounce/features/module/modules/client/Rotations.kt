@@ -16,7 +16,8 @@ object Rotations : Module() {
     val headValue = BoolValue("Head", true)
     val bodyValue = BoolValue("Body", true)
     val fixedValue = ListValue("SensitivityFixed", arrayOf("None", "Old", "New"), "New")
-//    val rotationHumanizeType=EaseUtils.getEnumEasingList("HumanizeType")
+
+    //    val rotationHumanizeType=EaseUtils.getEnumEasingList("HumanizeType")
 //    val rotationHumanizeOrder=EaseUtils.getEnumEasingOrderList("HumanizeOrder")
     val nanValue = BoolValue("NaNCheck", true)
 

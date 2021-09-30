@@ -21,7 +21,12 @@ import net.minecraft.potion.Potion
  * Shows a list of active potion effects
  */
 @ElementInfo(name = "Effects")
-class Effects(x: Double = 2.0, y: Double = 10.0, scale: Float = 1F, side: Side = Side(Side.Horizontal.RIGHT, Side.Vertical.DOWN)) : Element(x, y, scale, side) {
+class Effects(
+    x: Double = 2.0,
+    y: Double = 10.0,
+    scale: Float = 1F,
+    side: Side = Side(Side.Horizontal.RIGHT, Side.Vertical.DOWN)
+) : Element(x, y, scale, side) {
 
     private val fontValue = FontValue("Font", Fonts.font18)
     private val shadow = BoolValue("Shadow", true)
@@ -64,8 +69,20 @@ class Effects(x: Double = 2.0, y: Double = 10.0, scale: Float = 1F, side: Side =
             }
 
             when (side.horizontal) {
-                Side.Horizontal.RIGHT -> fontRenderer.drawString(name, -stringWidth, y + if (side.vertical == Side.Vertical.UP) -fontRenderer.FONT_HEIGHT.toFloat() else 0F, potion.liquidColor, shadow.get())
-                 Side.Horizontal.LEFT, Side.Horizontal.MIDDLE -> fontRenderer.drawString(name, 0F, y + if (side.vertical == Side.Vertical.UP) -fontRenderer.FONT_HEIGHT.toFloat() else 0F, potion.liquidColor, shadow.get())
+                Side.Horizontal.RIGHT -> fontRenderer.drawString(
+                    name,
+                    -stringWidth,
+                    y + if (side.vertical == Side.Vertical.UP) -fontRenderer.FONT_HEIGHT.toFloat() else 0F,
+                    potion.liquidColor,
+                    shadow.get()
+                )
+                Side.Horizontal.LEFT, Side.Horizontal.MIDDLE -> fontRenderer.drawString(
+                    name,
+                    0F,
+                    y + if (side.vertical == Side.Vertical.UP) -fontRenderer.FONT_HEIGHT.toFloat() else 0F,
+                    potion.liquidColor,
+                    shadow.get()
+                )
             }
 
             when (side.vertical) {
@@ -78,7 +95,8 @@ class Effects(x: Double = 2.0, y: Double = 10.0, scale: Float = 1F, side: Side =
             width = if (side.horizontal == Side.Horizontal.RIGHT) -40F else 40F
 
         if (y == 0F)
-            y = if (side.vertical == Side.Vertical.UP) -fontRenderer.FONT_HEIGHT.toFloat() else fontRenderer.FONT_HEIGHT.toFloat()
+            y =
+                if (side.vertical == Side.Vertical.UP) -fontRenderer.FONT_HEIGHT.toFloat() else fontRenderer.FONT_HEIGHT.toFloat()
 
         return Border(0F, 0F, width, y)
     }

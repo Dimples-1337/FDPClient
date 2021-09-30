@@ -36,14 +36,14 @@ public class FriendsConfig extends FileConfig {
 
         final BufferedReader bufferedReader = new BufferedReader(new FileReader(getFile()));
         String line;
-        while((line = bufferedReader.readLine()) != null) {
-            if(!line.contains("{") && !line.contains("}")) {
+        while ((line = bufferedReader.readLine()) != null) {
+            if (!line.contains("{") && !line.contains("}")) {
                 line = line.replace(" ", "").replace("\"", "").replace(",", "");
 
-                if(line.contains(":")) {
+                if (line.contains(":")) {
                     String[] data = line.split(":");
                     addFriend(data[0], data[1]);
-                }else
+                } else
                     addFriend(line);
             }
         }
@@ -59,7 +59,7 @@ public class FriendsConfig extends FileConfig {
     protected void saveConfig() throws IOException {
 
         Writer writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(getFile()), StandardCharsets.UTF_8));
-        for(final Friend friend : getFriends())
+        for (final Friend friend : getFriends())
             writer.append(friend.getPlayerName()).append(":").append(friend.getAlias()).append("\n");
         writer.close();
     }
@@ -82,7 +82,7 @@ public class FriendsConfig extends FileConfig {
      * @return of successfully added friend
      */
     public boolean addFriend(final String playerName, final String alias) {
-        if(isFriend(playerName))
+        if (isFriend(playerName))
             return false;
 
         friends.add(new Friend(playerName, alias));
@@ -95,7 +95,7 @@ public class FriendsConfig extends FileConfig {
      * @param playerName of friend
      */
     public boolean removeFriend(final String playerName) {
-        if(!isFriend(playerName))
+        if (!isFriend(playerName))
             return false;
 
         friends.removeIf(friend -> friend.getPlayerName().equals(playerName));
@@ -109,8 +109,8 @@ public class FriendsConfig extends FileConfig {
      * @return is friend
      */
     public boolean isFriend(final String playerName) {
-        for(final Friend friend : friends)
-            if(friend.getPlayerName().equals(playerName))
+        for (final Friend friend : friends)
+            if (friend.getPlayerName().equals(playerName))
                 return true;
         return false;
     }

@@ -77,7 +77,8 @@ class Blink : Module() {
         if (packet is C04PacketPlayerPosition || packet is C06PacketPlayerPosLook ||
             packet is C08PacketPlayerBlockPlacement ||
             packet is C0APacketAnimation ||
-            packet is C0BPacketEntityAction || packet is C02PacketUseEntity) {
+            packet is C0BPacketEntityAction || packet is C02PacketUseEntity
+        ) {
             event.cancelEvent()
             packets.add(packet)
         }

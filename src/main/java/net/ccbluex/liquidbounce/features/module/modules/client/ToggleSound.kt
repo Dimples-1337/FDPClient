@@ -10,18 +10,18 @@ import net.minecraft.util.ResourceLocation
 
 @ModuleInfo(name = "ToggleSound", category = ModuleCategory.CLIENT, canEnable = false)
 object ToggleSound : Module() {
-    private val moveValue = ListValue("Mode", arrayOf("None","Click","Custom"),"Click")
+    private val moveValue = ListValue("Mode", arrayOf("None", "Click", "Custom"), "Click")
 
-    fun playSound(enable: Boolean){
-        when(moveValue.get().lowercase()){
+    fun playSound(enable: Boolean) {
+        when (moveValue.get().lowercase()) {
             "click" -> {
                 mc.soundHandler.playSound(PositionedSoundRecord.create(ResourceLocation("random.click"), 1F))
             }
 
             "custom" -> {
-                if(enable){
+                if (enable) {
                     LiquidBounce.tipSoundManager.enableSound.asyncPlay()
-                }else{
+                } else {
                     LiquidBounce.tipSoundManager.disableSound.asyncPlay()
                 }
             }

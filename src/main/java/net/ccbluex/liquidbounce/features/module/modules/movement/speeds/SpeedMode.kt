@@ -12,7 +12,7 @@ import net.ccbluex.liquidbounce.utils.MinecraftInstance
 import net.ccbluex.liquidbounce.value.Value
 
 abstract class SpeedMode(val modeName: String) : MinecraftInstance() {
-    protected val valuePrefix="$modeName-"
+    protected val valuePrefix = "$modeName-"
 
     open val values: List<Value<*>>
         get() = ClassUtils.getValues(this.javaClass, this)

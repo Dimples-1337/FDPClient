@@ -38,11 +38,10 @@ public class MetricsLite extends MinecraftInstance {
         }
     }
 
-    // The uuid of the server
-    private String serverUUID;
-
     // The plugin id
     private final int pluginId;
+    // The uuid of the server
+    private String serverUUID;
 
     /**
      * Class constructor.
@@ -57,12 +56,12 @@ public class MetricsLite extends MinecraftInstance {
         try {
             if (!configFile.exists()) {
                 serverUUID = UUID.randomUUID().toString();
-                FileUtils.write(configFile,serverUUID,StandardCharsets.UTF_8);
+                FileUtils.write(configFile, serverUUID, StandardCharsets.UTF_8);
             } else {
-                serverUUID=IOUtils.toString(new FileInputStream(configFile), StandardCharsets.UTF_8);
+                serverUUID = IOUtils.toString(new FileInputStream(configFile), StandardCharsets.UTF_8);
             }
         } catch (Exception e) {
-            serverUUID=UUID.randomUUID().toString();
+            serverUUID = UUID.randomUUID().toString();
             e.printStackTrace();
         }
 
@@ -166,7 +165,7 @@ public class MetricsLite extends MinecraftInstance {
      */
     private JsonObject getServerData() {
         // Minecraft specific data
-        int playerAmount = mc.thePlayer==null?0:1;
+        int playerAmount = mc.thePlayer == null ? 0 : 1;
         int onlineMode = 1;
         String minecraftVersion = LiquidBounce.MINECRAFT_VERSION;
         String softwareName = LiquidBounce.CLIENT_NAME;

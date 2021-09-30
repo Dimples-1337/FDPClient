@@ -27,11 +27,11 @@ object HUD : Module() {
     val chatRectValue = BoolValue("ChatRect", true)
     val chatCombineValue = BoolValue("ChatCombine", true)
     val chatAnimValue = BoolValue("ChatAnimation", true)
-    val rainbowStart=FloatValue("RainbowStart",0.41f,0f,1f)
-    val rainbowStop=FloatValue("RainbowStop",0.58f,0f,1f)
-    val rainbowSaturation=FloatValue("RainbowSaturation",0.7f,0f,1f)
-    val rainbowBrightness=FloatValue("RainbowBrightness",1f,0f,1f)
-    val rainbowSpeed=IntegerValue("RainbowSpeed",1500,500,7000)
+    val rainbowStart = FloatValue("RainbowStart", 0.41f, 0f, 1f)
+    val rainbowStop = FloatValue("RainbowStop", 0.58f, 0f, 1f)
+    val rainbowSaturation = FloatValue("RainbowSaturation", 0.7f, 0f, 1f)
+    val rainbowBrightness = FloatValue("RainbowBrightness", 1f, 0f, 1f)
+    val rainbowSpeed = IntegerValue("RainbowSpeed", 1500, 500, 7000)
 
     @EventTarget
     fun onRender2D(event: Render2DEvent) {

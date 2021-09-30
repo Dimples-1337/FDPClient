@@ -11,11 +11,11 @@ import java.awt.image.BufferedImage
  * 为了支持UTF16，所以char是string
  */
 class FontChar(val char: String, val resourceLocation: ResourceLocation, val bufImg: BufferedImage) {
-    val width=bufImg.width
+    val width = bufImg.width
 
     init {
         // this need to run on minecraft main thread
-        val mc=Minecraft.getMinecraft()
+        val mc = Minecraft.getMinecraft()
         mc.addScheduledTask {
             mc.textureManager.loadTexture(resourceLocation, DynamicTexture(bufImg))
         }

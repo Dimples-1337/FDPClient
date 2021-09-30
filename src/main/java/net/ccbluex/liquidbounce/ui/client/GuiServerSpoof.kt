@@ -19,7 +19,7 @@ class GuiServerSpoof(private val prevGui: GuiScreen) : GuiScreen() {
         textField.isFocused = true
         textField.text = ServerSpoof.address
         textField.maxStringLength = 114514
-        buttonList.add(GuiButton(2, width / 2 - 100, height / 4 + 96, "STATUS").also { stat=it })
+        buttonList.add(GuiButton(2, width / 2 - 100, height / 4 + 96, "STATUS").also { stat = it })
         buttonList.add(GuiButton(0, width / 2 - 100, height / 4 + 120, "%ui.back%"))
         updateButtonStat()
     }

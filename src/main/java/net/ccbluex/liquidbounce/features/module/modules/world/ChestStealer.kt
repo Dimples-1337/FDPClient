@@ -54,7 +54,7 @@ class ChestStealer : Module() {
         }
     }
 
-    private val chestValue= IntegerValue("ChestOpenDelay",300,0,1000)
+    private val chestValue = IntegerValue("ChestOpenDelay", 300, 0, 1000)
 
     private val takeRandomizedValue = BoolValue("TakeRandomized", false)
     private val onlyItemsValue = BoolValue("OnlyItems", false)
@@ -96,7 +96,7 @@ class ChestStealer : Module() {
 
     @EventTarget
     fun onRender3D(event: Render3DEvent?) {
-        if(!chestTimer.hasTimePassed(chestValue.get().toLong()))
+        if (!chestTimer.hasTimePassed(chestValue.get().toLong()))
             return
 
         val screen = mc.currentScreen
@@ -111,7 +111,10 @@ class ChestStealer : Module() {
             return
 
         // Chest title
-        if (chestTitleValue.get() && (screen.lowerChestInventory == null || !screen.lowerChestInventory.name.contains(ItemStack(Item.itemRegistry.getObject(ResourceLocation("minecraft:chest"))).displayName)))
+        if (chestTitleValue.get() && (screen.lowerChestInventory == null || !screen.lowerChestInventory.name.contains(
+                ItemStack(Item.itemRegistry.getObject(ResourceLocation("minecraft:chest"))).displayName
+            ))
+        )
             return
 
         // inventory cleaner
@@ -129,7 +132,11 @@ class ChestStealer : Module() {
                     for (slotIndex in 0 until screen.inventoryRows * 9) {
                         val slot = screen.inventorySlots.inventorySlots[slotIndex]
 
-                        if (slot.stack != null && (!onlyItemsValue.get() || slot.stack.item !is ItemBlock) && (!inventoryCleaner.state || inventoryCleaner.isUseful(slot.stack, -1)))
+                        if (slot.stack != null && (!onlyItemsValue.get() || slot.stack.item !is ItemBlock) && (!inventoryCleaner.state || inventoryCleaner.isUseful(
+                                slot.stack,
+                                -1
+                            ))
+                        )
                             items.add(slot)
                     }
 
@@ -146,11 +153,18 @@ class ChestStealer : Module() {
                 val slot = screen.inventorySlots.inventorySlots[slotIndex]
 
                 if (delayTimer.hasTimePassed(nextDelay) && slot.stack != null &&
-                        (!onlyItemsValue.get() || slot.stack.item !is ItemBlock) && (!inventoryCleaner.state || inventoryCleaner.isUseful(slot.stack, -1))) {
+                    (!onlyItemsValue.get() || slot.stack.item !is ItemBlock) && (!inventoryCleaner.state || inventoryCleaner.isUseful(
+                        slot.stack,
+                        -1
+                    ))
+                ) {
                     move(screen, slot)
                 }
             }
-        } else if (autoCloseValue.get() && screen.inventorySlots.windowId == contentReceived && autoCloseTimer.hasTimePassed(nextCloseDelay)) {
+        } else if (autoCloseValue.get() && screen.inventorySlots.windowId == contentReceived && autoCloseTimer.hasTimePassed(
+                nextCloseDelay
+            )
+        ) {
             mc.thePlayer.closeScreen()
             nextCloseDelay = TimeUtils.randomDelay(autoCloseMinDelayValue.get(), autoCloseMaxDelayValue.get())
         }
@@ -163,7 +177,7 @@ class ChestStealer : Module() {
         if (packet is S30PacketWindowItems)
             contentReceived = packet.func_148911_c()
 
-        if(packet is S2DPacketOpenWindow)
+        if (packet is S2DPacketOpenWindow)
             chestTimer.reset()
     }
 
@@ -179,7 +193,11 @@ class ChestStealer : Module() {
         for (i in 0 until chest.inventoryRows * 9) {
             val slot = chest.inventorySlots.inventorySlots[i]
 
-            if (slot.stack != null && (!onlyItemsValue.get() || slot.stack.item !is ItemBlock) && (!inventoryCleaner.state || inventoryCleaner.isUseful(slot.stack, -1)))
+            if (slot.stack != null && (!onlyItemsValue.get() || slot.stack.item !is ItemBlock) && (!inventoryCleaner.state || inventoryCleaner.isUseful(
+                    slot.stack,
+                    -1
+                ))
+            )
                 return false
         }
 

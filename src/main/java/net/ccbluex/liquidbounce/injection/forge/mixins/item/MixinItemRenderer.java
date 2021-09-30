@@ -40,6 +40,9 @@ public abstract class MixinItemRenderer {
     @Shadow
     @Final
     private Minecraft mc;
+    @Shadow
+    private ItemStack itemToRender;
+    private Animations animations;
 
     @Shadow
     protected abstract void rotateArroundXAndY(float angle, float angleY);
@@ -49,9 +52,6 @@ public abstract class MixinItemRenderer {
 
     @Shadow
     protected abstract void rotateWithPlayerRotations(EntityPlayerSP entityPlayerSP, float partialTicks);
-
-    @Shadow
-    private ItemStack itemToRender;
 
     @Shadow
     protected abstract void renderItemMap(AbstractClientPlayer clientPlayer, float pitch, float equipmentProgress, float swingProgress);
@@ -74,8 +74,6 @@ public abstract class MixinItemRenderer {
     @Shadow
     protected abstract void renderPlayerArm(AbstractClientPlayer clientPlayer, float equipProgress, float swingProgress);
 
-    private Animations animations;
-
     /**
      * @author Liuli
      */
@@ -97,7 +95,7 @@ public abstract class MixinItemRenderer {
      */
     @Overwrite
     public void renderItemInFirstPerson(float partialTicks) {
-        if(animations==null){
+        if (animations == null) {
             animations = LiquidBounce.moduleManager.getModule(Animations.class);
         }
 
@@ -118,9 +116,9 @@ public abstract class MixinItemRenderer {
             if (this.itemToRender.getItem() instanceof ItemMap) {
                 this.renderItemMap(abstractclientplayer, f2, f, f1);
             } else if (abstractclientplayer.isUsingItem() || ((itemToRender.getItem() instanceof ItemSword || animations.getAnythingBlock().get())
-                    && ((killAura.getAutoBlockValue().equals("Fake")&&killAura.getTarget()!=null) || killAura.getBlockingStatus()))) {
+                    && ((killAura.getAutoBlockValue().equals("Fake") && killAura.getTarget() != null) || killAura.getBlockingStatus()))) {
                 EnumAction enumaction = killAura.getBlockingStatus() || animations.getAnythingBlock().get() ? EnumAction.BLOCK : this.itemToRender.getItemUseAction();
-                switch(enumaction) {
+                switch (enumaction) {
                     case NONE:
                         this.transformFirstPersonItem(f, 0.0F);
                         break;
@@ -130,7 +128,7 @@ public abstract class MixinItemRenderer {
                         this.transformFirstPersonItem(f, f1);
                         break;
                     case BLOCK:
-                        if(animations.getState()){
+                        if (animations.getState()) {
                             GL11.glTranslated(animations.getTranslateX().get(), animations.getTranslateY().get(), animations.getTranslateZ().get());
                             switch (animations.getPresetValue().get()) {
                                 case "Akrien": {
@@ -211,7 +209,7 @@ public abstract class MixinItemRenderer {
                                     doBlockTransformations();
                                     break;
                                 }
-                                case "Swank":{
+                                case "Swank": {
                                     GL11.glTranslated(-0.1, 0.15, 0.0);
                                     this.transformFirstPersonItem(f / 0.15f, f1);
                                     final float rot = MathHelper.sin(MathHelper.sqrt_float(f2) * 3.1415927f);
@@ -220,10 +218,10 @@ public abstract class MixinItemRenderer {
                                     this.doBlockTransformations();
                                     break;
                                 }
-                                case "Jello":{
+                                case "Jello": {
                                     this.transformFirstPersonItem(0.0f, 0.0f);
                                     this.doBlockTransformations();
-                                    final int alpha = (int)Math.min(255L, ((System.currentTimeMillis() % 255L > 127L) ? Math.abs(Math.abs(System.currentTimeMillis()) % 255L - 255L) : (System.currentTimeMillis() % 255L)) * 2L);
+                                    final int alpha = (int) Math.min(255L, ((System.currentTimeMillis() % 255L > 127L) ? Math.abs(Math.abs(System.currentTimeMillis()) % 255L - 255L) : (System.currentTimeMillis() % 255L)) * 2L);
                                     GlStateManager.translate(0.3f, -0.0f, 0.4f);
                                     GlStateManager.rotate(0.0f, 0.0f, 0.0f, 1.0f);
                                     GlStateManager.translate(0.0f, 0.5f, 0.0f);
@@ -234,22 +232,22 @@ public abstract class MixinItemRenderer {
                                     GlStateManager.rotate(abstractclientplayer.isSwingInProgress ? (-alpha / 5.0f) : 1.0f, 1.0f, -0.0f, 1.0f);
                                     break;
                                 }
-                                case "HSlide":{
-                                    transformFirstPersonItem(f1!=0?Math.max(1-(f1*2),0)*0.7F:0, 1F);
+                                case "HSlide": {
+                                    transformFirstPersonItem(f1 != 0 ? Math.max(1 - (f1 * 2), 0) * 0.7F : 0, 1F);
                                     doBlockTransformations();
                                     break;
                                 }
-                                case "None":{
-                                    transformFirstPersonItem(0F,0F);
+                                case "None": {
+                                    transformFirstPersonItem(0F, 0F);
                                     doBlockTransformations();
                                     break;
                                 }
-                                case "Rotate":{
+                                case "Rotate": {
                                     rotateSword(f1);
                                     break;
                                 }
                             }
-                        }else{
+                        } else {
                             this.transformFirstPersonItem(f + 0.1F, f1);
                             this.doBlockTransformations();
                             GlStateManager.translate(-0.5F, 0.2F, 0.0F);
@@ -259,14 +257,14 @@ public abstract class MixinItemRenderer {
                         this.transformFirstPersonItem(f, f1);
                         this.doBowTransformations(partialTicks, abstractclientplayer);
                 }
-            }else{
-                if (!(animations.getState()&&animations.getSwingAnim().get()))
+            } else {
+                if (!(animations.getState() && animations.getSwingAnim().get()))
                     this.doItemUsedTransformations(f1);
                 this.transformFirstPersonItem(f, f1);
             }
 
             this.renderItem(abstractclientplayer, this.itemToRender, ItemCameraTransforms.TransformType.FIRST_PERSON);
-        }else if(!abstractclientplayer.isInvisible()) {
+        } else if (!abstractclientplayer.isInvisible()) {
             this.renderPlayerArm(abstractclientplayer, f, f1);
         }
 
@@ -275,18 +273,18 @@ public abstract class MixinItemRenderer {
         RenderHelper.disableStandardItemLighting();
     }
 
-    private void doItemRenderGLTranslate(){
-        if(animations.getState()) {
+    private void doItemRenderGLTranslate() {
+        if (animations.getState()) {
             GlStateManager.translate(animations.getItemPosX().get(), animations.getItemPosY().get(), animations.getItemPosZ().get());
-        }else{
+        } else {
             GlStateManager.translate(0.56F, -0.52F, -0.71999997F);
         }
     }
 
-    private void doItemRenderGLScale(){
-        if(animations.getState()) {
+    private void doItemRenderGLScale() {
+        if (animations.getState()) {
             GlStateManager.scale(animations.getItemScale().get(), animations.getItemScale().get(), animations.getItemScale().get());
-        }else{
+        } else {
             GlStateManager.scale(0.4F, 0.4F, 0.4F);
         }
     }
@@ -326,7 +324,7 @@ public abstract class MixinItemRenderer {
         doItemRenderGLScale();
     }
 
-    private void rotateSword(float f1){
+    private void rotateSword(float f1) {
         genCustom(0.0F, 0.0F);
         doBlockTransformations();
         GlStateManager.translate(-0.5F, 0.2F, 0.0F);
@@ -413,10 +411,10 @@ public abstract class MixinItemRenderer {
         Tessellator tessellator = Tessellator.getInstance();
         WorldRenderer worldrenderer = tessellator.getWorldRenderer();
         float f = 1.0F;
-        if(antiBlind.getState() && antiBlind.getFireEffect().get()){
+        if (antiBlind.getState() && antiBlind.getFireEffect().get()) {
             GlStateManager.color(1.0F, 1.0F, 1.0F, 0.3F);
             f = 0.7F;
-        }else{
+        } else {
             GlStateManager.color(1.0F, 1.0F, 1.0F, 0.9F);
         }
         GlStateManager.depthFunc(519);
@@ -424,7 +422,7 @@ public abstract class MixinItemRenderer {
         GlStateManager.enableBlend();
         GlStateManager.tryBlendFuncSeparate(770, 771, 1, 0);
 
-        for(int i = 0; i < 2; ++i) {
+        for (int i = 0; i < 2; ++i) {
             GlStateManager.pushMatrix();
             TextureAtlasSprite textureatlassprite = this.mc.getTextureMapBlocks().getAtlasSprite("minecraft:blocks/fire_layer_1");
             this.mc.getTextureManager().bindTexture(TextureMap.locationBlocksTexture);
@@ -437,8 +435,8 @@ public abstract class MixinItemRenderer {
             float f7 = 0.0F - f / 2.0F;
             float f8 = f7 + f;
             float f9 = -0.5F;
-            GlStateManager.translate((float)(-(i * 2 - 1)) * 0.24F, -0.3F, 0.0F);
-            GlStateManager.rotate((float)(i * 2 - 1) * 10.0F, 0.0F, 1.0F, 0.0F);
+            GlStateManager.translate((float) (-(i * 2 - 1)) * 0.24F, -0.3F, 0.0F);
+            GlStateManager.rotate((float) (i * 2 - 1) * 10.0F, 0.0F, 1.0F, 0.0F);
             worldrenderer.begin(7, DefaultVertexFormats.POSITION_TEX);
             worldrenderer.pos(f5, f7, f9).tex(f2, f4).endVertex();
             worldrenderer.pos(f6, f7, f9).tex(f1, f4).endVertex();

@@ -17,9 +17,14 @@ import net.ccbluex.liquidbounce.value.BoolValue
 import net.ccbluex.liquidbounce.value.ListValue
 import org.lwjgl.input.Keyboard
 
-@ModuleInfo(name = "Speed", category = ModuleCategory.MOVEMENT, autoDisable = EnumAutoDisableType.FLAG, keyBind = Keyboard.KEY_V)
+@ModuleInfo(
+    name = "Speed",
+    category = ModuleCategory.MOVEMENT,
+    autoDisable = EnumAutoDisableType.FLAG,
+    keyBind = Keyboard.KEY_V
+)
 class Speed : Module() {
-    private val modes=ReflectUtils.getReflects("${this.javaClass.`package`.name}.speeds",SpeedMode::class.java)
+    private val modes = ReflectUtils.getReflects("${this.javaClass.`package`.name}.speeds", SpeedMode::class.java)
         .map { it.newInstance() as SpeedMode }
         .sortedBy { it.modeName }
 
@@ -76,7 +81,7 @@ class Speed : Module() {
 
     @EventTarget
     fun onJump(event: JumpEvent) {
-        if(mode.noJump)
+        if (mode.noJump)
             event.cancelEvent()
     }
 
@@ -98,6 +103,7 @@ class Speed : Module() {
     /**
      * 读取mode中的value并和本体中的value合并
      * 所有的value必须在这个之前初始化
-      */
-    override val values = super.values.toMutableList().also { modes.map { mode -> mode.values.forEach { value -> it.add(value.displayable { modeValue.equals(mode.modeName) }) } } }
+     */
+    override val values = super.values.toMutableList()
+        .also { modes.map { mode -> mode.values.forEach { value -> it.add(value.displayable { modeValue.equals(mode.modeName) }) } } }
 }

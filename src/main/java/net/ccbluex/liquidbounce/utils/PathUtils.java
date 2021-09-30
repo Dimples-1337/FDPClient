@@ -18,17 +18,17 @@ import java.util.ArrayList;
 import java.util.List;
 
 public final class PathUtils extends MinecraftInstance {
-    public static List<Vec3> findBlinkPath(final double tpX, final double tpY, final double tpZ){
-        return findBlinkPath(tpX, tpY, tpZ,5);
+    public static List<Vec3> findBlinkPath(final double tpX, final double tpY, final double tpZ) {
+        return findBlinkPath(tpX, tpY, tpZ, 5);
     }
 
-    public static List<Vec3> findBlinkPath(final double tpX, final double tpY, final double tpZ,final double dist){
-        return findBlinkPath(mc.thePlayer.posX,mc.thePlayer.posY,mc.thePlayer.posZ,tpX,tpY,tpZ,dist);
+    public static List<Vec3> findBlinkPath(final double tpX, final double tpY, final double tpZ, final double dist) {
+        return findBlinkPath(mc.thePlayer.posX, mc.thePlayer.posY, mc.thePlayer.posZ, tpX, tpY, tpZ, dist);
     }
 
-    public static List<Vec3> findBlinkPath(double curX, double curY, double curZ,final double tpX, final double tpY, final double tpZ, final double dashDistance) {
-        Vec3 topFrom=new Vec3(curX,curY,curZ);
-        Vec3 to=new Vec3(tpX,tpY,tpZ);
+    public static List<Vec3> findBlinkPath(double curX, double curY, double curZ, final double tpX, final double tpY, final double tpZ, final double dashDistance) {
+        Vec3 topFrom = new Vec3(curX, curY, curZ);
+        Vec3 to = new Vec3(tpX, tpY, tpZ);
 
         if (!canPassThrow(new BlockPos(topFrom))) {
             topFrom = topFrom.addVector(0, 1, 0);
@@ -96,7 +96,7 @@ public final class PathUtils extends MinecraftInstance {
         final double dY = tpY - mc.thePlayer.posY;
         final double dZ = tpZ - mc.thePlayer.posZ;
 
-        for(double d = 1D; d <= steps; ++d) {
+        for (double d = 1D; d <= steps; ++d) {
             positions.add(new Vector3d(mc.thePlayer.posX + (dX * d) / steps, mc.thePlayer.posY + (dY * d) / steps, mc.thePlayer.posZ + (dZ * d) / steps));
         }
 

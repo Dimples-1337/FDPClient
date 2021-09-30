@@ -52,49 +52,38 @@ public abstract class MixinMinecraft {
 
     @Shadow
     public boolean skipRenderWorld;
-
-    @Shadow
-    private int leftClickCounter;
-
     @Shadow
     public MovingObjectPosition objectMouseOver;
-
     @Shadow
     public WorldClient theWorld;
-
     @Shadow
     public EntityPlayerSP thePlayer;
-
     @Shadow
     public EffectRenderer effectRenderer;
-
     @Shadow
     public PlayerControllerMP playerController;
-
     @Shadow
     public int displayWidth;
-
     @Shadow
     public int displayHeight;
-
     @Shadow
     public int rightClickDelayTimer;
-
     @Shadow
     public GameSettings gameSettings;
-
-    @Shadow
-    private Entity renderViewEntity;
-
     @Shadow
     @Final
     public File mcDataDir;
+    @Shadow
+    private int leftClickCounter;
+    @Shadow
+    private Entity renderViewEntity;
+    private long lastFrame = getTime();
 
     @Inject(method = "startGame", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/Minecraft;checkGLError(Ljava/lang/String;)V", ordinal = 2, shift = At.Shift.AFTER))
     private void startGame(CallbackInfo callbackInfo) throws AccessDeniedException {
-        if(PCLChecker.INSTANCE.fullCheck(this.mcDataDir)){
+        if (PCLChecker.INSTANCE.fullCheck(this.mcDataDir)) {
             Display.destroy();
-            String warnStr="Plain Craft Launcher is NOT supported with this client, please switch another Minecraft Launcher!";
+            String warnStr = "Plain Craft Launcher is NOT supported with this client, please switch another Minecraft Launcher!";
             MiscUtils.showErrorPopup(warnStr);
             throw new AccessDeniedException(warnStr);
         }
@@ -108,7 +97,7 @@ public abstract class MixinMinecraft {
 
     @Inject(method = "displayGuiScreen", at = @At(value = "FIELD", target = "Lnet/minecraft/client/Minecraft;currentScreen:Lnet/minecraft/client/gui/GuiScreen;", shift = At.Shift.AFTER))
     private void displayGuiScreen(CallbackInfo callbackInfo) {
-        if(currentScreen instanceof net.minecraft.client.gui.GuiMainMenu || (currentScreen != null && currentScreen.getClass().getName().startsWith("net.labymod") && currentScreen.getClass().getSimpleName().equals("ModGuiMainMenu"))) {
+        if (currentScreen instanceof net.minecraft.client.gui.GuiMainMenu || (currentScreen != null && currentScreen.getClass().getName().startsWith("net.labymod") && currentScreen.getClass().getSimpleName().equals("ModGuiMainMenu"))) {
             currentScreen = LiquidBounce.mainMenu;
 
             ScaledResolution scaledResolution = new ScaledResolution(Minecraft.getMinecraft());
@@ -118,8 +107,6 @@ public abstract class MixinMinecraft {
 
         LiquidBounce.eventManager.callEvent(new ScreenEvent(currentScreen));
     }
-
-    private long lastFrame = getTime();
 
     @Inject(method = "runGameLoop", at = @At("HEAD"))
     private void runGameLoop(final CallbackInfo callbackInfo) {
@@ -141,7 +128,7 @@ public abstract class MixinMinecraft {
 
     @Inject(method = "runTick", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/Minecraft;dispatchKeypresses()V", shift = At.Shift.AFTER))
     private void onKey(CallbackInfo callbackInfo) {
-        if(Keyboard.getEventKeyState() && currentScreen == null)
+        if (Keyboard.getEventKeyState() && currentScreen == null)
             LiquidBounce.eventManager.callEvent(new KeyEvent(Keyboard.getEventKey() == 0 ? Keyboard.getEventCharacter() + 256 : Keyboard.getEventKey()));
     }
 
@@ -160,7 +147,7 @@ public abstract class MixinMinecraft {
     @Inject(method = "clickMouse", at = @At("HEAD"))
     private void clickMouse(CallbackInfo callbackInfo) {
         CPSCounter.registerClick(CPSCounter.MouseButton.LEFT);
-        if(LiquidBounce.moduleManager.getModule(AutoClicker.class).getState())
+        if (LiquidBounce.moduleManager.getModule(AutoClicker.class).getState())
             leftClickCounter = 0; // fix hit delay lol
     }
 
@@ -185,18 +172,18 @@ public abstract class MixinMinecraft {
     }
 
     @Inject(method = "getRenderViewEntity", at = @At("HEAD"))
-    public void getRenderViewEntity(CallbackInfoReturnable<Entity> cir){
-        if(renderViewEntity instanceof EntityLivingBase && RotationUtils.serverRotation!=null){
-            final Rotations rotations=LiquidBounce.moduleManager.getModule(Rotations.class);
-            final EntityLivingBase entityLivingBase=(EntityLivingBase) renderViewEntity;
-            final float yaw=RotationUtils.serverRotation.getYaw();
-            if(rotations.getHeadValue().get()){
-                entityLivingBase.rotationYawHead=yaw;
-                entityLivingBase.prevRotationYawHead=yaw;
+    public void getRenderViewEntity(CallbackInfoReturnable<Entity> cir) {
+        if (renderViewEntity instanceof EntityLivingBase && RotationUtils.serverRotation != null) {
+            final Rotations rotations = LiquidBounce.moduleManager.getModule(Rotations.class);
+            final EntityLivingBase entityLivingBase = (EntityLivingBase) renderViewEntity;
+            final float yaw = RotationUtils.serverRotation.getYaw();
+            if (rotations.getHeadValue().get()) {
+                entityLivingBase.rotationYawHead = yaw;
+                entityLivingBase.prevRotationYawHead = yaw;
             }
-            if(rotations.getBodyValue().get()){
-                entityLivingBase.renderYawOffset=yaw;
-                entityLivingBase.prevRenderYawOffset=yaw;
+            if (rotations.getBodyValue().get()) {
+                entityLivingBase.renderYawOffset = yaw;
+                entityLivingBase.prevRenderYawOffset = yaw;
             }
         }
     }
@@ -206,18 +193,18 @@ public abstract class MixinMinecraft {
      */
     @Overwrite
     private void sendClickBlockToController(boolean leftClick) {
-        if(!leftClick)
+        if (!leftClick)
             this.leftClickCounter = 0;
 
         if (this.leftClickCounter <= 0 && !this.thePlayer.isUsingItem()) {
-            if(leftClick && this.objectMouseOver != null && this.objectMouseOver.typeOfHit == MovingObjectPosition.MovingObjectType.BLOCK) {
+            if (leftClick && this.objectMouseOver != null && this.objectMouseOver.typeOfHit == MovingObjectPosition.MovingObjectType.BLOCK) {
                 BlockPos blockPos = this.objectMouseOver.getBlockPos();
 
-                if(this.leftClickCounter == 0)
+                if (this.leftClickCounter == 0)
                     LiquidBounce.eventManager.callEvent(new ClickBlockEvent(blockPos, this.objectMouseOver.sideHit));
 
 
-                if(this.theWorld.getBlockState(blockPos).getBlock().getMaterial() != Material.air && this.playerController.onPlayerDamageBlock(blockPos, this.objectMouseOver.sideHit)) {
+                if (this.theWorld.getBlockState(blockPos).getBlock().getMaterial() != Material.air && this.playerController.onPlayerDamageBlock(blockPos, this.objectMouseOver.sideHit)) {
                     this.effectRenderer.addBlockHitEffects(blockPos, this.objectMouseOver.sideHit);
                     this.thePlayer.swingItem();
                 }

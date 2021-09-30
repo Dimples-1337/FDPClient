@@ -18,7 +18,7 @@ class Strafe : Module() {
 
     @EventTarget
     fun onMotion(event: MotionEvent) {
-        if(event.eventState == EventState.POST)
+        if (event.eventState == EventState.POST)
             MovementUtils.strafe()
     }
 }

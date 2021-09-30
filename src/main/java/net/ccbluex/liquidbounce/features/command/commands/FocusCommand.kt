@@ -17,12 +17,13 @@ class FocusCommand : Command("focus", emptyArray()) {
         if (args.size == 3) {
             val focused = args[1]
             val target = args[2]
-            val entity=mc.theWorld.playerEntities.filter { it.name.equals(target,true) && !it.equals(mc.thePlayer) }.also {
-                if(it.isEmpty()){
-                    chat("§6Couldn't find anyone named §a${target.lowercase()}§6 in the world.")
-                    return
-                }
-            }[0]
+            val entity =
+                mc.theWorld.playerEntities.filter { it.name.equals(target, true) && !it.equals(mc.thePlayer) }.also {
+                    if (it.isEmpty()) {
+                        chat("§6Couldn't find anyone named §a${target.lowercase()}§6 in the world.")
+                        return
+                    }
+                }[0]
 
             when (focused.lowercase()) {
                 "add" -> {
@@ -57,12 +58,12 @@ class FocusCommand : Command("focus", emptyArray()) {
 
         return when (args.size) {
             1 -> listOf("clear", "add", "remove")
-            2 -> if (args[0].equals("add", true) || args[0].equals("remove", true)) 
-                    mc.theWorld.playerEntities
-                        .filter { it.name.startsWith(pref, true) }
-                        .map { it.name }
-                        .toList()
-                else emptyList()
+            2 -> if (args[0].equals("add", true) || args[0].equals("remove", true))
+                mc.theWorld.playerEntities
+                    .filter { it.name.startsWith(pref, true) }
+                    .map { it.name }
+                    .toList()
+            else emptyList()
             else -> emptyList()
         }
     }

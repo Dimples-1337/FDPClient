@@ -36,16 +36,12 @@ public abstract class MixinGuiScreen {
 
     @Shadow
     public Minecraft mc;
-
-    @Shadow
-    protected List<GuiButton> buttonList;
-
     @Shadow
     public int width;
-
     @Shadow
     public int height;
-
+    @Shadow
+    protected List<GuiButton> buttonList;
     @Shadow
     protected FontRenderer fontRendererObj;
 
@@ -65,7 +61,7 @@ public abstract class MixinGuiScreen {
     private void drawWorldBackground(final CallbackInfo callbackInfo) {
         final HUD hud = LiquidBounce.moduleManager.getModule(HUD.class);
 
-        if(hud.getInventoryParticle().get() && mc.thePlayer != null) {
+        if (hud.getInventoryParticle().get() && mc.thePlayer != null) {
             final ScaledResolution scaledResolution = new ScaledResolution(mc);
             final int width = scaledResolution.getScaledWidth();
             final int height = scaledResolution.getScaledHeight();
@@ -74,16 +70,16 @@ public abstract class MixinGuiScreen {
     }
 
     @ModifyVariable(method = "sendChatMessage(Ljava/lang/String;)V", at = @At("HEAD"))
-    private String sendChatMessage(String p_sendChatMessage_1_){
-        if(p_sendChatMessage_1_.length()>100){
-            return p_sendChatMessage_1_.substring(0,100);
+    private String sendChatMessage(String p_sendChatMessage_1_) {
+        if (p_sendChatMessage_1_.length() > 100) {
+            return p_sendChatMessage_1_.substring(0, 100);
         }
         return p_sendChatMessage_1_;
     }
 
     @Inject(method = "drawDefaultBackground", at = @At("HEAD"), cancellable = true)
-    private void drawDefaultBackground(final CallbackInfo callbackInfo){
-        if(mc.currentScreen instanceof GuiContainer){
+    private void drawDefaultBackground(final CallbackInfo callbackInfo) {
+        if (mc.currentScreen instanceof GuiContainer) {
             callbackInfo.cancel();
         }
     }
@@ -96,11 +92,11 @@ public abstract class MixinGuiScreen {
         GlStateManager.disableLighting();
         GlStateManager.disableFog();
 
-        if(GuiBackground.Companion.getEnabled()) {
+        if (GuiBackground.Companion.getEnabled()) {
             if (LiquidBounce.INSTANCE.getBackground() == null) {
-                RenderUtils.glColor(ColorUtils.hslRainbow(1,0.41f,0.58f,300,4000, 0.7f,1f));
+                RenderUtils.glColor(ColorUtils.hslRainbow(1, 0.41f, 0.58f, 300, 4000, 0.7f, 1f));
                 mc.getTextureManager().bindTexture(new ResourceLocation(LiquidBounce.CLIENT_NAME.toLowerCase() + "/misc/bg.png"));
-            }else{
+            } else {
                 mc.getTextureManager().bindTexture(LiquidBounce.INSTANCE.getBackground());
             }
 
@@ -119,7 +115,7 @@ public abstract class MixinGuiScreen {
 
     @Inject(method = "drawBackground", at = @At("RETURN"))
     private void drawParticles(final CallbackInfo callbackInfo) {
-        if(GuiBackground.Companion.getParticles())
+        if (GuiBackground.Companion.getParticles())
             ParticleUtils.drawParticles(Mouse.getX() * width / mc.displayWidth, height - Mouse.getY() * height / mc.displayHeight - 1);
     }
 

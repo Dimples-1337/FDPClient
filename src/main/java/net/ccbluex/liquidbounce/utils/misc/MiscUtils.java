@@ -28,7 +28,7 @@ public final class MiscUtils extends MinecraftInstance {
     public static void showURL(final String url) {
         try {
             Desktop.getDesktop().browse(new URI(url));
-        }catch(final IOException | URISyntaxException e) {
+        } catch (final IOException | URISyntaxException e) {
             e.printStackTrace();
         }
     }

@@ -31,17 +31,17 @@ public abstract class Shader extends MinecraftInstance {
             final InputStream fragmentStream = getClass().getResourceAsStream("/assets/minecraft/fdpclient/shader/fragment/" + fragmentShader);
             fragmentShaderID = createShader(IOUtils.toString(fragmentStream), ARBFragmentShader.GL_FRAGMENT_SHADER_ARB);
             IOUtils.closeQuietly(fragmentStream);
-        }catch(final Exception e) {
+        } catch (final Exception e) {
             e.printStackTrace();
             return;
         }
 
-        if(vertexShaderID == 0 || fragmentShaderID == 0)
+        if (vertexShaderID == 0 || fragmentShaderID == 0)
             return;
 
         program = ARBShaderObjects.glCreateProgramObjectARB();
 
-        if(program == 0)
+        if (program == 0)
             return;
 
         ARBShaderObjects.glAttachObjectARB(program, vertexShaderID);
@@ -57,7 +57,7 @@ public abstract class Shader extends MinecraftInstance {
         GL11.glPushMatrix();
         GL20.glUseProgram(program);
 
-        if(uniformsMap == null) {
+        if (uniformsMap == null) {
             uniformsMap = new HashMap<>();
             setupUniforms();
         }
@@ -80,17 +80,17 @@ public abstract class Shader extends MinecraftInstance {
         try {
             shader = ARBShaderObjects.glCreateShaderObjectARB(shaderType);
 
-            if(shader == 0)
+            if (shader == 0)
                 return 0;
 
             ARBShaderObjects.glShaderSourceARB(shader, shaderSource);
             ARBShaderObjects.glCompileShaderARB(shader);
 
-            if(ARBShaderObjects.glGetObjectParameteriARB(shader, ARBShaderObjects.GL_OBJECT_COMPILE_STATUS_ARB) == GL11.GL_FALSE)
+            if (ARBShaderObjects.glGetObjectParameteriARB(shader, ARBShaderObjects.GL_OBJECT_COMPILE_STATUS_ARB) == GL11.GL_FALSE)
                 throw new RuntimeException("Error creating shader: " + getLogInfo(shader));
 
             return shader;
-        }catch(final Exception e) {
+        } catch (final Exception e) {
             ARBShaderObjects.glDeleteObjectARB(shader);
             throw e;
 

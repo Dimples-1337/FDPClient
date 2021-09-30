@@ -16,7 +16,13 @@ import org.spongepowered.asm.mixin.Shadow;
 @Mixin(EntityPlayer.class)
 public abstract class MixinEntityPlayer extends MixinEntityLivingBase {
 
-    @Shadow public abstract String getName();
+    @Shadow
+    public PlayerCapabilities capabilities;
+    @Shadow
+    protected int flyToggleTimer;
+
+    @Shadow
+    public abstract String getName();
 
     @Shadow
     public abstract ItemStack getHeldItem();
@@ -32,12 +38,6 @@ public abstract class MixinEntityPlayer extends MixinEntityLivingBase {
 
     @Shadow
     public abstract FoodStats getFoodStats();
-
-    @Shadow
-    protected int flyToggleTimer;
-
-    @Shadow
-    public PlayerCapabilities capabilities;
 
     @Shadow
     public abstract int getItemInUseDuration();

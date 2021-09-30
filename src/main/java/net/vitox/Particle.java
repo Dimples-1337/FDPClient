@@ -16,11 +16,11 @@ import java.util.Random;
  */
 class Particle {
 
-    public float x;
-    public float y;
     public final float size;
     private final float ySpeed = new Random().nextInt(5);
     private final float xSpeed = new Random().nextInt(5);
+    public float x;
+    public float y;
     private int height;
     private int width;
 
@@ -75,12 +75,12 @@ class Particle {
     }
 
     void interpolation() {
-        for(int n = 0; n <= 64; ++n) {
+        for (int n = 0; n <= 64; ++n) {
             final float f = n / 64.0f;
             final float p1 = lint1(f);
             final float p2 = lint2(f);
 
-            if(p1 != p2) {
+            if (p1 != p2) {
                 y -= f;
                 x -= f;
             }
@@ -93,16 +93,16 @@ class Particle {
         y = (y + ySpeed);
         x = (x + xSpeed);
 
-        if(y > mc.displayHeight)
+        if (y > mc.displayHeight)
             y = 1;
 
-        if(x > mc.displayWidth)
+        if (x > mc.displayWidth)
             x = 1;
 
-        if(x < 1)
+        if (x < 1)
             x = scaledResolution.getScaledWidth();
 
-        if(y < 1)
+        if (y < 1)
             y = scaledResolution.getScaledHeight();
     }
 

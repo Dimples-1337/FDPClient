@@ -20,19 +20,16 @@ import java.util.List;
 
 public class Fonts {
 
-    @FontDetails(fontName = "Small", fontSize = 18, fileName = "regular.ttf")
-    public static GameFontRenderer font18;
-
-    @FontDetails(fontName = "Medium", fontSize = 20, fileName = "regular.ttf")
-    public static GameFontRenderer font20;
+    @FontDetails(fontName = "Minecraft Font")
+    public static final FontRenderer minecraftFont = Minecraft.getMinecraft().fontRendererObj;
+    private static final List<GameFontRenderer> CUSTOM_FONT_RENDERERS = new ArrayList<>();
 
 //    @FontDetails(fontName = "Huge", fontSize = 60, fileName = "regular.ttf")
 //    public static GameFontRenderer font60;
-
-    @FontDetails(fontName = "Minecraft Font")
-    public static final FontRenderer minecraftFont = Minecraft.getMinecraft().fontRendererObj;
-
-    private static final List<GameFontRenderer> CUSTOM_FONT_RENDERERS = new ArrayList<>();
+    @FontDetails(fontName = "Small", fontSize = 18, fileName = "regular.ttf")
+    public static GameFontRenderer font18;
+    @FontDetails(fontName = "Medium", fontSize = 20, fileName = "regular.ttf")
+    public static GameFontRenderer font20;
 
     public static void loadFonts() {
         long l = System.currentTimeMillis();
@@ -41,16 +38,16 @@ public class Fonts {
 
         initFonts();
 
-        for(final Field field : Fonts.class.getDeclaredFields()) {
+        for (final Field field : Fonts.class.getDeclaredFields()) {
             try {
                 field.setAccessible(true);
                 final FontDetails fontDetails = field.getAnnotation(FontDetails.class);
 
-                if(fontDetails!=null) {
-                    if(!fontDetails.fileName().isEmpty())
-                        field.set(null,new GameFontRenderer(getFont(fontDetails.fileName(), fontDetails.fontSize())));
+                if (fontDetails != null) {
+                    if (!fontDetails.fileName().isEmpty())
+                        field.set(null, new GameFontRenderer(getFont(fontDetails.fileName(), fontDetails.fontSize())));
                 }
-            }catch(final IllegalAccessException e) {
+            } catch (final IllegalAccessException e) {
                 e.printStackTrace();
             }
         }
@@ -60,30 +57,30 @@ public class Fonts {
 
             final File fontsFile = new File(LiquidBounce.fileManager.fontsDir, "fonts.json");
 
-            if(fontsFile.exists()) {
+            if (fontsFile.exists()) {
                 final JsonElement jsonElement = new JsonParser().parse(new BufferedReader(new FileReader(fontsFile)));
 
-                if(jsonElement instanceof JsonNull)
+                if (jsonElement instanceof JsonNull)
                     return;
 
                 final JsonArray jsonArray = (JsonArray) jsonElement;
 
-                for(final JsonElement element : jsonArray) {
-                    if(element instanceof JsonNull)
+                for (final JsonElement element : jsonArray) {
+                    if (element instanceof JsonNull)
                         return;
 
                     final JsonObject fontObject = (JsonObject) element;
 
                     CUSTOM_FONT_RENDERERS.add(new GameFontRenderer(getFont(fontObject.get("fontFile").getAsString(), fontObject.get("fontSize").getAsInt())));
                 }
-            }else{
+            } else {
                 fontsFile.createNewFile();
 
                 final PrintWriter printWriter = new PrintWriter(new FileWriter(fontsFile));
                 printWriter.println(new GsonBuilder().setPrettyPrinting().create().toJson(new JsonArray()));
                 printWriter.close();
             }
-        }catch(final Exception e) {
+        } catch (final Exception e) {
             e.printStackTrace();
         }
 
@@ -92,29 +89,29 @@ public class Fonts {
 
     private static void initFonts() {
         try {
-            initSingleFont("regular.ttf","assets/minecraft/fdpclient/font/regular.ttf");
-        }catch(IOException e) {
+            initSingleFont("regular.ttf", "assets/minecraft/fdpclient/font/regular.ttf");
+        } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
     private static void initSingleFont(String name, String resourcePath) throws IOException {
-        File file=new File(LiquidBounce.fileManager.fontsDir, name);
-        if(!file.exists())
+        File file = new File(LiquidBounce.fileManager.fontsDir, name);
+        if (!file.exists())
             FileUtils.unpackFile(file, resourcePath);
     }
 
     public static FontRenderer getFontRenderer(final String name, final int size) {
-        if(name.equals("Minecraft")){
+        if (name.equals("Minecraft")) {
             return minecraftFont;
         }
 
         for (final FontRenderer fontRenderer : getFonts()) {
-            if(fontRenderer instanceof GameFontRenderer){
-                GameFontRenderer liquidFontRenderer=(GameFontRenderer) fontRenderer;
+            if (fontRenderer instanceof GameFontRenderer) {
+                GameFontRenderer liquidFontRenderer = (GameFontRenderer) fontRenderer;
                 final Font font = liquidFontRenderer.getDefaultFont().getFont();
 
-                if(font.getName().equals(name) && font.getSize() == size)
+                if (font.getName().equals(name) && font.getSize() == size)
                     return liquidFontRenderer;
             }
         }
@@ -126,23 +123,23 @@ public class Fonts {
         if (fontRenderer instanceof GameFontRenderer) {
             final Font font = ((GameFontRenderer) fontRenderer).getDefaultFont().getFont();
 
-            return new Object[] {font.getName(), font.getSize()};
+            return new Object[]{font.getName(), font.getSize()};
         }
 
-        return new Object[] {"Minecraft", -1};
+        return new Object[]{"Minecraft", -1};
     }
 
     public static List<FontRenderer> getFonts() {
         final List<FontRenderer> fonts = new ArrayList<>();
 
-        for(final Field fontField : Fonts.class.getDeclaredFields()) {
+        for (final Field fontField : Fonts.class.getDeclaredFields()) {
             try {
                 fontField.setAccessible(true);
 
                 final Object fontObj = fontField.get(null);
 
-                if(fontObj instanceof FontRenderer) fonts.add((FontRenderer) fontObj);
-            }catch(final IllegalAccessException e) {
+                if (fontObj instanceof FontRenderer) fonts.add((FontRenderer) fontObj);
+            } catch (final IllegalAccessException e) {
                 e.printStackTrace();
             }
         }
@@ -159,7 +156,7 @@ public class Fonts {
             awtClientFont = awtClientFont.deriveFont(Font.PLAIN, size);
             inputStream.close();
             return awtClientFont;
-        }catch(final Exception e) {
+        } catch (final Exception e) {
             e.printStackTrace();
 
             return new Font("default", Font.PLAIN, size);

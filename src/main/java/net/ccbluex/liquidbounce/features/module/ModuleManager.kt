@@ -22,7 +22,7 @@ class ModuleManager : Listenable {
     val modules = mutableListOf<Module>()
     private val moduleClassMap = hashMapOf<Class<*>, Module>()
 
-    var pendingBindModule: Module?=null
+    var pendingBindModule: Module? = null
 
     init {
         LiquidBounce.eventManager.registerListener(this)
@@ -34,10 +34,10 @@ class ModuleManager : Listenable {
     fun registerModules() {
         ClientUtils.getLogger().info("[ModuleManager] Loading modules...")
 
-        ReflectUtils.getReflects("${this.javaClass.`package`.name}.modules",Module::class.java)
+        ReflectUtils.getReflects("${this.javaClass.`package`.name}.modules", Module::class.java)
             .forEach(this::registerModule)
 
-        modules.forEach{ it.onInitialize() }
+        modules.forEach { it.onInitialize() }
 
         modules.forEach { it.onLoad() }
 
@@ -68,8 +68,9 @@ class ModuleManager : Listenable {
         } catch (e: IllegalAccessException) {
             // this module is a kotlin object
             registerModule(ClassUtils.getObjectInstance(moduleClass) as Module)
-        } catch (e: Throwable){
-            ClientUtils.getLogger().error("Failed to load module: ${moduleClass.name} (${e.javaClass.name}: ${e.message})")
+        } catch (e: Throwable) {
+            ClientUtils.getLogger()
+                .error("Failed to load module: ${moduleClass.name} (${e.javaClass.name}: ${e.message})")
         }
     }
 
@@ -86,7 +87,7 @@ class ModuleManager : Listenable {
      * Generate command for [module]
      */
     internal fun generateCommand(module: Module) {
-        if(!module.moduleCommand)
+        if (!module.moduleCommand)
             return
 
         val values = module.values
@@ -121,14 +122,26 @@ class ModuleManager : Listenable {
      * Handle incoming key presses
      */
     @EventTarget
-    private fun onKey(event: KeyEvent){
-        if(pendingBindModule==null) {
+    private fun onKey(event: KeyEvent) {
+        if (pendingBindModule == null) {
             modules.filter { it.keyBind == event.key }.forEach { it.toggle() }
-        }else{
-            pendingBindModule!!.keyBind=event.key
-            ClientUtils.displayAlert("Bound module §a§l${pendingBindModule!!.name}§3 to key §a§l${Keyboard.getKeyName(event.key)}§3.")
-            LiquidBounce.hud.addNotification(Notification("KeyBind","Bound ${pendingBindModule!!.name} to ${Keyboard.getKeyName(event.key)}.", NotifyType.INFO))
-            pendingBindModule=null
+        } else {
+            pendingBindModule!!.keyBind = event.key
+            ClientUtils.displayAlert(
+                "Bound module §a§l${pendingBindModule!!.name}§3 to key §a§l${
+                    Keyboard.getKeyName(
+                        event.key
+                    )
+                }§3."
+            )
+            LiquidBounce.hud.addNotification(
+                Notification(
+                    "KeyBind",
+                    "Bound ${pendingBindModule!!.name} to ${Keyboard.getKeyName(event.key)}.",
+                    NotifyType.INFO
+                )
+            )
+            pendingBindModule = null
         }
     }
 

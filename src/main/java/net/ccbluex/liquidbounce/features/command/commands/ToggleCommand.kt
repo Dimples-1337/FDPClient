@@ -22,7 +22,7 @@ class ToggleCommand : Command("toggle", arrayOf("t")) {
             }
 
             if (args.size > 2) {
-                val newState = args[2].lowercase();
+                val newState = args[2].lowercase()
 
                 if (newState == "on" || newState == "off") {
                     module.state = newState == "on"
@@ -48,9 +48,9 @@ class ToggleCommand : Command("toggle", arrayOf("t")) {
 
         return when (args.size) {
             1 -> LiquidBounce.moduleManager.modules
-                    .map { it.name }
-                    .filter { it.startsWith(moduleName, true) }
-                    .toList()
+                .map { it.name }
+                .filter { it.startsWith(moduleName, true) }
+                .toList()
             else -> emptyList()
         }
     }

@@ -18,10 +18,15 @@ import net.ccbluex.liquidbounce.value.ListValue
 @ModuleInfo(name = "NoWeb", category = ModuleCategory.MOVEMENT)
 class NoWeb : Module() {
 
-    private val modeValue = ListValue("Mode", arrayOf("None", "OldAAC", "LAAC", "Rewinside","Horizon", "Spartan", "AAC4", "AAC5", "OldMatrix", "Test"), "None")
+    private val modeValue = ListValue(
+        "Mode",
+        arrayOf("None", "OldAAC", "LAAC", "Rewinside", "Horizon", "Spartan", "AAC4", "AAC5", "OldMatrix", "Test"),
+        "None"
+    )
     private val horizonSpeed = FloatValue("HorizonSpeed", 0.1F, 0.01F, 0.8F)
-    
-     private var usedTimer = false
+
+    private var usedTimer = false
+
     @EventTarget
     fun onUpdate(event: UpdateEvent) {
         if (usedTimer) {
@@ -59,7 +64,7 @@ class NoWeb : Module() {
                 }
             }
             "horizon" -> {
-                if(mc.thePlayer.onGround){
+                if (mc.thePlayer.onGround) {
                     MovementUtils.strafe(horizonSpeed.get())
                 }
             }
@@ -68,10 +73,10 @@ class NoWeb : Module() {
                 mc.timer.timerSpeed = 3.7F
                 if (!mc.gameSettings.keyBindSneak.isKeyDown)
                     mc.thePlayer.motionY = 0.0
-                if(mc.thePlayer.ticksExisted % 2 == 0){
+                if (mc.thePlayer.ticksExisted % 2 == 0) {
                     mc.timer.timerSpeed = 1.7F
                 }
-                if(mc.thePlayer.ticksExisted % 40 == 0){
+                if (mc.thePlayer.ticksExisted % 40 == 0) {
                     mc.timer.timerSpeed = 3F
                 }
                 usedTimer = true
@@ -107,8 +112,9 @@ class NoWeb : Module() {
             }
         }
     }
-    fun onJump(event : JumpEvent){
-        if(modeValue.equals("AAC4"))
+
+    fun onJump(event: JumpEvent) {
+        if (modeValue.equals("AAC4"))
             event.cancelEvent()
     }
 
@@ -116,7 +122,7 @@ class NoWeb : Module() {
         mc.timer.timerSpeed = 1.0F
     }
 
-    
+
     override val tag: String?
         get() = modeValue.get()
 }

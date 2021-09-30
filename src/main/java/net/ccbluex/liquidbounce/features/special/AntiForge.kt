@@ -28,7 +28,7 @@ object AntiForge : MinecraftInstance(), Listenable {
                     event.cancelEvent()
 
                 if (blockPayloadPackets && packet is C17PacketCustomPayload) {
-                    if (!packet.channelName.startsWith("MC|")){
+                    if (!packet.channelName.startsWith("MC|")) {
                         event.cancelEvent()
                     } else if (packet.channelName.equals("MC|Brand", true)) {
                         packet.data = PacketBuffer(Unpooled.buffer()).writeString("vanilla")

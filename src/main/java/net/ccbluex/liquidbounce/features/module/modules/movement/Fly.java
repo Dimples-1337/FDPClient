@@ -128,7 +128,7 @@ public class Fly extends Module {
     private final BoolValue hypixelBoost = new BoolValue("Hypixel-Boost", true);
     private final IntegerValue hypixelBoostDelay = new IntegerValue("Hypixel-BoostDelay", 1200, 0, 2000);
     private final FloatValue hypixelBoostTimer = new FloatValue("Hypixel-BoostTimer", 1F, 0F, 5F);
-    private final FloatValue hypixelSpeed = new FloatValue("HypixelNew-Speed",0.5F,0.3F,0.7F);
+    private final FloatValue hypixelSpeed = new FloatValue("HypixelNew-Speed", 0.5F, 0.3F, 0.7F);
 
     private final FloatValue mineplexSpeedValue = new FloatValue("MineplexSpeed", 1F, 0.5F, 10F);
     private final IntegerValue neruxVaceTicks = new IntegerValue("NeruxVace-Ticks", 6, 0, 20);
@@ -143,11 +143,11 @@ public class Fly extends Module {
     private final FloatValue rssMotionValue = new FloatValue("RSSmoothMotion", 0.2F, 0F, 0.5F);
     private final FloatValue rssTimerValue = new FloatValue("RSSmoothTimer", 0.3F, 0.1F, 1F);
     private final FloatValue rssDropoffValue = new FloatValue("RSSmoothDropoff", 1F, 0F, 5F);
-    private final IntegerValue aac520Append = new IntegerValue("AAC5.2.0Append",13,5,30);
-    private final FloatValue aac520AppendTimer = new FloatValue("AAC5.2.0FastAppendTimer",0.4f,0.1f,0.7f);
-    private final FloatValue aac520MaxTimer = new FloatValue("AAC5.2.0FastMaxTimer",1.2f,1f,3f);
-    private final IntegerValue aac520Purse = new IntegerValue("AAC5.2.0Purse",7,3,20);
-    private final ListValue aac520PacketMode = new ListValue("AAC5.2.0PacketMode",new String[]{"Old","Rise"},"Old");
+    private final IntegerValue aac520Append = new IntegerValue("AAC5.2.0Append", 13, 5, 30);
+    private final FloatValue aac520AppendTimer = new FloatValue("AAC5.2.0FastAppendTimer", 0.4f, 0.1f, 0.7f);
+    private final FloatValue aac520MaxTimer = new FloatValue("AAC5.2.0FastMaxTimer", 1.2f, 1f, 3f);
+    private final IntegerValue aac520Purse = new IntegerValue("AAC5.2.0Purse", 7, 3, 20);
+    private final ListValue aac520PacketMode = new ListValue("AAC5.2.0PacketMode", new String[]{"Old", "Rise"}, "Old");
     private final BoolValue aac520UseC04 = new BoolValue("AAC5.2.0UseC04", false);
     private final BoolValue aac520view = new BoolValue("AAC5.2.0BetterView", false);
     private final BoolValue rssDropoff = new BoolValue("RSSmoothDropoffA", true);
@@ -157,82 +157,65 @@ public class Fly extends Module {
     // Visuals
     private final ListValue markValue = new ListValue("Mark", new String[]{"Up", "Down", "Off"}, "Up");
     private final BoolValue fakeDamageValue = new BoolValue("FakeDamage", true);
-
+    private final MSTimer flyTimer = new MSTimer();
+    private final MSTimer groundTimer = new MSTimer();
+    private final MSTimer mineSecureVClipTimer = new MSTimer();
+    private final TickTimer spartanTimer = new TickTimer();
+    private final MSTimer mineplexTimer = new MSTimer();
+    private final TickTimer hypixelTimer = new TickTimer();
+    private final MSTimer theTimer = new MSTimer();
+    private final TickTimer cubecraftTeleportTickTimer = new TickTimer();
+    private final TickTimer freeHypixelTimer = new TickTimer();
+    private final ArrayList<C03PacketPlayer> aac5C03List = new ArrayList<>();
     private double startY;
     private double launchY;
-    private final MSTimer flyTimer = new MSTimer();
-
-    private final MSTimer groundTimer = new MSTimer();
-
     private boolean noPacketModify;
-
     private double aacJump;
-
     private int aac3delay;
     private int aac3glideDelay;
     private int aac4glideDelay;
-
     private boolean noFlag;
-
-    private final MSTimer mineSecureVClipTimer = new MSTimer();
-
-    private final TickTimer spartanTimer = new TickTimer();
-
     private long minesuchtTP;
-
-    private final MSTimer mineplexTimer = new MSTimer();
-
     private boolean wasDead;
-    private boolean enabledVerus=false;
-
-    private final TickTimer hypixelTimer = new TickTimer();
-    private final MSTimer theTimer = new MSTimer();
-
+    private boolean enabledVerus = false;
     private int boostHypixelState = 1;
     private double moveSpeed, lastDistance;
     private boolean failedStart = false;
-
-    private final TickTimer cubecraftTeleportTickTimer = new TickTimer();
-
-    private final TickTimer freeHypixelTimer = new TickTimer();
     private float freeHypixelYaw;
     private float freeHypixelPitch;
-    private boolean verusFlyable=false;
-
-    private int aac5Status=0;
-    private double aac5LastPosX=0;
-    private int aac5Same=0;
-    private C03PacketPlayer.C06PacketPlayerPosLook aac5QueuedPacket=null;
-    private int aac5SameReach=5;
-    private EntityOtherPlayerMP clonedPlayer=null;
-    private boolean aac5FlyClip=false;
-    private boolean aac5FlyStart=false;
-    private boolean aac5nextFlag=false;
-
-    private float launchYaw=0;
-    private float launchPitch=0;
-
+    private boolean verusFlyable = false;
+    private int aac5Status = 0;
+    private double aac5LastPosX = 0;
+    private int aac5Same = 0;
+    private C03PacketPlayer.C06PacketPlayerPosLook aac5QueuedPacket = null;
+    private int aac5SameReach = 5;
+    private EntityOtherPlayerMP clonedPlayer = null;
+    private boolean aac5FlyClip = false;
+    private boolean aac5FlyStart = false;
+    private boolean aac5nextFlag = false;
+    private float launchYaw = 0;
+    private float launchPitch = 0;
     private int flyTick;
 
     @Override
     public void onEnable() {
-        if(mc.thePlayer == null)
+        if (mc.thePlayer == null)
             return;
 
         launchY = mc.thePlayer.posY;
-        launchYaw=mc.thePlayer.rotationYaw;
-        launchPitch=mc.thePlayer.rotationPitch;
-        if(mc.thePlayer.onGround&&fakeDamageValue.get()){
-            PacketEvent event=new PacketEvent(new S19PacketEntityStatus(mc.thePlayer,(byte) 2), PacketEvent.Type.RECEIVE);
+        launchYaw = mc.thePlayer.rotationYaw;
+        launchPitch = mc.thePlayer.rotationPitch;
+        if (mc.thePlayer.onGround && fakeDamageValue.get()) {
+            PacketEvent event = new PacketEvent(new S19PacketEntityStatus(mc.thePlayer, (byte) 2), PacketEvent.Type.RECEIVE);
             LiquidBounce.eventManager.callEvent(event);
-            if(!event.isCancelled()) {
+            if (!event.isCancelled()) {
                 mc.thePlayer.handleStatusUpdate((byte) 2);
             }
         }
 
         flyTimer.reset();
-        flyTick=0;
-        aac4glideDelay=0;
+        flyTick = 0;
+        aac4glideDelay = 0;
 
         noPacketModify = true;
 
@@ -242,55 +225,55 @@ public class Fly extends Module {
 
         final String mode = modeValue.get();
 
-        if(mode.toLowerCase().contains("aac5.2.0")&&mc.isSingleplayer()) {
+        if (mode.toLowerCase().contains("aac5.2.0") && mc.isSingleplayer()) {
             LiquidBounce.hud.addNotification(new Notification("Fly", "Use AAC5.2.0 Flys will crash single player", NotifyType.ERROR, 2000, 500));
             setState(false);
             return;
         }
 
-        switch(mode.toLowerCase()) {
+        switch (mode.toLowerCase()) {
             case "verus":
-                mc.getNetHandler().addToSendQueue(new C03PacketPlayer.C04PacketPlayerPosition(x, y+3.35, z, false));
+                mc.getNetHandler().addToSendQueue(new C03PacketPlayer.C04PacketPlayerPosition(x, y + 3.35, z, false));
                 mc.getNetHandler().addToSendQueue(new C03PacketPlayer.C04PacketPlayerPosition(x, y, z, false));
                 mc.getNetHandler().addToSendQueue(new C03PacketPlayer.C04PacketPlayerPosition(x, y, z, true));
-                mc.thePlayer.motionX=0;
-                mc.thePlayer.motionY=0;
-                mc.thePlayer.motionZ=0;
+                mc.thePlayer.motionX = 0;
+                mc.thePlayer.motionY = 0;
+                mc.thePlayer.motionZ = 0;
                 mc.thePlayer.setPosition(mc.thePlayer.posX, mc.thePlayer.posY + 0.42, mc.thePlayer.posZ);
-                verusFlyable=true;
-                enabledVerus=true;
+                verusFlyable = true;
+                enabledVerus = true;
                 break;
             case "verus2":
-                mc.getNetHandler().addToSendQueue(new C03PacketPlayer.C04PacketPlayerPosition(x, y+1.1, z, false));
+                mc.getNetHandler().addToSendQueue(new C03PacketPlayer.C04PacketPlayerPosition(x, y + 1.1, z, false));
                 mc.getNetHandler().addToSendQueue(new C03PacketPlayer.C04PacketPlayerPosition(x, y, z, false));
-                mc.getNetHandler().addToSendQueue(new C03PacketPlayer.C04PacketPlayerPosition(x, y+1.1, z, false));
+                mc.getNetHandler().addToSendQueue(new C03PacketPlayer.C04PacketPlayerPosition(x, y + 1.1, z, false));
                 mc.getNetHandler().addToSendQueue(new C03PacketPlayer.C04PacketPlayerPosition(x, y, z, false));
-                mc.getNetHandler().addToSendQueue(new C03PacketPlayer.C04PacketPlayerPosition(x, y+1.1, z, false));
+                mc.getNetHandler().addToSendQueue(new C03PacketPlayer.C04PacketPlayerPosition(x, y + 1.1, z, false));
                 mc.getNetHandler().addToSendQueue(new C03PacketPlayer.C04PacketPlayerPosition(x, y, z, false));
                 mc.getNetHandler().addToSendQueue(new C03PacketPlayer.C04PacketPlayerPosition(x, y, z, true));
-                mc.thePlayer.motionX=0;
-                mc.thePlayer.motionY=0;
-                mc.thePlayer.motionZ=0;
+                mc.thePlayer.motionX = 0;
+                mc.thePlayer.motionY = 0;
+                mc.thePlayer.motionZ = 0;
                 mc.thePlayer.setPosition(mc.thePlayer.posX, mc.thePlayer.posY + 0.015625, mc.thePlayer.posZ);
-                launchY+=0.015625;
-                verusFlyable=true;
+                launchY += 0.015625;
+                verusFlyable = true;
                 break;
             case "aac5.2.0":
                 mc.thePlayer.motionX = 0;
                 mc.thePlayer.motionZ = 0;
                 mc.thePlayer.motionY = 0;
-                PacketUtils.sendPacketNoEvent(new C03PacketPlayer.C04PacketPlayerPosition(x,1.7976931348623157E+308,z,true));
+                PacketUtils.sendPacketNoEvent(new C03PacketPlayer.C04PacketPlayerPosition(x, 1.7976931348623157E+308, z, true));
                 break;
             case "aac5.2.0-fast":
-                PacketUtils.sendPacketNoEvent(new C03PacketPlayer.C04PacketPlayerPosition(x,1.7976931348623157E+308,z,true));
-                aac5LastPosX=0;
-                aac5QueuedPacket=null;
-                aac5Same=0;
-                aac5SameReach=5;
-                aac5Status=0;
+                PacketUtils.sendPacketNoEvent(new C03PacketPlayer.C04PacketPlayerPosition(x, 1.7976931348623157E+308, z, true));
+                aac5LastPosX = 0;
+                aac5QueuedPacket = null;
+                aac5Same = 0;
+                aac5SameReach = 5;
+                aac5Status = 0;
                 break;
             case "aac5.2.0-vanilla":
-                if(aac520view.get()){
+                if (aac520view.get()) {
                     clonedPlayer = new EntityOtherPlayerMP(mc.theWorld, mc.thePlayer.getGameProfile());
                     clonedPlayer.rotationYawHead = mc.thePlayer.rotationYawHead;
                     clonedPlayer.copyLocationAndAnglesFrom(mc.thePlayer);
@@ -301,16 +284,16 @@ public class Fly extends Module {
                 break;
             case "aac5.2.0-smooth":
                 flyTimer.reset();
-                aac5FlyClip=false;
-                aac5FlyStart=false;
-                aac5nextFlag=false;
+                aac5FlyClip = false;
+                aac5FlyStart = false;
+                aac5nextFlag = false;
                 mc.thePlayer.setPosition(mc.thePlayer.posX, mc.thePlayer.posY + 0.42, mc.thePlayer.posZ);
                 break;
             case "ncp":
-                if(!mc.thePlayer.onGround)
+                if (!mc.thePlayer.onGround)
                     break;
 
-                for(int i = 0; i < 65; ++i) {
+                for (int i = 0; i < 65; ++i) {
                     mc.getNetHandler().addToSendQueue(new C03PacketPlayer.C04PacketPlayerPosition(x, y + 0.049D, z, false));
                     mc.getNetHandler().addToSendQueue(new C03PacketPlayer.C04PacketPlayerPosition(x, y, z, false));
                 }
@@ -321,10 +304,10 @@ public class Fly extends Module {
                 mc.thePlayer.swingItem();
                 break;
             case "oldncp":
-                if(!mc.thePlayer.onGround)
+                if (!mc.thePlayer.onGround)
                     break;
 
-                for(int i = 0; i < 4; i++) {
+                for (int i = 0; i < 4; i++) {
                     mc.getNetHandler().addToSendQueue(new C03PacketPlayer.C04PacketPlayerPosition(x, y + 1.01, z, false));
                     mc.getNetHandler().addToSendQueue(new C03PacketPlayer.C04PacketPlayerPosition(x, y, z, false));
                 }
@@ -332,7 +315,7 @@ public class Fly extends Module {
                 mc.thePlayer.swingItem();
                 break;
             case "bugspartan":
-                for(int i = 0; i < 65; ++i) {
+                for (int i = 0; i < 65; ++i) {
                     mc.getNetHandler().addToSendQueue(new C03PacketPlayer.C04PacketPlayerPosition(x, y + 0.049D, z, false));
                     mc.getNetHandler().addToSendQueue(new C03PacketPlayer.C04PacketPlayerPosition(x, y, z, false));
                 }
@@ -351,7 +334,7 @@ public class Fly extends Module {
                 mc.thePlayer.setPosition(mc.thePlayer.posX, mc.thePlayer.posY + 2, mc.thePlayer.posZ);
                 break;
             case "boosthypixel":
-                if(!mc.thePlayer.onGround) break;
+                if (!mc.thePlayer.onGround) break;
 
                 for (int i = 0; i < 10; i++) //Imagine flagging to NCP.
                     mc.getNetHandler().addToSendQueue(new C03PacketPlayer.C04PacketPlayerPosition(mc.thePlayer.posX, mc.thePlayer.posY, mc.thePlayer.posZ, true));
@@ -372,7 +355,7 @@ public class Fly extends Module {
                 lastDistance = 0D;
                 failedStart = false;
                 break;
-            case "redeskysmooth":{
+            case "redeskysmooth": {
                 mc.thePlayer.addVelocity(0, rssMotionValue.get(), 0);
                 break;
             }
@@ -382,7 +365,7 @@ public class Fly extends Module {
         aacJump = -3.8D;
         noPacketModify = false;
 
-        if(mode.equalsIgnoreCase("freehypixel")) {
+        if (mode.equalsIgnoreCase("freehypixel")) {
             freeHypixelTimer.reset();
             mc.thePlayer.setPositionAndUpdate(mc.thePlayer.posX, mc.thePlayer.posY + 0.42D, mc.thePlayer.posZ);
             freeHypixelYaw = mc.thePlayer.rotationYaw;
@@ -401,15 +384,15 @@ public class Fly extends Module {
 
         final String mode = modeValue.get();
 
-        switch (mode.toLowerCase()){
+        switch (mode.toLowerCase()) {
             case "redeskycollide":
-                mc.thePlayer.motionY=0;
+                mc.thePlayer.motionY = 0;
                 break;
             case "aac5.2.0-vanilla":
-                if(aac520view.get()){
+                if (aac520view.get()) {
                     mc.setRenderViewEntity(mc.thePlayer);
                     mc.theWorld.removeEntityFromWorld(clonedPlayer.getEntityId());
-                    clonedPlayer=null;
+                    clonedPlayer = null;
                 }
             case "aac5.2.0-smooth":
                 sendAAC5Packets();
@@ -423,10 +406,10 @@ public class Fly extends Module {
         mc.timer.timerSpeed = 1F;
         mc.thePlayer.speedInAir = 0.02F;
 
-        if(motionResetValue.get()){
-            mc.thePlayer.motionX=0;
-            mc.thePlayer.motionY=0;
-            mc.thePlayer.motionZ=0;
+        if (motionResetValue.get()) {
+            mc.thePlayer.motionX = 0;
+            mc.thePlayer.motionY = 0;
+            mc.thePlayer.motionZ = 0;
         }
     }
 
@@ -435,21 +418,21 @@ public class Fly extends Module {
         final float vanillaSpeed = vanillaSpeedValue.get();
 
         switch (modeValue.get().toLowerCase()) {
-            case "blockwalk":{
-                if(Math.random()>0.5){
-                    mc.getNetHandler().addToSendQueue(new C08PacketPlayerBlockPlacement(new BlockPos(0,-1,0),
-                            0,mc.thePlayer.inventory.getCurrentItem(),0,0,0));
+            case "blockwalk": {
+                if (Math.random() > 0.5) {
+                    mc.getNetHandler().addToSendQueue(new C08PacketPlayerBlockPlacement(new BlockPos(0, -1, 0),
+                            0, mc.thePlayer.inventory.getCurrentItem(), 0, 0, 0));
                 }
                 break;
             }
-            case "hypixelnew":{
-                mc.timer.timerSpeed=0.7F;
-                mc.thePlayer.motionX=0;
-                mc.thePlayer.motionY=0;
-                mc.thePlayer.motionZ=0;
-                if(theTimer.hasTimePassed(1000)){
+            case "hypixelnew": {
+                mc.timer.timerSpeed = 0.7F;
+                mc.thePlayer.motionX = 0;
+                mc.thePlayer.motionY = 0;
+                mc.thePlayer.motionZ = 0;
+                if (theTimer.hasTimePassed(1000)) {
                     // hclip LMFAO
-                    double yaw=Math.toRadians(mc.thePlayer.rotationYaw);
+                    double yaw = Math.toRadians(mc.thePlayer.rotationYaw);
                     double x = -Math.sin(yaw) * hypixelSpeed.get();
                     double z = Math.cos(yaw) * hypixelSpeed.get();
                     mc.thePlayer.setPosition(mc.thePlayer.posX + x, mc.thePlayer.posY, mc.thePlayer.posZ + z);
@@ -462,28 +445,28 @@ public class Fly extends Module {
                 mc.thePlayer.motionX = 0;
                 mc.thePlayer.motionZ = 0;
                 mc.thePlayer.motionY = 0.003;
-                if(mc.thePlayer.onGround){
+                if (mc.thePlayer.onGround) {
                     chat("JUMP INTO AIR AND TOGGLE THIS MODULE");
                     setState(false);
                 }
                 break;
             case "aac5.2.0-fast":
-                if(mc.thePlayer.onGround){
+                if (mc.thePlayer.onGround) {
                     chat("JUMP INTO AIR AND TOGGLE THIS MODULE");
                     setState(false);
                     break;
                 }
-                mc.gameSettings.keyBindForward.pressed=aac5Status!=1;
+                mc.gameSettings.keyBindForward.pressed = aac5Status != 1;
                 mc.thePlayer.motionX = 0;
                 mc.thePlayer.motionZ = 0;
                 mc.thePlayer.motionY = 0;
-                mc.thePlayer.rotationYaw=launchYaw;
-                mc.thePlayer.rotationPitch=launchPitch;
-                if(aac5Status==1){
-                    if(aac5QueuedPacket!=null){
+                mc.thePlayer.rotationYaw = launchYaw;
+                mc.thePlayer.rotationPitch = launchPitch;
+                if (aac5Status == 1) {
+                    if (aac5QueuedPacket != null) {
                         PacketUtils.sendPacketNoEvent(aac5QueuedPacket);
-                        double dist=0.13;
-                        double yaw=Math.toRadians(mc.thePlayer.rotationYaw);
+                        double dist = 0.13;
+                        double yaw = Math.toRadians(mc.thePlayer.rotationYaw);
                         double x = -Math.sin(yaw) * dist;
                         double z = Math.cos(yaw) * dist;
                         mc.thePlayer.setPosition(mc.thePlayer.posX + x, mc.thePlayer.posY, mc.thePlayer.posZ + z);
@@ -493,33 +476,33 @@ public class Fly extends Module {
                                 mc.thePlayer.posZ,
                                 false));
                     }
-                    PacketUtils.sendPacketNoEvent(new C03PacketPlayer.C04PacketPlayerPosition(mc.thePlayer.posX,1.7976931348623157E+308,mc.thePlayer.posZ,true));
-                    aac5QueuedPacket=new C03PacketPlayer.C06PacketPlayerPosLook(mc.thePlayer.posX,mc.thePlayer.posY,mc.thePlayer.posZ, mc.thePlayer.rotationYaw, mc.thePlayer.rotationPitch, false);
+                    PacketUtils.sendPacketNoEvent(new C03PacketPlayer.C04PacketPlayerPosition(mc.thePlayer.posX, 1.7976931348623157E+308, mc.thePlayer.posZ, true));
+                    aac5QueuedPacket = new C03PacketPlayer.C06PacketPlayerPosLook(mc.thePlayer.posX, mc.thePlayer.posY, mc.thePlayer.posZ, mc.thePlayer.rotationYaw, mc.thePlayer.rotationPitch, false);
                 }
                 break;
             case "aac5.2.0-smooth":
-                mc.thePlayer.noClip=!MovementUtils.isMoving();
-                if(!flyTimer.hasTimePassed(1000) || !aac5FlyStart) {
+                mc.thePlayer.noClip = !MovementUtils.isMoving();
+                if (!flyTimer.hasTimePassed(1000) || !aac5FlyStart) {
                     mc.thePlayer.motionY = 0;
                     mc.thePlayer.motionX = 0;
                     mc.thePlayer.motionZ = 0;
                     mc.thePlayer.jumpMovementFactor = 0.00f;
                     mc.timer.timerSpeed = 0.32F;
                     return;
-                }else {
-                    if(!aac5FlyClip) {
+                } else {
+                    if (!aac5FlyClip) {
                         mc.timer.timerSpeed = 0.19F;
-                    }else{
-                        aac5FlyClip=false;
+                    } else {
+                        aac5FlyClip = false;
                         mc.timer.timerSpeed = 1.2F;
                     }
                 }
             case "aac5.2.0-vanilla":
-                if(aac520view.get()&&modeValue.equals("AAC5.2.0-Vanilla")){
+                if (aac520view.get() && modeValue.equals("AAC5.2.0-Vanilla")) {
                     clonedPlayer.inventory.copyInventory(mc.thePlayer.inventory);
                     clonedPlayer.setHealth(mc.thePlayer.getHealth());
-                    clonedPlayer.rotationYaw=mc.thePlayer.rotationYaw;
-                    clonedPlayer.rotationPitch=mc.thePlayer.rotationPitch;
+                    clonedPlayer.rotationYaw = mc.thePlayer.rotationYaw;
+                    clonedPlayer.rotationPitch = mc.thePlayer.rotationPitch;
                 }
             case "vanilla":
                 mc.thePlayer.capabilities.isFlying = false;
@@ -527,54 +510,54 @@ public class Fly extends Module {
                 mc.thePlayer.motionX = 0;
                 mc.thePlayer.motionZ = 0;
                 if (mc.gameSettings.keyBindJump.isKeyDown())
-                    mc.thePlayer.motionY += vanillaSpeed*0.5;
+                    mc.thePlayer.motionY += vanillaSpeed * 0.5;
                 if (mc.gameSettings.keyBindSneak.isKeyDown())
-                    mc.thePlayer.motionY -= vanillaSpeed*0.5;
+                    mc.thePlayer.motionY -= vanillaSpeed * 0.5;
                 MovementUtils.strafe(vanillaSpeed);
 
-                if(!modeValue.get().toLowerCase().contains("aac"))
+                if (!modeValue.get().toLowerCase().contains("aac"))
                     handleVanillaKickBypass();
 
                 break;
             case "verus":
-                if(flyTimer.hasTimePassed(3000)) verusFlyable=false;
-                if(verusFlyable&&flyTimer.hasTimePassed(100)){
+                if (flyTimer.hasTimePassed(3000)) verusFlyable = false;
+                if (verusFlyable && flyTimer.hasTimePassed(100)) {
                     MovementUtils.strafe(1.5F);
-                    if(enabledVerus){
-                        launchY+=0.42;
-                        enabledVerus=false;
-                        mc.thePlayer.motionY=0.0;
-                    };
-                }else if(!flyTimer.hasTimePassed(100)) {
+                    if (enabledVerus) {
+                        launchY += 0.42;
+                        enabledVerus = false;
+                        mc.thePlayer.motionY = 0.0;
+                    }
+                } else if (!flyTimer.hasTimePassed(100)) {
                     mc.thePlayer.motionX = 0.0;
                     mc.thePlayer.motionY = 0.0;
                     mc.thePlayer.motionZ = 0.0;
-                };
+                }
                 break;
             case "verus2":
-                if(verusFlyable){
+                if (verusFlyable) {
                     MovementUtils.strafe(2F);
-                    if(mc.gameSettings.keyBindJump.isKeyDown()&&flyTimer.hasTimePassed(250)) {
-                        mc.thePlayer.setPosition(mc.thePlayer.posX , mc.thePlayer.posY+0.5 , mc.thePlayer.posZ);
-                        launchY+=0.5;
+                    if (mc.gameSettings.keyBindJump.isKeyDown() && flyTimer.hasTimePassed(250)) {
+                        mc.thePlayer.setPosition(mc.thePlayer.posX, mc.thePlayer.posY + 0.5, mc.thePlayer.posZ);
+                        launchY += 0.5;
                         flyTimer.reset();
-                    }else if(mc.gameSettings.keyBindSneak.isKeyDown()&&flyTimer.hasTimePassed(250)) {
-                        mc.thePlayer.setPosition(mc.thePlayer.posX , mc.thePlayer.posY-0.5 , mc.thePlayer.posZ);
-                        launchY-=0.5;
+                    } else if (mc.gameSettings.keyBindSneak.isKeyDown() && flyTimer.hasTimePassed(250)) {
+                        mc.thePlayer.setPosition(mc.thePlayer.posX, mc.thePlayer.posY - 0.5, mc.thePlayer.posZ);
+                        launchY -= 0.5;
                         flyTimer.reset();
                     }
-                };
+                }
                 break;
-             case "verus3":
-                mc.gameSettings.keyBindJump.pressed=false;
-                if(mc.thePlayer.onGround&&MovementUtils.isMoving()) {
+            case "verus3":
+                mc.gameSettings.keyBindJump.pressed = false;
+                if (mc.thePlayer.onGround && MovementUtils.isMoving()) {
                     mc.thePlayer.jump();
                     MovementUtils.strafe(0.48F);
-                }else MovementUtils.strafe();
+                } else MovementUtils.strafe();
                 break;
             case "smoothvanilla":
                 mc.thePlayer.capabilities.isFlying = true;
-                mc.thePlayer.capabilities.setFlySpeed(vanillaSpeed*0.05f);
+                mc.thePlayer.capabilities.setFlySpeed(vanillaSpeed * 0.05f);
 
                 handleVanillaKickBypass();
                 break;
@@ -586,29 +569,29 @@ public class Fly extends Module {
             case "ncp":
                 mc.thePlayer.motionY = -ncpMotionValue.get();
 
-                if(mc.gameSettings.keyBindSneak.isKeyDown())
+                if (mc.gameSettings.keyBindSneak.isKeyDown())
                     mc.thePlayer.motionY = -0.5D;
                 MovementUtils.strafe();
                 break;
             case "oldncp":
-                if(startY > mc.thePlayer.posY)
+                if (startY > mc.thePlayer.posY)
                     mc.thePlayer.motionY = -0.000000000000000000000000000000001D;
 
-                if(mc.gameSettings.keyBindSneak.isKeyDown())
+                if (mc.gameSettings.keyBindSneak.isKeyDown())
                     mc.thePlayer.motionY = -0.2D;
 
-                if(mc.gameSettings.keyBindJump.isKeyDown() && mc.thePlayer.posY < (startY - 0.1D))
+                if (mc.gameSettings.keyBindJump.isKeyDown() && mc.thePlayer.posY < (startY - 0.1D))
                     mc.thePlayer.motionY = 0.2D;
                 MovementUtils.strafe();
                 break;
             case "aac1.9.10":
-                if(mc.gameSettings.keyBindJump.isKeyDown())
+                if (mc.gameSettings.keyBindJump.isKeyDown())
                     aacJump += 0.2D;
 
-                if(mc.gameSettings.keyBindSneak.isKeyDown())
+                if (mc.gameSettings.keyBindSneak.isKeyDown())
                     aacJump -= 0.2D;
 
-                if((startY + aacJump) > mc.thePlayer.posY) {
+                if ((startY + aacJump) > mc.thePlayer.posY) {
                     mc.getNetHandler().addToSendQueue(new C03PacketPlayer(true));
                     mc.thePlayer.motionY = 0.8D;
                     MovementUtils.strafe(aacSpeedValue.get());
@@ -643,9 +626,9 @@ public class Fly extends Module {
 
                 aac3delay++;
 
-                if(!noFlag)
+                if (!noFlag)
                     mc.getNetHandler().addToSendQueue(new C03PacketPlayer.C04PacketPlayerPosition(mc.thePlayer.posX, mc.thePlayer.posY, mc.thePlayer.posZ, mc.thePlayer.onGround));
-                if(mc.thePlayer.posY <= 0D)
+                if (mc.thePlayer.posY <= 0D)
                     noFlag = true;
                 break;
             case "flag":
@@ -661,23 +644,23 @@ public class Fly extends Module {
                 mc.thePlayer.motionY = 0;
                 mc.thePlayer.motionX = 0;
                 mc.thePlayer.motionZ = 0;
-                if(mc.gameSettings.keyBindJump.isKeyDown())
+                if (mc.gameSettings.keyBindJump.isKeyDown())
                     mc.thePlayer.motionY += vanillaSpeed;
-                if(mc.gameSettings.keyBindSneak.isKeyDown())
+                if (mc.gameSettings.keyBindSneak.isKeyDown())
                     mc.thePlayer.motionY -= vanillaSpeed;
                 MovementUtils.strafe(vanillaSpeed);
                 break;
             case "minesecure":
                 mc.thePlayer.capabilities.isFlying = false;
 
-                if(!mc.gameSettings.keyBindSneak.isKeyDown())
+                if (!mc.gameSettings.keyBindSneak.isKeyDown())
                     mc.thePlayer.motionY = -0.01F;
 
                 mc.thePlayer.motionX = 0;
                 mc.thePlayer.motionZ = 0;
                 MovementUtils.strafe(vanillaSpeed);
 
-                if(mineSecureVClipTimer.hasTimePassed(150) && mc.gameSettings.keyBindJump.isKeyDown()) {
+                if (mineSecureVClipTimer.hasTimePassed(150) && mc.gameSettings.keyBindJump.isKeyDown()) {
                     mc.getNetHandler().addToSendQueue(new C03PacketPlayer.C04PacketPlayerPosition(mc.thePlayer.posX, mc.thePlayer.posY + 5, mc.thePlayer.posZ, false));
                     mc.getNetHandler().addToSendQueue(new C03PacketPlayer.C04PacketPlayerPosition(0.5D, -1000, 0.5D, false));
                     final double yaw = Math.toRadians(mc.thePlayer.rotationYaw);
@@ -713,15 +696,15 @@ public class Fly extends Module {
                 final double posY = mc.thePlayer.posY;
                 final double posZ = mc.thePlayer.posZ;
 
-                if(!mc.gameSettings.keyBindForward.isKeyDown())
+                if (!mc.gameSettings.keyBindForward.isKeyDown())
                     break;
 
-                if(System.currentTimeMillis() - minesuchtTP > 99) {
+                if (System.currentTimeMillis() - minesuchtTP > 99) {
                     final Vec3 vec3 = mc.thePlayer.getPositionEyes(0);
                     final Vec3 vec31 = mc.thePlayer.getLook(0);
                     final Vec3 vec32 = vec3.addVector(vec31.xCoord * 7, vec31.yCoord * 7, vec31.zCoord * 7);
 
-                    if(mc.thePlayer.fallDistance > 0.8) {
+                    if (mc.thePlayer.fallDistance > 0.8) {
                         mc.thePlayer.sendQueue.addToSendQueue(new C03PacketPlayer.C04PacketPlayerPosition(posX, posY + 50, posZ, false));
                         mc.thePlayer.fall(100, 100);
                         mc.thePlayer.fallDistance = 0;
@@ -733,13 +716,13 @@ public class Fly extends Module {
                     mc.thePlayer.sendQueue.addToSendQueue(new C03PacketPlayer.C04PacketPlayerPosition(vec32.xCoord, posY, vec32.zCoord, true));
                     mc.thePlayer.sendQueue.addToSendQueue(new C03PacketPlayer.C04PacketPlayerPosition(posX, posY, posZ, false));
                     minesuchtTP = System.currentTimeMillis();
-                }else{
+                } else {
                     mc.thePlayer.sendQueue.addToSendQueue(new C03PacketPlayer.C04PacketPlayerPosition(mc.thePlayer.posX, mc.thePlayer.posY, mc.thePlayer.posZ, false));
                     mc.thePlayer.sendQueue.addToSendQueue(new C03PacketPlayer.C04PacketPlayerPosition(posX, posY, posZ, true));
                 }
                 break;
             case "jetpack":
-                if(mc.gameSettings.keyBindJump.isKeyDown()) {
+                if (mc.gameSettings.keyBindJump.isKeyDown()) {
                     mc.effectRenderer.spawnEffectParticle(EnumParticleTypes.FLAME.getParticleID(), mc.thePlayer.posX, mc.thePlayer.posY + 0.2D, mc.thePlayer.posZ, -mc.thePlayer.motionX, -0.5D, -mc.thePlayer.motionZ);
                     mc.thePlayer.motionY += 0.15D;
                     mc.thePlayer.motionX *= 1.1D;
@@ -747,13 +730,13 @@ public class Fly extends Module {
                 }
                 break;
             case "mineplex":
-                if(mc.thePlayer.inventory.getCurrentItem() == null) {
-                    if(mc.gameSettings.keyBindJump.isKeyDown() && mineplexTimer.hasTimePassed(100)) {
+                if (mc.thePlayer.inventory.getCurrentItem() == null) {
+                    if (mc.gameSettings.keyBindJump.isKeyDown() && mineplexTimer.hasTimePassed(100)) {
                         mc.thePlayer.setPosition(mc.thePlayer.posX, mc.thePlayer.posY + 0.6, mc.thePlayer.posZ);
                         mineplexTimer.reset();
                     }
 
-                    if(mc.thePlayer.isSneaking() && mineplexTimer.hasTimePassed(100)) {
+                    if (mc.thePlayer.isSneaking() && mineplexTimer.hasTimePassed(100)) {
                         mc.thePlayer.setPosition(mc.thePlayer.posX, mc.thePlayer.posY - 0.6, mc.thePlayer.posZ);
                         mineplexTimer.reset();
                     }
@@ -764,61 +747,61 @@ public class Fly extends Module {
                     MovementUtils.strafe(0.27F);
 
                     mc.timer.timerSpeed = (1 + mineplexSpeedValue.get());
-                }else{
+                } else {
                     mc.timer.timerSpeed = 1;
                     setState(false);
                     ClientUtils.displayChatMessage("§8[§c§lMineplex-§a§lFly§8] §aSelect an empty slot to fly.");
                 }
                 break;
             case "aac3.3.12":
-                if(mc.thePlayer.posY < -70)
+                if (mc.thePlayer.posY < -70)
                     mc.thePlayer.motionY = aacMotion.get();
 
                 mc.timer.timerSpeed = 1F;
 
-                if(Keyboard.isKeyDown(Keyboard.KEY_LCONTROL)) {
+                if (Keyboard.isKeyDown(Keyboard.KEY_LCONTROL)) {
                     mc.timer.timerSpeed = 0.2F;
                     mc.rightClickDelayTimer = 0;
                 }
                 break;
             case "aac3.3.12-glide":
-                if(!mc.thePlayer.onGround)
+                if (!mc.thePlayer.onGround)
                     aac3glideDelay++;
 
-                if(aac3glideDelay == 2)
+                if (aac3glideDelay == 2)
                     mc.timer.timerSpeed = 1F;
 
-                if(aac3glideDelay == 12)
+                if (aac3glideDelay == 12)
                     mc.timer.timerSpeed = 0.1F;
 
-                if(aac3glideDelay >= 12 && !mc.thePlayer.onGround) {
+                if (aac3glideDelay >= 12 && !mc.thePlayer.onGround) {
                     aac3glideDelay = 0;
                     mc.thePlayer.motionY = .015;
                 }
                 break;
             case "aac4.x-glide":
-                if(!mc.thePlayer.onGround && !mc.thePlayer.isCollided) {
+                if (!mc.thePlayer.onGround && !mc.thePlayer.isCollided) {
                     mc.timer.timerSpeed = 0.6F;
-                    if(mc.thePlayer.motionY<0 && aac4glideDelay>0) {
+                    if (mc.thePlayer.motionY < 0 && aac4glideDelay > 0) {
                         aac4glideDelay--;
                         mc.timer.timerSpeed = 0.95F;
-                    }else{
-                        aac4glideDelay=0;
-                        mc.thePlayer.motionY = mc.thePlayer.motionY/0.9800000190734863D;
+                    } else {
+                        aac4glideDelay = 0;
+                        mc.thePlayer.motionY = mc.thePlayer.motionY / 0.9800000190734863D;
                         mc.thePlayer.motionY += 0.03D;
                         mc.thePlayer.motionY *= 0.9800000190734863D;
                         mc.thePlayer.jumpMovementFactor = 0.03625f;
                     }
-                }else {
+                } else {
                     mc.timer.timerSpeed = 1.0F;
-                    aac4glideDelay=2;
+                    aac4glideDelay = 2;
                 }
                 break;
             case "aac3.3.13":
-                if(mc.thePlayer.isDead)
+                if (mc.thePlayer.isDead)
                     wasDead = true;
 
-                if(wasDead || mc.thePlayer.onGround) {
+                if (wasDead || mc.thePlayer.onGround) {
                     wasDead = false;
 
                     mc.thePlayer.motionY = aacMotion2.get();
@@ -827,7 +810,7 @@ public class Fly extends Module {
 
                 mc.timer.timerSpeed = 1F;
 
-                if(Keyboard.isKeyDown(Keyboard.KEY_LCONTROL)) {
+                if (Keyboard.isKeyDown(Keyboard.KEY_LCONTROL)) {
                     mc.timer.timerSpeed = 0.2F;
                     mc.rightClickDelayTimer = 0;
                 }
@@ -836,18 +819,18 @@ public class Fly extends Module {
                 MovementUtils.strafe(0.15F);
                 mc.thePlayer.setSprinting(true);
 
-                if(mc.thePlayer.posY < startY + 2) {
+                if (mc.thePlayer.posY < startY + 2) {
                     mc.thePlayer.motionY = Math.random() * 0.5;
                     break;
                 }
 
-                if(startY > mc.thePlayer.posY)
+                if (startY > mc.thePlayer.posY)
                     MovementUtils.strafe(0F);
                 break;
             case "spartan":
                 mc.thePlayer.motionY = 0;
                 spartanTimer.update();
-                if(spartanTimer.hasTimePassed(12)) {
+                if (spartanTimer.hasTimePassed(12)) {
                     mc.getNetHandler().addToSendQueue(new C03PacketPlayer.C04PacketPlayerPosition(mc.thePlayer.posX, mc.thePlayer.posY + 8, mc.thePlayer.posZ, true));
                     mc.getNetHandler().addToSendQueue(new C03PacketPlayer.C04PacketPlayerPosition(mc.thePlayer.posX, mc.thePlayer.posY - 8, mc.thePlayer.posZ, true));
                     spartanTimer.reset();
@@ -856,7 +839,7 @@ public class Fly extends Module {
             case "spartan2":
                 MovementUtils.strafe(0.264F);
 
-                if(mc.thePlayer.ticksExisted % 8 == 0)
+                if (mc.thePlayer.ticksExisted % 8 == 0)
                     mc.thePlayer.sendQueue.addToSendQueue(new C03PacketPlayer.C04PacketPlayerPosition(mc.thePlayer.posX, mc.thePlayer.posY + 10, mc.thePlayer.posZ, true));
                 break;
             case "neruxvace":
@@ -882,16 +865,16 @@ public class Fly extends Module {
                 }
                 break;
             case "freehypixel":
-                if(freeHypixelTimer.hasTimePassed(10)) {
+                if (freeHypixelTimer.hasTimePassed(10)) {
                     mc.thePlayer.capabilities.isFlying = true;
                     break;
-                }else{
+                } else {
                     mc.thePlayer.rotationYaw = freeHypixelYaw;
                     mc.thePlayer.rotationPitch = freeHypixelPitch;
                     mc.thePlayer.motionX = mc.thePlayer.motionZ = mc.thePlayer.motionY = 0;
                 }
 
-                if(startY == new BigDecimal(mc.thePlayer.posY).setScale(3, RoundingMode.HALF_DOWN).doubleValue())
+                if (startY == new BigDecimal(mc.thePlayer.posY).setScale(3, RoundingMode.HALF_DOWN).doubleValue())
                     freeHypixelTimer.update();
                 break;
             case "bugspartan":
@@ -910,8 +893,8 @@ public class Fly extends Module {
 
     @EventTarget
     public void onMotion(final MotionEvent event) {
-        if(modeValue.equals("boosthypixel")) {
-            if(event.getEventState() == EventState.PRE){
+        if (modeValue.equals("boosthypixel")) {
+            if (event.getEventState() == EventState.PRE) {
                 hypixelTimer.update();
 
                 if (hypixelTimer.hasTimePassed(2)) {
@@ -919,8 +902,8 @@ public class Fly extends Module {
                     hypixelTimer.reset();
                 }
 
-                if(!failedStart) mc.thePlayer.motionY = 0D;
-            }else{
+                if (!failedStart) mc.thePlayer.motionY = 0D;
+            } else {
                 double xDist = mc.thePlayer.posX - mc.thePlayer.prevPosX;
                 double zDist = mc.thePlayer.posZ - mc.thePlayer.prevPosZ;
                 lastDistance = Math.sqrt(xDist * xDist + zDist * zDist);
@@ -952,67 +935,67 @@ public class Fly extends Module {
 
     @EventTarget
     public void onPacket(PacketEvent event) {
-        if(noPacketModify)
+        if (noPacketModify)
             return;
 
         final Packet<?> packet = event.getPacket();
 
-        if(packet instanceof S08PacketPlayerPosLook){
-            final S08PacketPlayerPosLook s08=(S08PacketPlayerPosLook) packet;
+        if (packet instanceof S08PacketPlayerPosLook) {
+            final S08PacketPlayerPosLook s08 = (S08PacketPlayerPosLook) packet;
 
             final String mode = modeValue.get();
 
-            if(mode.equalsIgnoreCase("BoostHypixel")) {
+            if (mode.equalsIgnoreCase("BoostHypixel")) {
                 failedStart = true;
                 ClientUtils.displayChatMessage("§8[§c§lBoostHypixel-§a§lFly§8] §cSetback detected.");
-            }else if(mode.equalsIgnoreCase("AAC5.2.0")){
+            } else if (mode.equalsIgnoreCase("AAC5.2.0")) {
                 event.cancelEvent();
                 mc.thePlayer.setPosition(s08.getX(), s08.getY(), s08.getZ());
-                PacketUtils.sendPacketNoEvent(new C03PacketPlayer.C06PacketPlayerPosLook(mc.thePlayer.posX,mc.thePlayer.posY,mc.thePlayer.posZ, s08.getYaw(), s08.getPitch(), false));
-                double dist=0.14;
-                double yaw=Math.toRadians(mc.thePlayer.rotationYaw);
+                PacketUtils.sendPacketNoEvent(new C03PacketPlayer.C06PacketPlayerPosLook(mc.thePlayer.posX, mc.thePlayer.posY, mc.thePlayer.posZ, s08.getYaw(), s08.getPitch(), false));
+                double dist = 0.14;
+                double yaw = Math.toRadians(mc.thePlayer.rotationYaw);
                 mc.thePlayer.setPosition(mc.thePlayer.posX + (-Math.sin(yaw) * dist), mc.thePlayer.posY, mc.thePlayer.posZ + (Math.cos(yaw) * dist));
                 PacketUtils.sendPacketNoEvent(new C03PacketPlayer.C04PacketPlayerPosition(
                         mc.thePlayer.posX,
                         mc.thePlayer.posY,
                         mc.thePlayer.posZ,
                         false));
-                PacketUtils.sendPacketNoEvent(new C03PacketPlayer.C04PacketPlayerPosition(mc.thePlayer.posX,1.7976931348623157E+308,mc.thePlayer.posZ,true));
-            }else if(mode.equalsIgnoreCase("AAC5.2.0-Fast")){
+                PacketUtils.sendPacketNoEvent(new C03PacketPlayer.C04PacketPlayerPosition(mc.thePlayer.posX, 1.7976931348623157E+308, mc.thePlayer.posZ, true));
+            } else if (mode.equalsIgnoreCase("AAC5.2.0-Fast")) {
                 event.cancelEvent();
-                if(aac5Status==0){
+                if (aac5Status == 0) {
                     mc.thePlayer.setPosition(s08.getX(), s08.getY(), s08.getZ());
-                    PacketUtils.sendPacketNoEvent(new C03PacketPlayer.C06PacketPlayerPosLook(mc.thePlayer.posX,mc.thePlayer.posY,mc.thePlayer.posZ, s08.getYaw(), s08.getPitch(), false));
-                    if(mc.thePlayer.posX==aac5LastPosX){
+                    PacketUtils.sendPacketNoEvent(new C03PacketPlayer.C06PacketPlayerPosLook(mc.thePlayer.posX, mc.thePlayer.posY, mc.thePlayer.posZ, s08.getYaw(), s08.getPitch(), false));
+                    if (mc.thePlayer.posX == aac5LastPosX) {
                         aac5Same++;
-                        if(aac5Same>=5){
-                            aac5Status=1;
-                            mc.timer.timerSpeed=0.1f;
-                            aac5Same=0;
+                        if (aac5Same >= 5) {
+                            aac5Status = 1;
+                            mc.timer.timerSpeed = 0.1f;
+                            aac5Same = 0;
                             return;
                         }
                     }
-                    double dist=0.12;
-                    double yaw=Math.toRadians(mc.thePlayer.rotationYaw);
+                    double dist = 0.12;
+                    double yaw = Math.toRadians(mc.thePlayer.rotationYaw);
                     mc.thePlayer.setPosition(mc.thePlayer.posX + (-Math.sin(yaw) * dist), mc.thePlayer.posY, mc.thePlayer.posZ + (Math.cos(yaw) * dist));
                     PacketUtils.sendPacketNoEvent(new C03PacketPlayer.C04PacketPlayerPosition(
                             mc.thePlayer.posX,
                             mc.thePlayer.posY,
                             mc.thePlayer.posZ,
                             false));
-                    aac5LastPosX=mc.thePlayer.posX;
-                    PacketUtils.sendPacketNoEvent(new C03PacketPlayer.C04PacketPlayerPosition(mc.thePlayer.posX,1.7976931348623157E+308,mc.thePlayer.posZ,true));
-                }else{
-                    if(mc.timer.timerSpeed<=aac520MaxTimer.get()){
+                    aac5LastPosX = mc.thePlayer.posX;
+                    PacketUtils.sendPacketNoEvent(new C03PacketPlayer.C04PacketPlayerPosition(mc.thePlayer.posX, 1.7976931348623157E+308, mc.thePlayer.posZ, true));
+                } else {
+                    if (mc.timer.timerSpeed <= aac520MaxTimer.get()) {
                         aac5Same++;
-                        if(aac5Same>=aac5SameReach){
-                            aac5Same=0;
-                            aac5SameReach+=aac520Append.get();
-                            mc.timer.timerSpeed+=aac520AppendTimer.get();
+                        if (aac5Same >= aac5SameReach) {
+                            aac5Same = 0;
+                            aac5SameReach += aac520Append.get();
+                            mc.timer.timerSpeed += aac520AppendTimer.get();
                         }
                     }
                 }
-            }else if(mode.equalsIgnoreCase("AAC5.2.0-Smooth")){
+            } else if (mode.equalsIgnoreCase("AAC5.2.0-Smooth")) {
 //                mc.getNetHandler().addToSendQueue(new C03PacketPlayer.C06PacketPlayerPosLook(s08.getX(),s08.getY(),s08.getZ(), s08.getYaw(), s08.getPitch(), false));
 //                double x = s08.getX() - mc.thePlayer.posX;
 //                double y = s08.getY() - mc.thePlayer.posY;
@@ -1030,43 +1013,43 @@ public class Fly extends Module {
 //                }
 //                aac5LastFlag=value;
 //                event.cancelEvent();
-                aac5FlyStart=true;
-                if(flyTimer.hasTimePassed(2000)) {
-                    aac5FlyClip=true;
+                aac5FlyStart = true;
+                if (flyTimer.hasTimePassed(2000)) {
+                    aac5FlyClip = true;
                     mc.timer.timerSpeed = 1.3F;
                 }
-                aac5nextFlag=true;
-            }else if(modeValue.equals("AAC5.2.0-Vanilla")&&aac520view.get()) {
+                aac5nextFlag = true;
+            } else if (modeValue.equals("AAC5.2.0-Vanilla") && aac520view.get()) {
                 clonedPlayer.setPosition(s08.getX(), s08.getY(), s08.getZ());
-            }else if(verusFlyable) {
+            } else if (verusFlyable) {
                 verusFlyable = false;
             }
         }
 
-        if(packet instanceof C03PacketPlayer) {
+        if (packet instanceof C03PacketPlayer) {
             final C03PacketPlayer packetPlayer = (C03PacketPlayer) packet;
 
             final String mode = modeValue.get();
 
-            if (mode.equalsIgnoreCase("NCP") || mode.equalsIgnoreCase("Rewinside") || (mode.equalsIgnoreCase("Verus")&&verusFlyable) ||
-                (mode.equalsIgnoreCase("Verus2")&&verusFlyable) ||
+            if (mode.equalsIgnoreCase("NCP") || mode.equalsIgnoreCase("Rewinside") || (mode.equalsIgnoreCase("Verus") && verusFlyable) ||
+                    (mode.equalsIgnoreCase("Verus2") && verusFlyable) ||
                     (mode.equalsIgnoreCase("Mineplex") && mc.thePlayer.inventory.getCurrentItem() == null))
                 packetPlayer.onGround = true;
 
             if (mode.equalsIgnoreCase("Hypixel") || mode.equalsIgnoreCase("BoostHypixel"))
                 packetPlayer.onGround = false;
 
-            if(mode.contains("AAC5.2.0"))
+            if (mode.contains("AAC5.2.0"))
                 event.cancelEvent();
 
-            if(modeValue.equals("AAC5.2.0-Vanilla") || modeValue.equals("AAC5.2.0-Smooth")){
-                double f=mc.thePlayer.width/2.0;
+            if (modeValue.equals("AAC5.2.0-Vanilla") || modeValue.equals("AAC5.2.0-Smooth")) {
+                double f = mc.thePlayer.width / 2.0;
                 // need to no collide else will flag
-                if(aac5nextFlag || !mc.theWorld.checkBlockCollision(new AxisAlignedBB(packetPlayer.x - f, packetPlayer.y, packetPlayer.z - f, packetPlayer.x + f, packetPlayer.y + mc.thePlayer.height, packetPlayer.z + f))){
+                if (aac5nextFlag || !mc.theWorld.checkBlockCollision(new AxisAlignedBB(packetPlayer.x - f, packetPlayer.y, packetPlayer.z - f, packetPlayer.x + f, packetPlayer.y + mc.thePlayer.height, packetPlayer.z + f))) {
                     aac5C03List.add(packetPlayer);
-                    aac5nextFlag=false;
+                    aac5nextFlag = false;
                     event.cancelEvent();
-                    if(!(modeValue.equals("AAC5.2.0-Smooth") && !flyTimer.hasTimePassed(1000))&&aac5C03List.size()>aac520Purse.get()) {
+                    if (!(modeValue.equals("AAC5.2.0-Smooth") && !flyTimer.hasTimePassed(1000)) && aac5C03List.size() > aac520Purse.get()) {
                         sendAAC5Packets();
                     }
                 }
@@ -1077,15 +1060,15 @@ public class Fly extends Module {
     @EventTarget
     public void onMove(final MoveEvent event) {
         flyTick++;
-        switch(modeValue.get().toLowerCase()) {
+        switch (modeValue.get().toLowerCase()) {
             case "redeskycollide":
-                mc.timer.timerSpeed=rscTimerValue.get();
+                mc.timer.timerSpeed = rscTimerValue.get();
                 RotationUtils.reset();
-                if(mc.gameSettings.keyBindForward.isKeyDown()) {
-                    float speed = rscSpeedValue.get() / 100F + flyTick*(rscBoostValue.get()/100F);
+                if (mc.gameSettings.keyBindForward.isKeyDown()) {
+                    float speed = rscSpeedValue.get() / 100F + flyTick * (rscBoostValue.get() / 100F);
                     float maxSpeed = rscMaxSpeedValue.get() / 100F;
-                    if(speed>maxSpeed){
-                        speed=maxSpeed;
+                    if (speed > maxSpeed) {
+                        speed = maxSpeed;
                     }
                     float f = mc.thePlayer.rotationYaw * 0.017453292F;
                     mc.thePlayer.motionX -= MathHelper.sin(f) * speed;
@@ -1094,18 +1077,18 @@ public class Fly extends Module {
                     event.setZ(mc.thePlayer.motionZ);
                 }
                 break;
-            case "redeskysmooth":{
-                if(flyTick>10&&(mc.thePlayer.isCollided||mc.thePlayer.onGround)){
+            case "redeskysmooth": {
+                if (flyTick > 10 && (mc.thePlayer.isCollided || mc.thePlayer.onGround)) {
                     setState(false);
                     return;
                 }
-                float speed = rssSpeedValue.get()/10F + flyTick*(rssSpeedChangeValue.get()/1000F);
-                mc.timer.timerSpeed=rssTimerValue.get();
+                float speed = rssSpeedValue.get() / 10F + flyTick * (rssSpeedChangeValue.get() / 1000F);
+                mc.timer.timerSpeed = rssTimerValue.get();
                 mc.thePlayer.capabilities.setFlySpeed(speed);
                 mc.thePlayer.capabilities.isFlying = true;
                 mc.thePlayer.setPosition(mc.thePlayer.posX
-                        ,mc.thePlayer.posY-(rssDropoff.get()?(rssDropoffValue.get()/1000F)*flyTick:(rssDropoffValue.get()/300F))
-                        ,mc.thePlayer.posZ);
+                        , mc.thePlayer.posY - (rssDropoff.get() ? (rssDropoffValue.get() / 1000F) * flyTick : (rssDropoffValue.get() / 300F))
+                        , mc.thePlayer.posZ);
                 break;
             }
             case "cubecraft": {
@@ -1180,7 +1163,7 @@ public class Fly extends Module {
                 mode.equalsIgnoreCase("BoostHypixel") || mode.equalsIgnoreCase("Rewinside") ||
                 (mode.equalsIgnoreCase("Mineplex") && mc.thePlayer.inventory.getCurrentItem() == null)) && event.getY() < mc.thePlayer.posY)
             event.setBoundingBox(AxisAlignedBB.fromBounds(event.getX(), event.getY(), event.getZ(), event.getX() + 1, mc.thePlayer.posY, event.getZ() + 1));
-        if((mode.equalsIgnoreCase("FakeGround") || mode.equalsIgnoreCase("Verus") || mode.equalsIgnoreCase("Verus3") || mode.equalsIgnoreCase("Verus2"))
+        if ((mode.equalsIgnoreCase("FakeGround") || mode.equalsIgnoreCase("Verus") || mode.equalsIgnoreCase("Verus3") || mode.equalsIgnoreCase("Verus2"))
                 && event.getBlock() instanceof BlockAir && event.getY() <= launchY)
             event.setBoundingBox(AxisAlignedBB.fromBounds(event.getX(), event.getY(), event.getZ(), event.getX() + 1, launchY, event.getZ() + 1));
     }
@@ -1196,7 +1179,7 @@ public class Fly extends Module {
 
     @EventTarget
     public void onStep(final StepEvent e) {
-        if(e.getEventState()!=EventState.PRE)
+        if (e.getEventState() != EventState.PRE)
             return;
 
         final String mode = modeValue.get();
@@ -1207,23 +1190,23 @@ public class Fly extends Module {
     }
 
     private void handleVanillaKickBypass() {
-        if(!vanillaKickBypassValue.get() || !groundTimer.hasTimePassed(1000)) return;
+        if (!vanillaKickBypassValue.get() || !groundTimer.hasTimePassed(1000)) return;
 
         final double ground = MovementUtils.calculateGround();
 
-        for(double posY = mc.thePlayer.posY; posY > ground; posY -= 8D) {
+        for (double posY = mc.thePlayer.posY; posY > ground; posY -= 8D) {
             mc.getNetHandler().addToSendQueue(new C03PacketPlayer.C04PacketPlayerPosition(mc.thePlayer.posX, posY, mc.thePlayer.posZ, true));
 
-            if(posY - 8D < ground) break; // Prevent next step
+            if (posY - 8D < ground) break; // Prevent next step
         }
 
         mc.getNetHandler().addToSendQueue(new C03PacketPlayer.C04PacketPlayerPosition(mc.thePlayer.posX, ground, mc.thePlayer.posZ, true));
 
 
-        for(double posY = ground; posY < mc.thePlayer.posY; posY += 8D) {
+        for (double posY = ground; posY < mc.thePlayer.posY; posY += 8D) {
             mc.getNetHandler().addToSendQueue(new C03PacketPlayer.C04PacketPlayerPosition(mc.thePlayer.posX, posY, mc.thePlayer.posZ, true));
 
-            if(posY + 8D > mc.thePlayer.posY) break; // Prevent next step
+            if (posY + 8D > mc.thePlayer.posY) break; // Prevent next step
         }
 
         mc.getNetHandler().addToSendQueue(new C03PacketPlayer.C04PacketPlayerPosition(mc.thePlayer.posX, mc.thePlayer.posY, mc.thePlayer.posZ, true));
@@ -1231,42 +1214,40 @@ public class Fly extends Module {
         groundTimer.reset();
     }
 
-    private final ArrayList<C03PacketPlayer> aac5C03List=new ArrayList<>();
-
-    private void sendAAC5Packets(){
-        float yaw=mc.thePlayer.rotationYaw;
-        float pitch=mc.thePlayer.rotationPitch;
-        if(aac520PacketMode.get().equals("Old")){
-            for(C03PacketPlayer packet : aac5C03List){
-                if(packet.isMoving()){
+    private void sendAAC5Packets() {
+        float yaw = mc.thePlayer.rotationYaw;
+        float pitch = mc.thePlayer.rotationPitch;
+        if (aac520PacketMode.get().equals("Old")) {
+            for (C03PacketPlayer packet : aac5C03List) {
+                if (packet.isMoving()) {
                     PacketUtils.sendPacketNoEvent(packet);
-                    if(packet.getRotating()){
-                        yaw=packet.yaw;
-                        pitch=packet.pitch;
+                    if (packet.getRotating()) {
+                        yaw = packet.yaw;
+                        pitch = packet.pitch;
                     }
-                    if(aac520UseC04.get()){
-                        PacketUtils.sendPacketNoEvent(new C03PacketPlayer.C04PacketPlayerPosition(packet.x,1e+308,packet.z, true));
-                        PacketUtils.sendPacketNoEvent(new C03PacketPlayer.C04PacketPlayerPosition(packet.x,packet.y,packet.z, true));
-                    }else{
-                        PacketUtils.sendPacketNoEvent(new C03PacketPlayer.C06PacketPlayerPosLook(packet.x,1e+308,packet.z, yaw, pitch, true));
-                        PacketUtils.sendPacketNoEvent(new C03PacketPlayer.C06PacketPlayerPosLook(packet.x,packet.y,packet.z, yaw, pitch, true));
+                    if (aac520UseC04.get()) {
+                        PacketUtils.sendPacketNoEvent(new C03PacketPlayer.C04PacketPlayerPosition(packet.x, 1e+308, packet.z, true));
+                        PacketUtils.sendPacketNoEvent(new C03PacketPlayer.C04PacketPlayerPosition(packet.x, packet.y, packet.z, true));
+                    } else {
+                        PacketUtils.sendPacketNoEvent(new C03PacketPlayer.C06PacketPlayerPosLook(packet.x, 1e+308, packet.z, yaw, pitch, true));
+                        PacketUtils.sendPacketNoEvent(new C03PacketPlayer.C06PacketPlayerPosLook(packet.x, packet.y, packet.z, yaw, pitch, true));
                     }
                 }
             }
-        }else{
-            for(C03PacketPlayer packet : aac5C03List){
-                if(packet.isMoving()){
+        } else {
+            for (C03PacketPlayer packet : aac5C03List) {
+                if (packet.isMoving()) {
                     PacketUtils.sendPacketNoEvent(packet);
-                    if(packet.getRotating()){
-                        yaw=packet.yaw;
-                        pitch=packet.pitch;
+                    if (packet.getRotating()) {
+                        yaw = packet.yaw;
+                        pitch = packet.pitch;
                     }
-                    if(aac520UseC04.get()){
-                        PacketUtils.sendPacketNoEvent(new C03PacketPlayer.C04PacketPlayerPosition(packet.x,-1e+159,packet.z+10, true));
-                        PacketUtils.sendPacketNoEvent(new C03PacketPlayer.C04PacketPlayerPosition(packet.x,packet.y,packet.z, true));
-                    }else{
-                        PacketUtils.sendPacketNoEvent(new C03PacketPlayer.C06PacketPlayerPosLook(packet.x,-1e+159,packet.z+10, yaw, pitch, true));
-                        PacketUtils.sendPacketNoEvent(new C03PacketPlayer.C06PacketPlayerPosLook(packet.x,packet.y,packet.z, yaw, pitch, true));
+                    if (aac520UseC04.get()) {
+                        PacketUtils.sendPacketNoEvent(new C03PacketPlayer.C04PacketPlayerPosition(packet.x, -1e+159, packet.z + 10, true));
+                        PacketUtils.sendPacketNoEvent(new C03PacketPlayer.C04PacketPlayerPosition(packet.x, packet.y, packet.z, true));
+                    } else {
+                        PacketUtils.sendPacketNoEvent(new C03PacketPlayer.C06PacketPlayerPosLook(packet.x, -1e+159, packet.z + 10, yaw, pitch, true));
+                        PacketUtils.sendPacketNoEvent(new C03PacketPlayer.C06PacketPlayerPosLook(packet.x, packet.y, packet.z, yaw, pitch, true));
                     }
                 }
             }

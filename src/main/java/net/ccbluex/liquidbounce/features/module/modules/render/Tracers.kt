@@ -54,7 +54,12 @@ class Tracers : Module() {
                 val colorMode = colorMode.get().lowercase()
                 val color = when {
                     EntityUtils.isFriend(entity) -> Color(0, 0, 255, 150)
-                    colorMode.equals("custom") -> Color(colorRedValue.get(), colorGreenValue.get(), colorBlueValue.get(), 150)
+                    colorMode.equals("custom") -> Color(
+                        colorRedValue.get(),
+                        colorGreenValue.get(),
+                        colorBlueValue.get(),
+                        150
+                    )
                     colorMode.equals("distancecolor") -> Color(255 - dist, dist, 0, 150)
                     colorMode.equals("rainbow") -> ColorUtils.rainbow()
                     else -> Color(255, 255, 255, 150)
@@ -83,8 +88,8 @@ class Tracers : Module() {
                 - mc.renderManager.renderPosZ)
 
         val eyeVector = Vec3(0.0, 0.0, 1.0)
-                .rotatePitch((-Math.toRadians(mc.thePlayer.rotationPitch.toDouble())).toFloat())
-                .rotateYaw((-Math.toRadians(mc.thePlayer.rotationYaw.toDouble())).toFloat())
+            .rotatePitch((-Math.toRadians(mc.thePlayer.rotationPitch.toDouble())).toFloat())
+            .rotateYaw((-Math.toRadians(mc.thePlayer.rotationYaw.toDouble())).toFloat())
 
         RenderUtils.glColor(color)
 

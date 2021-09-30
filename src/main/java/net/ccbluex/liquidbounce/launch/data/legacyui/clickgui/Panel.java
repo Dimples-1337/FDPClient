@@ -22,18 +22,18 @@ public abstract class Panel extends MinecraftInstance {
 
     private final String name;
     private final ModuleCategory category;
+    private final int width;
+    private final int height;
+    private final List<Element> elements;
     public int x;
     public int y;
     public int x2;
     public int y2;
-    private final int width;
-    private final int height;
+    public boolean drag;
     private int scroll;
     private int dragged;
     private boolean open;
-    public boolean drag;
     private boolean scrollbar;
-    private final List<Element> elements;
     private boolean visible;
 
     private float elementsHeight;
@@ -58,25 +58,25 @@ public abstract class Panel extends MinecraftInstance {
     public abstract void setupItems();
 
     public void drawScreen(int mouseX, int mouseY, float button) {
-        if(!visible)
+        if (!visible)
             return;
 
         final int maxElements = LiquidBounce.moduleManager.getModule(ClickGUIModule.class).maxElementsValue.get();
 
         // Drag
-        if(drag) {
+        if (drag) {
             int nx = x2 + mouseX;
             int ny = y2 + mouseY;
-            if(nx > -1)
+            if (nx > -1)
                 x = nx;
 
-            if(ny > -1)
+            if (ny > -1)
                 y = ny;
         }
 
         elementsHeight = getElementsHeight() - 1;
         boolean scrollbar = elements.size() >= maxElements;
-        if(this.scrollbar != scrollbar)
+        if (this.scrollbar != scrollbar)
             this.scrollbar = scrollbar;
 
         LegacyUiLaunchOption.clickGui.style.drawPanel(mouseX, mouseY, this);
@@ -84,65 +84,65 @@ public abstract class Panel extends MinecraftInstance {
         int y = this.y + height - 2;
         int count = 0;
 
-        for(final Element element : elements) {
-            if(++count > scroll && count < scroll + (maxElements + 1) && scroll < elements.size()) {
+        for (final Element element : elements) {
+            if (++count > scroll && count < scroll + (maxElements + 1) && scroll < elements.size()) {
                 element.setLocation(x, y);
                 element.setWidth(getWidth());
-                if(y <= getY() + fade)
+                if (y <= getY() + fade)
                     element.drawScreen(mouseX, mouseY, button);
                 y += element.getHeight() + 1;
                 element.setVisible(true);
-            }else
+            } else
                 element.setVisible(false);
         }
     }
 
     public void mouseClicked(int mouseX, int mouseY, int mouseButton) {
-        if(!visible)
+        if (!visible)
             return;
 
-        if(mouseButton == 1 && isHovering(mouseX, mouseY)) {
+        if (mouseButton == 1 && isHovering(mouseX, mouseY)) {
             open = !open;
             mc.getSoundHandler().playSound(PositionedSoundRecord.create(new ResourceLocation("random.bow"), 1.0F));
             return;
         }
 
-        for(final Element element : elements)
-            if(element.getY() <= getY() + fade)
+        for (final Element element : elements)
+            if (element.getY() <= getY() + fade)
                 element.mouseClicked(mouseX, mouseY, mouseButton);
     }
 
     public void mouseReleased(int mouseX, int mouseY, int state) {
-        if(!visible)
+        if (!visible)
             return;
 
         drag = false;
 
-        if(!open)
+        if (!open)
             return;
 
-        for(final Element element : elements)
+        for (final Element element : elements)
             element.mouseReleased(mouseX, mouseY, state);
     }
 
     public boolean handleScroll(int mouseX, int mouseY, int wheel) {
         final int maxElements = LiquidBounce.moduleManager.getModule(ClickGUIModule.class).maxElementsValue.get();
 
-        if(mouseX >= getX() && mouseX <= getX() + 100 && mouseY >= getY() && mouseY <= getY() + 19 + elementsHeight) {
-            if(wheel < 0 && scroll < elements.size() - maxElements) {
+        if (mouseX >= getX() && mouseX <= getX() + 100 && mouseY >= getY() && mouseY <= getY() + 19 + elementsHeight) {
+            if (wheel < 0 && scroll < elements.size() - maxElements) {
                 ++scroll;
-                if(scroll < 0)
+                if (scroll < 0)
                     scroll = 0;
-            }else if(wheel > 0) {
+            } else if (wheel > 0) {
                 --scroll;
-                if(scroll < 0)
+                if (scroll < 0)
                     scroll = 0;
             }
 
-            if(wheel < 0) {
-                if(dragged < elements.size() - maxElements)
+            if (wheel < 0) {
+                if (dragged < elements.size() - maxElements)
                     ++dragged;
-            }else if(wheel > 0 && dragged >= 1) {
+            } else if (wheel > 0 && dragged >= 1) {
                 --dragged;
             }
 
@@ -152,12 +152,12 @@ public abstract class Panel extends MinecraftInstance {
     }
 
     void updateFade(final int delta) {
-        if(open) {
-            if(fade < elementsHeight) fade += 0.4F * delta;
-            if(fade > elementsHeight) fade = (int) elementsHeight;
-        }else{
-            if(fade > 0) fade -= 0.4F * delta;
-            if(fade < 0) fade = 0;
+        if (open) {
+            if (fade < elementsHeight) fade += 0.4F * delta;
+            if (fade > elementsHeight) fade = (int) elementsHeight;
+        } else {
+            if (fade > 0) fade -= 0.4F * delta;
+            if (fade < 0) fade = 0;
         }
     }
 
@@ -169,12 +169,12 @@ public abstract class Panel extends MinecraftInstance {
         return this.x;
     }
 
-    public int getY() {
-        return this.y;
-    }
-
     public void setX(int dragX) {
         this.x = dragX;
+    }
+
+    public int getY() {
+        return this.y;
     }
 
     public void setY(int dragY) {
@@ -193,20 +193,20 @@ public abstract class Panel extends MinecraftInstance {
         return this.scrollbar;
     }
 
-    public void setOpen(boolean open) {
-        this.open = open;
-    }
-
     public boolean getOpen() {
         return this.open;
     }
 
-    public void setVisible(boolean visible) {
-        this.visible = visible;
+    public void setOpen(boolean open) {
+        this.open = open;
     }
 
     public boolean isVisible() {
         return visible;
+    }
+
+    public void setVisible(boolean visible) {
+        this.visible = visible;
     }
 
     public List<Element> getElements() {
@@ -228,7 +228,7 @@ public abstract class Panel extends MinecraftInstance {
     private int getElementsHeight() {
         int height = 0;
         int count = 0;
-        for(final Element element : elements) {
+        for (final Element element : elements) {
             if (count >= LiquidBounce.moduleManager.getModule(ClickGUIModule.class).maxElementsValue.get())
                 continue;
             height += element.getHeight() + 1;

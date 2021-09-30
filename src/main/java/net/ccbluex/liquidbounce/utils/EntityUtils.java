@@ -28,25 +28,25 @@ import net.minecraft.scoreboard.ScorePlayerTeam;
 public final class EntityUtils extends MinecraftInstance {
 
     public static boolean isSelected(final Entity entity, final boolean canAttackCheck) {
-        if(entity instanceof EntityLivingBase && (Target.INSTANCE.getDead().get() || entity.isEntityAlive()) && entity != mc.thePlayer) {
-            if(Target.INSTANCE.getInvisible().get() || !entity.isInvisible()) {
-                if(Target.INSTANCE.getPlayer().get() && entity instanceof EntityPlayer) {
+        if (entity instanceof EntityLivingBase && (Target.INSTANCE.getDead().get() || entity.isEntityAlive()) && entity != mc.thePlayer) {
+            if (Target.INSTANCE.getInvisible().get() || !entity.isInvisible()) {
+                if (Target.INSTANCE.getPlayer().get() && entity instanceof EntityPlayer) {
                     final EntityPlayer entityPlayer = (EntityPlayer) entity;
 
-                    if(canAttackCheck) {
-                        if(AntiBot.isBot(entityPlayer))
+                    if (canAttackCheck) {
+                        if (AntiBot.isBot(entityPlayer))
                             return false;
 
                         if (isFriend(entityPlayer))
                             return false;
 
-                        if(entityPlayer.isSpectator())
+                        if (entityPlayer.isSpectator())
                             return false;
 
-                        if(entityPlayer.isPlayerSleeping())
+                        if (entityPlayer.isPlayerSleeping())
                             return false;
 
-                        if(!LiquidBounce.combatManager.isFocusEntity(entityPlayer))
+                        if (!LiquidBounce.combatManager.isFocusEntity(entityPlayer))
                             return false;
 
                         final Teams teams = LiquidBounce.moduleManager.getModule(Teams.class);
@@ -74,7 +74,7 @@ public final class EntityUtils extends MinecraftInstance {
     }
 
     public static boolean isMob(final Entity entity) {
-        return entity instanceof EntityMob  || entity instanceof EntitySlime ||
+        return entity instanceof EntityMob || entity instanceof EntitySlime ||
                 entity instanceof EntityGhast || entity instanceof EntityDragon;
     }
 
@@ -84,7 +84,7 @@ public final class EntityUtils extends MinecraftInstance {
     }
 
     public static int getPing(final EntityPlayer entityPlayer) {
-        if(entityPlayer == null)
+        if (entityPlayer == null)
             return 0;
 
         final NetworkPlayerInfo networkPlayerInfo = mc.getNetHandler().getPlayerInfo(entityPlayer.getUniqueID());

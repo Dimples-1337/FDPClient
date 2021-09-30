@@ -63,10 +63,10 @@ public class GuiAdd extends GuiScreen {
         username.drawTextBox();
         password.drawTextBox();
 
-        if(username.getText().isEmpty() && !username.isFocused())
+        if (username.getText().isEmpty() && !username.isFocused())
             drawCenteredString(Fonts.font20, "§7%ui.alt.loginUsername%", width / 2 - 55, 66, 0xffffff);
 
-        if(password.getText().isEmpty() && !password.isFocused())
+        if (password.getText().isEmpty() && !password.isFocused())
             drawCenteredString(Fonts.font20, "§7%ui.alt.loginPassword%", width / 2 - 74, 91, 0xffffff);
         super.drawScreen(mouseX, mouseY, partialTicks);
     }
@@ -76,7 +76,7 @@ public class GuiAdd extends GuiScreen {
         if (!button.enabled)
             return;
 
-        switch(button.id) {
+        switch (button.id) {
             case 0:
                 mc.displayGuiScreen(prevGui);
                 break;
@@ -89,7 +89,7 @@ public class GuiAdd extends GuiScreen {
                 addAccount(username.getText(), password.getText());
                 break;
             case 2:
-                try{
+                try {
                     final String clipboardData = (String) Toolkit.getDefaultToolkit().getSystemClipboard()
                             .getData(DataFlavor.stringFlavor);
                     final String[] accountData = clipboardData.split(":", 2);
@@ -100,7 +100,7 @@ public class GuiAdd extends GuiScreen {
                     }
 
                     addAccount(accountData[0], accountData[1]);
-                }catch(final UnsupportedFlavorException e) {
+                } catch (final UnsupportedFlavorException e) {
                     status = "§c%ui.alt.readFailed%";
                     ClientUtils.getLogger().error("Failed to read data from clipboard.", e);
                 }
@@ -121,10 +121,10 @@ public class GuiAdd extends GuiScreen {
                 return;
         }
 
-        if(username.isFocused())
+        if (username.isFocused())
             username.textboxKeyTyped(typedChar, keyCode);
 
-        if(password.isFocused())
+        if (password.isFocused())
             password.textboxKeyTyped(typedChar, keyCode);
 
         super.keyTyped(typedChar, keyCode);

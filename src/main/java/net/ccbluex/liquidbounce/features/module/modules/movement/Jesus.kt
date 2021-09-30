@@ -24,14 +24,32 @@ import net.minecraft.util.BlockPos
 
 @ModuleInfo(name = "Jesus", category = ModuleCategory.MOVEMENT)
 class Jesus : Module() {
-    val modeValue = ListValue("Mode", arrayOf("Vanilla", "NCP", "Jump", "AAC", "AACFly", "AAC3.3.11", "AAC4.2.1", "Horizon1.4.6", "Spartan", "Twilight", "Matrix", "Dolphin", "Legit"), "Vanilla")
+    val modeValue = ListValue(
+        "Mode",
+        arrayOf(
+            "Vanilla",
+            "NCP",
+            "Jump",
+            "AAC",
+            "AACFly",
+            "AAC3.3.11",
+            "AAC4.2.1",
+            "Horizon1.4.6",
+            "Spartan",
+            "Twilight",
+            "Matrix",
+            "Dolphin",
+            "Legit"
+        ),
+        "Vanilla"
+    )
     private val noJumpValue = BoolValue("NoJump", false)
     private val jumpMotionValue = FloatValue("JumpMotion", 0.5f, 0.1f, 1f)
         .displayable { modeValue.equals("Jump") || modeValue.equals("AACFly") }
 
     private var nextTick = false
 
-    private fun isLiquidBlock(bb: AxisAlignedBB = mc.thePlayer.entityBoundingBox):Boolean{
+    private fun isLiquidBlock(bb: AxisAlignedBB = mc.thePlayer.entityBoundingBox): Boolean {
         return BlockUtils.collideBlock(bb) { it is BlockLiquid }
     }
 
@@ -44,13 +62,13 @@ class Jesus : Module() {
 
         when (modeValue.get().lowercase()) {
             "ncp" -> {
-                if (isLiquidBlock() && mc.thePlayer.isInsideOfMaterial(Material.air)){
+                if (isLiquidBlock() && mc.thePlayer.isInsideOfMaterial(Material.air)) {
                     mc.thePlayer.motionY = 0.08
                 }
             }
             "jump" -> {
-                if(BlockUtils.getBlock(blockPos) === Blocks.water && mc.thePlayer.onGround){
-                    mc.thePlayer.motionY=jumpMotionValue.get().toDouble()
+                if (BlockUtils.getBlock(blockPos) === Blocks.water && mc.thePlayer.onGround) {
+                    mc.thePlayer.motionY = jumpMotionValue.get().toDouble()
                 }
             }
             "aac" -> {
@@ -60,13 +78,15 @@ class Jesus : Module() {
                         mc.thePlayer.motionY *= 0.0
                         mc.thePlayer.motionZ *= 0.99999
                         if (mc.thePlayer.isCollidedHorizontally)
-                            mc.thePlayer.motionY = ((mc.thePlayer.posY - (mc.thePlayer.posY - 1).toInt()).toInt() / 8f).toDouble()
+                            mc.thePlayer.motionY =
+                                ((mc.thePlayer.posY - (mc.thePlayer.posY - 1).toInt()).toInt() / 8f).toDouble()
                     } else {
                         mc.thePlayer.motionX *= 0.99999
                         mc.thePlayer.motionY *= 0.0
                         mc.thePlayer.motionZ *= 0.99999
                         if (mc.thePlayer.isCollidedHorizontally)
-                            mc.thePlayer.motionY = ((mc.thePlayer.posY - (mc.thePlayer.posY - 1).toInt()).toInt() / 8f).toDouble()
+                            mc.thePlayer.motionY =
+                                ((mc.thePlayer.posY - (mc.thePlayer.posY - 1).toInt()).toInt() / 8f).toDouble()
                     }
                     if (mc.thePlayer.fallDistance >= 4)
                         mc.thePlayer.motionY = -0.004 else if (mc.thePlayer.isInWater) mc.thePlayer.motionY = 0.09
@@ -81,8 +101,10 @@ class Jesus : Module() {
                         mc.thePlayer.motionY = +0.09
                         return
                     }
-                    val block = BlockUtils.getBlock(BlockPos(mc.thePlayer.posX, mc.thePlayer.posY + 1, mc.thePlayer.posZ))
-                    val blockUp = BlockUtils.getBlock(BlockPos(mc.thePlayer.posX, mc.thePlayer.posY + 1.1, mc.thePlayer.posZ))
+                    val block =
+                        BlockUtils.getBlock(BlockPos(mc.thePlayer.posX, mc.thePlayer.posY + 1, mc.thePlayer.posZ))
+                    val blockUp =
+                        BlockUtils.getBlock(BlockPos(mc.thePlayer.posX, mc.thePlayer.posY + 1.1, mc.thePlayer.posZ))
                     if (blockUp is BlockLiquid) {
                         mc.thePlayer.motionY = 0.1
                     } else if (block is BlockLiquid) {
@@ -91,7 +113,7 @@ class Jesus : Module() {
                     mc.thePlayer.motionX *= 1.15
                     mc.thePlayer.motionZ *= 1.15
                 }
-             }
+            }
             "spartan" -> if (mc.thePlayer.isInWater) {
                 if (mc.thePlayer.isCollidedHorizontally) {
                     mc.thePlayer.motionY += 0.15
@@ -112,9 +134,16 @@ class Jesus : Module() {
                 if (mc.thePlayer.isInWater) {
                     mc.thePlayer.motionX *= 1.17
                     mc.thePlayer.motionZ *= 1.17
-                    if (mc.thePlayer.isCollidedHorizontally){
+                    if (mc.thePlayer.isCollidedHorizontally) {
                         mc.thePlayer.motionY = 0.24
-                    } else if (mc.theWorld.getBlockState(BlockPos(mc.thePlayer.posX, mc.thePlayer.posY + 1.0, mc.thePlayer.posZ)).block !== Blocks.air){
+                    } else if (mc.theWorld.getBlockState(
+                            BlockPos(
+                                mc.thePlayer.posX,
+                                mc.thePlayer.posY + 1.0,
+                                mc.thePlayer.posZ
+                            )
+                        ).block !== Blocks.air
+                    ) {
                         mc.thePlayer.motionY += 0.04
                     }
                 }
@@ -127,7 +156,7 @@ class Jesus : Module() {
                 if (!mc.thePlayer.onGround && BlockUtils.getBlock(blockPos) === Blocks.water || mc.thePlayer.isInWater) {
                     mc.thePlayer.motionY *= 0.0
                     mc.thePlayer.jumpMovementFactor = 0.08f
-                    if (mc.thePlayer.fallDistance > 0){
+                    if (mc.thePlayer.fallDistance > 0) {
                         return
                     } else if (mc.thePlayer.isInWater) {
                         mc.gameSettings.keyBindJump.pressed = true
@@ -155,7 +184,7 @@ class Jesus : Module() {
 
     @EventTarget
     fun onMove(event: MoveEvent) {
-        if(!mc.thePlayer.isInWater)
+        if (!mc.thePlayer.isInWater)
             return
 
         when (modeValue.get().lowercase()) {
@@ -177,8 +206,15 @@ class Jesus : Module() {
 
         if (event.block is BlockLiquid && !isLiquidBlock() && !mc.thePlayer.isSneaking) {
             when (modeValue.get().lowercase()) {
-                "ncp","vanilla","jump" -> {
-                    event.boundingBox = AxisAlignedBB.fromBounds(event.x.toDouble(), event.y.toDouble(), event.z.toDouble(), (event.x + 1).toDouble(), (event.y + 1).toDouble(), (event.z + 1).toDouble())
+                "ncp", "vanilla", "jump" -> {
+                    event.boundingBox = AxisAlignedBB.fromBounds(
+                        event.x.toDouble(),
+                        event.y.toDouble(),
+                        event.z.toDouble(),
+                        (event.x + 1).toDouble(),
+                        (event.y + 1).toDouble(),
+                        (event.z + 1).toDouble()
+                    )
                 }
             }
         }
@@ -190,9 +226,17 @@ class Jesus : Module() {
             return
 
         if (event.packet is C03PacketPlayer) {
-            if (isLiquidBlock(AxisAlignedBB(mc.thePlayer.entityBoundingBox.maxX, mc.thePlayer.entityBoundingBox.maxY,
-                    mc.thePlayer.entityBoundingBox.maxZ, mc.thePlayer.entityBoundingBox.minX, mc.thePlayer.entityBoundingBox.minY - 0.01,
-                    mc.thePlayer.entityBoundingBox.minZ))) {
+            if (isLiquidBlock(
+                    AxisAlignedBB(
+                        mc.thePlayer.entityBoundingBox.maxX,
+                        mc.thePlayer.entityBoundingBox.maxY,
+                        mc.thePlayer.entityBoundingBox.maxZ,
+                        mc.thePlayer.entityBoundingBox.minX,
+                        mc.thePlayer.entityBoundingBox.minY - 0.01,
+                        mc.thePlayer.entityBoundingBox.minZ
+                    )
+                )
+            ) {
                 nextTick = !nextTick
                 if (nextTick)
                     event.packet.y -= 0.001

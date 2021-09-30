@@ -74,7 +74,8 @@ object Fucker : Module() {
         val targetId = blockValue.get()
 
         if (pos == null || Block.getIdFromBlock(BlockUtils.getBlock(pos)) != targetId ||
-            BlockUtils.getCenterDistance(pos!!) > rangeValue.get())
+            BlockUtils.getCenterDistance(pos!!) > rangeValue.get()
+        )
             pos = find(targetId)
 
         // Reset current breaking when there is no target block
@@ -91,8 +92,10 @@ object Fucker : Module() {
 
         if (surroundingsValue.get()) {
             val eyes = mc.thePlayer.getPositionEyes(1F)
-            val blockPos = mc.theWorld.rayTraceBlocks(eyes, rotations.vec, false,
-                    false, true).blockPos
+            val blockPos = mc.theWorld.rayTraceBlocks(
+                eyes, rotations.vec, false,
+                false, true
+            ).blockPos
 
             if (blockPos != null && blockPos.getBlock() !is BlockAir) {
                 if (currentPos.x != blockPos.x || currentPos.y != blockPos.y || currentPos.z != blockPos.z)
@@ -136,15 +139,23 @@ object Fucker : Module() {
                 // Break block
                 if (instantValue.get()) {
                     // CivBreak style block breaking
-                    mc.netHandler.addToSendQueue(C07PacketPlayerDigging(C07PacketPlayerDigging.Action.START_DESTROY_BLOCK,
-                            currentPos, EnumFacing.DOWN))
+                    mc.netHandler.addToSendQueue(
+                        C07PacketPlayerDigging(
+                            C07PacketPlayerDigging.Action.START_DESTROY_BLOCK,
+                            currentPos, EnumFacing.DOWN
+                        )
+                    )
                     if (swingValue.equals("Normal")) {
                         mc.thePlayer.swingItem()
                     } else if (swingValue.equals("Packet")) {
                         mc.netHandler.addToSendQueue(C0APacketAnimation())
                     }
-                    mc.netHandler.addToSendQueue(C07PacketPlayerDigging(C07PacketPlayerDigging.Action.STOP_DESTROY_BLOCK,
-                            currentPos, EnumFacing.DOWN))
+                    mc.netHandler.addToSendQueue(
+                        C07PacketPlayerDigging(
+                            C07PacketPlayerDigging.Action.STOP_DESTROY_BLOCK,
+                            currentPos, EnumFacing.DOWN
+                        )
+                    )
                     currentDamage = 0F
                     return
                 }
@@ -153,11 +164,16 @@ object Fucker : Module() {
                 val block = currentPos.getBlock() ?: return
 
                 if (currentDamage == 0F) {
-                    mc.netHandler.addToSendQueue(C07PacketPlayerDigging(C07PacketPlayerDigging.Action.START_DESTROY_BLOCK,
-                            currentPos, EnumFacing.DOWN))
+                    mc.netHandler.addToSendQueue(
+                        C07PacketPlayerDigging(
+                            C07PacketPlayerDigging.Action.START_DESTROY_BLOCK,
+                            currentPos, EnumFacing.DOWN
+                        )
+                    )
 
                     if (mc.thePlayer.capabilities.isCreativeMode ||
-                            block.getPlayerRelativeBlockHardness(mc.thePlayer, mc.theWorld, pos) >= 1.0F) {
+                        block.getPlayerRelativeBlockHardness(mc.thePlayer, mc.theWorld, pos) >= 1.0F
+                    ) {
                         if (swingValue.equals("Normal")) {
                             mc.thePlayer.swingItem()
                         } else if (swingValue.equals("Packet")) {
@@ -180,8 +196,12 @@ object Fucker : Module() {
                 mc.theWorld.sendBlockBreakProgress(mc.thePlayer.entityId, currentPos, (currentDamage * 10F).toInt() - 1)
 
                 if (currentDamage >= 1F) {
-                    mc.netHandler.addToSendQueue(C07PacketPlayerDigging(C07PacketPlayerDigging.Action.STOP_DESTROY_BLOCK,
-                            currentPos, EnumFacing.DOWN))
+                    mc.netHandler.addToSendQueue(
+                        C07PacketPlayerDigging(
+                            C07PacketPlayerDigging.Action.STOP_DESTROY_BLOCK,
+                            currentPos, EnumFacing.DOWN
+                        )
+                    )
                     mc.playerController.onPlayerDestroyBlock(currentPos, EnumFacing.DOWN)
                     blockHitDelay = 4
                     currentDamage = 0F
@@ -190,9 +210,12 @@ object Fucker : Module() {
             }
 
             // Use block
-            actionValue.equals("use") ->{
-                if (mc.playerController.onPlayerRightClick(mc.thePlayer, mc.theWorld, mc.thePlayer.heldItem, pos, EnumFacing.DOWN,
-                        Vec3(currentPos.x.toDouble(), currentPos.y.toDouble(), currentPos.z.toDouble()))) {
+            actionValue.equals("use") -> {
+                if (mc.playerController.onPlayerRightClick(
+                        mc.thePlayer, mc.theWorld, mc.thePlayer.heldItem, pos, EnumFacing.DOWN,
+                        Vec3(currentPos.x.toDouble(), currentPos.y.toDouble(), currentPos.z.toDouble())
+                    )
+                ) {
                     if (swingValue.equals("Normal")) {
                         mc.thePlayer.swingItem()
                     } else if (swingValue.equals("Packet")) {
@@ -208,29 +231,29 @@ object Fucker : Module() {
 
     @EventTarget
     fun onRender3D(event: Render3DEvent) {
-        RenderUtils.drawBlockBox(pos ?: return, Color.RED, false,true, 1F)
+        RenderUtils.drawBlockBox(pos ?: return, Color.RED, false, true, 1F)
     }
 
     /**
      * Find new target block by [targetID]
      */
-    private fun find(targetID: Int) : BlockPos? {
-        val block= BlockUtils.searchBlocks(rangeValue.get().toInt() + 1)
+    private fun find(targetID: Int): BlockPos? {
+        val block = BlockUtils.searchBlocks(rangeValue.get().toInt() + 1)
             .filter {
                 Block.getIdFromBlock(it.value) == targetID && BlockUtils.getCenterDistance(it.key) <= rangeValue.get()
                         && (isHitable(it.key) || surroundingsValue.get())
             }
             .minByOrNull { BlockUtils.getCenterDistance(it.key) }?.key ?: return null
 
-        if(bypassValue.get()){
-            val upBlock=block.up()
-            if(BlockUtils.getBlock(upBlock)!=Blocks.air){
-                isRealBlock=false
+        if (bypassValue.get()) {
+            val upBlock = block.up()
+            if (BlockUtils.getBlock(upBlock) != Blocks.air) {
+                isRealBlock = false
                 return upBlock
             }
         }
 
-        isRealBlock=true
+        isRealBlock = true
         return block
     }
 
@@ -241,14 +264,20 @@ object Fucker : Module() {
         return when (throughWallsValue.get().lowercase()) {
             "raycast" -> {
                 val eyesPos = mc.thePlayer.getEyeVec3()
-                val movingObjectPosition = mc.theWorld.rayTraceBlocks(eyesPos,
-                        Vec3(blockPos.x + 0.5, blockPos.y + 0.5, blockPos.z + 0.5), false,
-                        true, false)
+                val movingObjectPosition = mc.theWorld.rayTraceBlocks(
+                    eyesPos,
+                    Vec3(blockPos.x + 0.5, blockPos.y + 0.5, blockPos.z + 0.5), false,
+                    true, false
+                )
 
                 movingObjectPosition != null && movingObjectPosition.blockPos == blockPos
             }
-            "around" -> !BlockUtils.isFullBlock(blockPos.down()) || !BlockUtils.isFullBlock(blockPos.up()) || !BlockUtils.isFullBlock(blockPos.north())
-                    || !BlockUtils.isFullBlock(blockPos.east()) || !BlockUtils.isFullBlock(blockPos.south()) || !BlockUtils.isFullBlock(blockPos.west())
+            "around" -> !BlockUtils.isFullBlock(blockPos.down()) || !BlockUtils.isFullBlock(blockPos.up()) || !BlockUtils.isFullBlock(
+                blockPos.north()
+            )
+                    || !BlockUtils.isFullBlock(blockPos.east()) || !BlockUtils.isFullBlock(blockPos.south()) || !BlockUtils.isFullBlock(
+                blockPos.west()
+            )
             else -> true
         }
     }

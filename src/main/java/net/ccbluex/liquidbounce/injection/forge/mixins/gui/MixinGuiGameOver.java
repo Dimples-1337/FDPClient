@@ -13,14 +13,14 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 public abstract class MixinGuiGameOver extends MixinGuiScreen {
     @Inject(method = "initGui", at = @At("RETURN"))
     private void initGui(CallbackInfo callbackInfo) {
-        buttonList.add(new GuiButton(114514, width-100, height-20, 100, 20, "%ui.gameover.close%"));
+        buttonList.add(new GuiButton(114514, width - 100, height - 20, 100, 20, "%ui.gameover.close%"));
     }
 
     @Inject(method = "actionPerformed", at = @At("HEAD"))
     private void actionPerformed(GuiButton button, CallbackInfo callbackInfo) {
         switch (button.id) {
             case 114514:
-                PacketUtils.handlePacket(new S07PacketRespawn(mc.thePlayer.dimension,mc.theWorld.getDifficulty(),mc.theWorld.getWorldType(),mc.theWorld.getWorldInfo().getGameType()));
+                PacketUtils.handlePacket(new S07PacketRespawn(mc.thePlayer.dimension, mc.theWorld.getDifficulty(), mc.theWorld.getWorldType(), mc.theWorld.getWorldInfo().getGameType()));
                 break;
         }
     }

@@ -35,13 +35,26 @@ import java.awt.Color
 class ESP : Module() {
     val modeValue = ListValue(
         "Mode",
-        arrayOf("Box", "OtherBox", "WireFrame", "2D", "Real2D", "CSGO", "Outline", "ShaderOutline", "ShaderGlow", "Jello"),
+        arrayOf(
+            "Box",
+            "OtherBox",
+            "WireFrame",
+            "2D",
+            "Real2D",
+            "CSGO",
+            "Outline",
+            "ShaderOutline",
+            "ShaderGlow",
+            "Jello"
+        ),
         "Jello"
     )
     private val outlineWidth = FloatValue("Outline-Width", 3f, 0.5f, 5f).displayable { modeValue.equals("Outline") }
     val wireframeWidth = FloatValue("WireFrame-Width", 2f, 0.5f, 5f).displayable { modeValue.equals("WireFrame") }
-    private val shaderOutlineRadius = FloatValue("ShaderOutline-Radius", 1.35f, 1f, 2f).displayable { modeValue.equals("ShaderOutline") }
-    private val shaderGlowRadius = FloatValue("ShaderGlow-Radius", 2.3f, 2f, 3f).displayable { modeValue.equals("ShaderGlow") }
+    private val shaderOutlineRadius =
+        FloatValue("ShaderOutline-Radius", 1.35f, 1f, 2f).displayable { modeValue.equals("ShaderOutline") }
+    private val shaderGlowRadius =
+        FloatValue("ShaderGlow-Radius", 2.3f, 2f, 3f).displayable { modeValue.equals("ShaderGlow") }
     private val CSGOWidth = FloatValue("CSGO-Width", 2f, 0.5f, 5f).displayable { modeValue.equals("CSGO") }
     private val colorRedValue = IntegerValue("R", 255, 0, 255).displayable { !colorTeam.get() }
     private val colorGreenValue = IntegerValue("G", 255, 0, 255).displayable { !colorTeam.get() }
@@ -80,7 +93,13 @@ class ESP : Module() {
                 val entityLiving = entity as EntityLivingBase
                 val color = getColor(entityLiving)
                 when (mode.lowercase()) {
-                    "box", "otherbox" -> RenderUtils.drawEntityBox(entity, color, !mode.equals("otherbox", ignoreCase = true), true, outlineWidth.get())
+                    "box", "otherbox" -> RenderUtils.drawEntityBox(
+                        entity,
+                        color,
+                        !mode.equals("otherbox", ignoreCase = true),
+                        true,
+                        outlineWidth.get()
+                    )
 
                     "outline" -> RenderUtils.drawEntityBox(entity, color, true, false, outlineWidth.get())
 
@@ -96,7 +115,7 @@ class ESP : Module() {
                         RenderUtils.draw2D(entityLiving, posX, posY, posZ, color.rgb, Color.BLACK.rgb)
                     }
 
-                    "csgo","real2d" -> {
+                    "csgo", "real2d" -> {
                         val renderManager = mc.renderManager
                         val timer = mc.timer
                         val bb = entityLiving.entityBoundingBox
@@ -135,7 +154,7 @@ class ESP : Module() {
 
                         //out of screen
                         if (!(minX == mc.displayWidth.toFloat() || minY == mc.displayHeight.toFloat() || maxX == 0f || maxY == 0f)) {
-                            if(mode.equals("csgo", ignoreCase = true)){
+                            if (mode.equals("csgo", ignoreCase = true)) {
                                 val width = CSGOWidth.get() * ((maxY - minY) / 50)
                                 RenderUtils.drawRect(minX - width, minY - width, minX, maxY, color)
                                 RenderUtils.drawRect(maxX, minY - width, maxX + width, maxY + width, color)
@@ -144,9 +163,21 @@ class ESP : Module() {
 
                                 //hp bar
                                 val hpSize = (maxY + width - minY) * (entityLiving.health / entityLiving.maxHealth)
-                                RenderUtils.drawRect(minX - width * 3, minY - width, minX - width * 2, maxY + width, Color.GRAY)
-                                RenderUtils.drawRect(minX - width * 3, maxY - hpSize, minX - width * 2, maxY + width, ColorUtils.healthColor(entityLiving.health,entityLiving.maxHealth))
-                            }else if(mode.equals("real2d", ignoreCase = true)){
+                                RenderUtils.drawRect(
+                                    minX - width * 3,
+                                    minY - width,
+                                    minX - width * 2,
+                                    maxY + width,
+                                    Color.GRAY
+                                )
+                                RenderUtils.drawRect(
+                                    minX - width * 3,
+                                    maxY - hpSize,
+                                    minX - width * 2,
+                                    maxY + width,
+                                    ColorUtils.healthColor(entityLiving.health, entityLiving.maxHealth)
+                                )
+                            } else if (mode.equals("real2d", ignoreCase = true)) {
                                 RenderUtils.drawRect(minX - 1, minY - 1, minX, maxY, color)
                                 RenderUtils.drawRect(maxX, minY - 1, maxX + 1, maxY + 1, color)
                                 RenderUtils.drawRect(minX - 1, maxY, maxX, maxY + 1, color)
@@ -214,12 +245,12 @@ class ESP : Module() {
 
         //normal shader esp
         try {
-            val shader = when(mode){
+            val shader = when (mode) {
                 "shaderoutline" -> OutlineShader.OUTLINE_SHADER
                 "shaderglow" -> GlowShader.GLOW_SHADER
                 else -> return
             }
-            val radius = when(mode){
+            val radius = when (mode) {
                 "shaderoutline" -> shaderOutlineRadius.get()
                 "shaderglow" -> shaderGlowRadius.get()
                 else -> 1f
@@ -272,6 +303,10 @@ class ESP : Module() {
             }
         }
 
-        return if (colorRainbow.get()) ColorUtils.rainbow() else Color(colorRedValue.get(), colorGreenValue.get(), colorBlueValue.get())
+        return if (colorRainbow.get()) ColorUtils.rainbow() else Color(
+            colorRedValue.get(),
+            colorGreenValue.get(),
+            colorBlueValue.get()
+        )
     }
 }

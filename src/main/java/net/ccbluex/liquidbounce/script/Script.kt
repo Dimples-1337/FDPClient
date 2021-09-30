@@ -66,7 +66,8 @@ class Script(val scriptFile: File) : MinecraftInstance() {
         override fun apply(scriptObject: JSObject): Script {
             scriptName = scriptObject.getMember("name") as String
             scriptVersion = scriptObject.getMember("version") as String
-            scriptAuthors = ScriptUtils.convert(scriptObject.getMember("authors"), Array<String>::class.java) as Array<String>
+            scriptAuthors =
+                ScriptUtils.convert(scriptObject.getMember("authors"), Array<String>::class.java) as Array<String>
 
             return this@Script
         }
@@ -103,7 +104,8 @@ class Script(val scriptFile: File) : MinecraftInstance() {
     fun supportLegacyScripts() {
         if (!scriptText.lines().first().contains("api_version=2")) {
             ClientUtils.getLogger().info("[ScriptAPI] Running script '${scriptFile.name}' with legacy support.")
-            val legacyScript = LiquidBounce::class.java.getResource("/assets/minecraft/fdpclient/scriptapi/legacy.js").readText()
+            val legacyScript =
+                LiquidBounce::class.java.getResource("/assets/minecraft/fdpclient/scriptapi/legacy.js").readText()
             scriptEngine.eval(legacyScript)
         }
     }

@@ -18,7 +18,14 @@ class AACGround : SpeedMode("AACGround") {
 
         mc.timer.timerSpeed = timerValue.get()
 
-        mc.netHandler.addToSendQueue(C04PacketPlayerPosition(mc.thePlayer.posX, mc.thePlayer.posY, mc.thePlayer.posZ, true))
+        mc.netHandler.addToSendQueue(
+            C04PacketPlayerPosition(
+                mc.thePlayer.posX,
+                mc.thePlayer.posY,
+                mc.thePlayer.posZ,
+                true
+            )
+        )
     }
 
     override fun onDisable() {

@@ -34,11 +34,13 @@ class NameProtect : Module() {
             return
 
         for (friend in LiquidBounce.fileManager.friendsConfig.friends)
-            event.text = StringUtils.replace(event.text, friend.playerName, translateAlternateColorCodes(friend.alias) + "§f")
+            event.text =
+                StringUtils.replace(event.text, friend.playerName, translateAlternateColorCodes(friend.alias) + "§f")
 
         if (!state)
             return
-        event.text = StringUtils.replace(event.text, thePlayer.name, translateAlternateColorCodes(fakeNameValue.get()) + "§f")
+        event.text =
+            StringUtils.replace(event.text, thePlayer.name, translateAlternateColorCodes(fakeNameValue.get()) + "§f")
 
         if (allPlayersValue.get()) {
             for (playerInfo in mc.netHandler.playerInfoMap)

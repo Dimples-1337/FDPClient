@@ -28,9 +28,16 @@ class AutoBow : Module() {
         val bowAimbot = LiquidBounce.moduleManager[BowAimbot::class.java]
 
         if (mc.thePlayer.isUsingItem && mc.thePlayer.heldItem?.item == Items.bow &&
-                mc.thePlayer.itemInUseDuration > 20 && (!waitForBowAimbot.get() || !bowAimbot.state || bowAimbot.hasTarget())) {
+            mc.thePlayer.itemInUseDuration > 20 && (!waitForBowAimbot.get() || !bowAimbot.state || bowAimbot.hasTarget())
+        ) {
             mc.thePlayer.stopUsingItem()
-            mc.netHandler.addToSendQueue(C07PacketPlayerDigging(Action.RELEASE_USE_ITEM, BlockPos.ORIGIN, EnumFacing.DOWN))
+            mc.netHandler.addToSendQueue(
+                C07PacketPlayerDigging(
+                    Action.RELEASE_USE_ITEM,
+                    BlockPos.ORIGIN,
+                    EnumFacing.DOWN
+                )
+            )
         }
     }
 }

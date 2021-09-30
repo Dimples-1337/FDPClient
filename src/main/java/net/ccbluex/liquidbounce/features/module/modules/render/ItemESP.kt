@@ -34,13 +34,17 @@ class ItemESP : Module() {
     private val colorBlueValue = IntegerValue("B", 0, 0, 255)
     private val colorRainbow = BoolValue("Rainbow", true)
 
-    private fun getColor():Color{
-        return if (colorRainbow.get()) rainbow() else Color(colorRedValue.get(), colorGreenValue.get(), colorBlueValue.get())
+    private fun getColor(): Color {
+        return if (colorRainbow.get()) rainbow() else Color(
+            colorRedValue.get(),
+            colorGreenValue.get(),
+            colorBlueValue.get()
+        )
     }
 
     @EventTarget
     fun onRender3D(event: Render3DEvent?) {
-        val color=getColor()
+        val color = getColor()
         for (entity in mc.theWorld.loadedEntityList) {
             if (!(entity is EntityItem || entity is EntityArrow)) continue
             when (modeValue.get().lowercase()) {
@@ -53,8 +57,9 @@ class ItemESP : Module() {
 
     @EventTarget
     fun onRender2D(event: Render2DEvent) {
-        val shader = (if (modeValue.equals("shaderoutline")) OutlineShader.OUTLINE_SHADER else if (modeValue.equals("shaderglow")) GlowShader.GLOW_SHADER else null)
-            ?: return
+        val shader =
+            (if (modeValue.equals("shaderoutline")) OutlineShader.OUTLINE_SHADER else if (modeValue.equals("shaderglow")) GlowShader.GLOW_SHADER else null)
+                ?: return
         val partialTicks = event.partialTicks
 
         shader.startDraw(partialTicks)
@@ -68,6 +73,6 @@ class ItemESP : Module() {
             ClientUtils.getLogger().error("An error occurred while rendering all item entities for shader esp", ex)
         }
 
-        shader.stopDraw(getColor(),outlineWidth.get(),1f)
+        shader.stopDraw(getColor(), outlineWidth.get(), 1f)
     }
 }

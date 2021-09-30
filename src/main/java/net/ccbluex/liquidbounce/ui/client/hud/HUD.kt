@@ -23,15 +23,16 @@ open class HUD : MinecraftInstance() {
 
     companion object {
 
-        val elements = ReflectUtils.getReflects("${HUD::class.java.`package`.name}.element.elements",Element::class.java)
-            .toTypedArray()
+        val elements =
+            ReflectUtils.getReflects("${HUD::class.java.`package`.name}.element.elements", Element::class.java)
+                .toTypedArray()
 
         /**
          * Create default HUD
          */
         @JvmStatic
         fun createDefault(): HUD {
-            val text1=Text(x=15.0,y=15.0)
+            val text1 = Text(x = 15.0, y = 15.0)
             text1.displayString.set("FDPClient | %serverIp% | %fps% FPS")
             text1.colorModeValue.set("Rainbow")
             text1.rectValue.set("OneTap")
@@ -52,7 +53,7 @@ open class HUD : MinecraftInstance() {
     /**
      * Render all elements
      */
-    fun render(designer: Boolean,partialTicks: Float) {
+    fun render(designer: Boolean, partialTicks: Float) {
         for (element in elements) {
             GL11.glPushMatrix()
             GL11.glScalef(element.scale, element.scale, element.scale)
@@ -65,7 +66,7 @@ open class HUD : MinecraftInstance() {
                     element.border?.draw()
             } catch (ex: Exception) {
                 ClientUtils.getLogger()
-                        .error("Something went wrong while drawing ${element.name} element in HUD.", ex)
+                    .error("Something went wrong while drawing ${element.name} element in HUD.", ex)
             }
 
             GL11.glPopMatrix()
@@ -85,13 +86,18 @@ open class HUD : MinecraftInstance() {
      */
     fun handleMouseClick(mouseX: Int, mouseY: Int, button: Int) {
         for (element in elements)
-            element.handleMouseClick((mouseX / element.scale) - element.renderX, (mouseY / element.scale)
-                    - element.renderY, button)
+            element.handleMouseClick(
+                (mouseX / element.scale) - element.renderX, (mouseY / element.scale)
+                        - element.renderY, button
+            )
 
         if (button == 0) {
             for (element in elements.reversed()) {
-                if (!element.isInBorder((mouseX / element.scale) - element.renderX,
-                                (mouseY / element.scale) - element.renderY))
+                if (!element.isInBorder(
+                        (mouseX / element.scale) - element.renderX,
+                        (mouseY / element.scale) - element.renderY
+                    )
+                )
                     continue
 
                 element.drag = true
@@ -192,7 +198,8 @@ open class HUD : MinecraftInstance() {
     /**
      * Add [notification]
      */
-    fun addNotification(notification: Notification) = elements.any { it is Notifications } && notifications.add(notification)
+    fun addNotification(notification: Notification) =
+        elements.any { it is Notifications } && notifications.add(notification)
 
     /**
      * Remove [notification]

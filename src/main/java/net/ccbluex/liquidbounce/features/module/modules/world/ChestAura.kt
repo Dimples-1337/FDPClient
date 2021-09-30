@@ -43,7 +43,7 @@ object ChestAura : Module() {
     private val doubleClick = BoolValue("DoubleClick", false) // this bypass redesky
     private val noCombating = BoolValue("NoCombating", true)
     private var currentBlock: BlockPos? = null
-    private var underClick=false
+    private var underClick = false
 
     val clickedBlocks = mutableListOf<BlockPos>()
 
@@ -52,58 +52,70 @@ object ChestAura : Module() {
         if (LiquidBounce.moduleManager[Blink::class.java].state)
             return
 
-        if(onlyOnGround.get() && !mc.thePlayer.onGround)
+        if (onlyOnGround.get() && !mc.thePlayer.onGround)
             return
 
-        if(noCombating.get() &&LiquidBounce.combatManager.inCombat)
+        if (noCombating.get() && LiquidBounce.combatManager.inCombat)
             return
-        if(event.eventState == EventState.PRE){
-                if (mc.currentScreen is GuiContainer)
-                    return
+        if (event.eventState == EventState.PRE) {
+            if (mc.currentScreen is GuiContainer)
+                return
 
-                val radius = rangeValue.get() + 1
+            val radius = rangeValue.get() + 1
 
-                val eyesPos = Vec3(mc.thePlayer.posX, mc.thePlayer.entityBoundingBox.minY + mc.thePlayer.getEyeHeight(),
-                        mc.thePlayer.posZ)
+            val eyesPos = Vec3(
+                mc.thePlayer.posX, mc.thePlayer.entityBoundingBox.minY + mc.thePlayer.getEyeHeight(),
+                mc.thePlayer.posZ
+            )
 
-                currentBlock = BlockUtils.searchBlocks(radius.toInt())
-                    .filter {
-                        it.value is BlockChest && !clickedBlocks.contains(it.key)
-                                && BlockUtils.getCenterDistance(it.key) < rangeValue.get()
+            currentBlock = BlockUtils.searchBlocks(radius.toInt())
+                .filter {
+                    it.value is BlockChest && !clickedBlocks.contains(it.key)
+                            && BlockUtils.getCenterDistance(it.key) < rangeValue.get()
+                }
+                .filter {
+                    if (throughWallsValue.get())
+                        return@filter true
+
+                    val blockPos = it.key
+                    val movingObjectPosition = mc.theWorld.rayTraceBlocks(
+                        eyesPos,
+                        blockPos.getVec(), false, true, false
+                    )
+
+                    movingObjectPosition != null && movingObjectPosition.blockPos == blockPos
+                }
+                .minByOrNull { BlockUtils.getCenterDistance(it.key) }?.key
+
+            if (rotations.get())
+                RotationUtils.setTargetRotation(
+                    (RotationUtils.faceBlock(currentBlock ?: return)
+                        ?: return).rotation
+                )
+        } else if (currentBlock != null && InventoryUtils.INV_TIMER.hasTimePassed(
+                delayValue.get().toLong()
+            ) && !underClick
+        ) {
+            underClick = true
+            if (discoverDelay.get()) {
+                java.util.Timer().schedule(object : TimerTask() {
+                    override fun run() {
+                        click()
                     }
-                    .filter {
-                        if (throughWallsValue.get())
-                            return@filter true
-
-                        val blockPos = it.key
-                        val movingObjectPosition = mc.theWorld.rayTraceBlocks(eyesPos,
-                            blockPos.getVec(), false, true, false)
-
-                        movingObjectPosition != null && movingObjectPosition.blockPos == blockPos
-                    }
-                    .minByOrNull { BlockUtils.getCenterDistance(it.key) }?.key
-
-                if (rotations.get())
-                    RotationUtils.setTargetRotation((RotationUtils.faceBlock(currentBlock ?: return)
-                            ?: return).rotation)
-        }else if(currentBlock != null && InventoryUtils.INV_TIMER.hasTimePassed(delayValue.get().toLong()) && !underClick){
-                 underClick=true
-                if(discoverDelay.get()){
-                    java.util.Timer().schedule(object :TimerTask() {
-                        override fun run() {
-                            click()
-                        }
-                    }, discoverDelayValue.get().toLong())
-                }else{
-                    click()
-                } 
+                }, discoverDelayValue.get().toLong())
+            } else {
+                click()
+            }
         }
     }
 
-    private fun click(){
+    private fun click() {
         try {
-            if (mc.playerController.onPlayerRightClick(mc.thePlayer, mc.theWorld, mc.thePlayer.heldItem, currentBlock,
-                    EnumFacing.DOWN, currentBlock!!.getVec())) {
+            if (mc.playerController.onPlayerRightClick(
+                    mc.thePlayer, mc.theWorld, mc.thePlayer.heldItem, currentBlock,
+                    EnumFacing.DOWN, currentBlock!!.getVec()
+                )
+            ) {
                 if (visualSwing.get())
                     mc.thePlayer.swingItem()
                 else
@@ -112,40 +124,44 @@ object ChestAura : Module() {
                 clickedBlocks.add(currentBlock!!)
                 currentBlock = null
 
-                if(doubleClick.get()){
-                    val hitPos= currentBlock ?: return
-                    val hitVec=hitPos.getVec()
+                if (doubleClick.get()) {
+                    val hitPos = currentBlock ?: return
+                    val hitVec = hitPos.getVec()
                     val f = (hitVec.xCoord - hitPos.x.toDouble()).toFloat()
                     val f1 = (hitVec.yCoord - hitPos.y.toDouble()).toFloat()
                     val f2 = (hitVec.zCoord - hitPos.z.toDouble()).toFloat()
-                    mc.netHandler.addToSendQueue(C08PacketPlayerBlockPlacement(hitPos, EnumFacing.DOWN.index,
-                        mc.thePlayer.inventory.getCurrentItem(), f, f1, f2))
+                    mc.netHandler.addToSendQueue(
+                        C08PacketPlayerBlockPlacement(
+                            hitPos, EnumFacing.DOWN.index,
+                            mc.thePlayer.inventory.getCurrentItem(), f, f1, f2
+                        )
+                    )
                     mc.netHandler.addToSendQueue(C0APacketAnimation())
                 }
             }
-        }catch (e: Exception){
+        } catch (e: Exception) {
             e.printStackTrace()
         }
         underClick = false
     }
 
     @EventTarget
-    fun onPacket(event: PacketEvent){
-        if(notOpened.get() && event.packet is S24PacketBlockAction){
+    fun onPacket(event: PacketEvent) {
+        if (notOpened.get() && event.packet is S24PacketBlockAction) {
             val packet = event.packet
-            if(packet.blockType is BlockChest && packet.data2 == 1 && !clickedBlocks.contains(packet.blockPosition))
-                    clickedBlocks.add(packet.blockPosition)
+            if (packet.blockType is BlockChest && packet.data2 == 1 && !clickedBlocks.contains(packet.blockPosition))
+                clickedBlocks.add(packet.blockPosition)
         }
     }
 
     @EventTarget
-    fun onWorld(event: WorldEvent){
+    fun onWorld(event: WorldEvent) {
         //clear blocks record when change world
         clickedBlocks.clear()
     }
 
     override fun onDisable() {
         clickedBlocks.clear()
-        underClick=false
+        underClick = false
     }
 }

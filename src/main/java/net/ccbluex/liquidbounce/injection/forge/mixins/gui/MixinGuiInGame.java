@@ -43,27 +43,27 @@ public abstract class MixinGuiInGame {
     private void renderTooltip(ScaledResolution sr, float partialTicks, CallbackInfo callbackInfo) {
         final HUD hud = LiquidBounce.moduleManager.getModule(HUD.class);
 
-        if(Minecraft.getMinecraft().getRenderViewEntity() instanceof EntityPlayer && hud.getState() && hud.getBetterHotbarValue().get()) {
+        if (Minecraft.getMinecraft().getRenderViewEntity() instanceof EntityPlayer && hud.getState() && hud.getBetterHotbarValue().get()) {
             EntityPlayer entityPlayer = (EntityPlayer) Minecraft.getMinecraft().getRenderViewEntity();
 
             int middleScreen = sr.getScaledWidth() / 2;
-            int hotbarAlpha=hud.getHotbarAlphaValue().get();
+            int hotbarAlpha = hud.getHotbarAlphaValue().get();
 
             GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
 
-            GuiIngame.drawRect(middleScreen - 91, sr.getScaledHeight() - 22, middleScreen + entityPlayer.inventory.currentItem * 20 - 91, sr.getScaledHeight(), ColorUtils.reAlpha(Color.BLACK,hotbarAlpha).getRGB());
-            GuiIngame.drawRect(middleScreen + entityPlayer.inventory.currentItem * 20 - 70, sr.getScaledHeight() - 22, middleScreen + 90, sr.getScaledHeight(), ColorUtils.reAlpha(Color.BLACK,hotbarAlpha).getRGB());
-            GuiIngame.drawRect(middleScreen - 91, sr.getScaledHeight() - 24, middleScreen + entityPlayer.inventory.currentItem * 20 - 91, sr.getScaledHeight() - 22, ColorUtils.reAlpha(new Color(255,127,80),hotbarAlpha).getRGB());
-            GuiIngame.drawRect(middleScreen + entityPlayer.inventory.currentItem * 20 - 70, sr.getScaledHeight() - 24, middleScreen + 90, sr.getScaledHeight() - 22, ColorUtils.reAlpha(new Color(255,127,80),hotbarAlpha).getRGB());
-            GuiIngame.drawRect(middleScreen + entityPlayer.inventory.currentItem * 20 - 91, sr.getScaledHeight() - 20, middleScreen + entityPlayer.inventory.currentItem * 20 - 70, sr.getScaledHeight(), ColorUtils.reAlpha(Color.WHITE,hotbarAlpha).getRGB());
-            GuiIngame.drawRect(middleScreen + entityPlayer.inventory.currentItem * 20 - 91, sr.getScaledHeight() - 24, middleScreen + entityPlayer.inventory.currentItem * 20 - 70, sr.getScaledHeight()-20, ColorUtils.reAlpha(new Color(0,245,255),hotbarAlpha).getRGB());
+            GuiIngame.drawRect(middleScreen - 91, sr.getScaledHeight() - 22, middleScreen + entityPlayer.inventory.currentItem * 20 - 91, sr.getScaledHeight(), ColorUtils.reAlpha(Color.BLACK, hotbarAlpha).getRGB());
+            GuiIngame.drawRect(middleScreen + entityPlayer.inventory.currentItem * 20 - 70, sr.getScaledHeight() - 22, middleScreen + 90, sr.getScaledHeight(), ColorUtils.reAlpha(Color.BLACK, hotbarAlpha).getRGB());
+            GuiIngame.drawRect(middleScreen - 91, sr.getScaledHeight() - 24, middleScreen + entityPlayer.inventory.currentItem * 20 - 91, sr.getScaledHeight() - 22, ColorUtils.reAlpha(new Color(255, 127, 80), hotbarAlpha).getRGB());
+            GuiIngame.drawRect(middleScreen + entityPlayer.inventory.currentItem * 20 - 70, sr.getScaledHeight() - 24, middleScreen + 90, sr.getScaledHeight() - 22, ColorUtils.reAlpha(new Color(255, 127, 80), hotbarAlpha).getRGB());
+            GuiIngame.drawRect(middleScreen + entityPlayer.inventory.currentItem * 20 - 91, sr.getScaledHeight() - 20, middleScreen + entityPlayer.inventory.currentItem * 20 - 70, sr.getScaledHeight(), ColorUtils.reAlpha(Color.WHITE, hotbarAlpha).getRGB());
+            GuiIngame.drawRect(middleScreen + entityPlayer.inventory.currentItem * 20 - 91, sr.getScaledHeight() - 24, middleScreen + entityPlayer.inventory.currentItem * 20 - 70, sr.getScaledHeight() - 20, ColorUtils.reAlpha(new Color(0, 245, 255), hotbarAlpha).getRGB());
 
             GlStateManager.enableRescaleNormal();
             GlStateManager.enableBlend();
             GlStateManager.tryBlendFuncSeparate(770, 771, 1, 0);
             RenderHelper.enableGUIStandardItemLighting();
 
-            for(int j = 0; j < 9; ++j) {
+            for (int j = 0; j < 9; ++j) {
                 int k = sr.getScaledWidth() / 2 - 90 + j * 20 + 2;
                 int l = sr.getScaledHeight() - 16 - 3;
                 this.renderHotbarItem(j, k, l, partialTicks, entityPlayer);
@@ -89,7 +89,7 @@ public abstract class MixinGuiInGame {
     private void renderPumpkinOverlay(final CallbackInfo callbackInfo) {
         final AntiBlind antiBlind = LiquidBounce.moduleManager.getModule(AntiBlind.class);
 
-        if(antiBlind.getState() && antiBlind.getPumpkinEffect().get())
+        if (antiBlind.getState() && antiBlind.getPumpkinEffect().get())
             callbackInfo.cancel();
     }
 
@@ -99,4 +99,4 @@ public abstract class MixinGuiInGame {
         if (crossHair.getState())
             cir.setReturnValue(false);
     }
- }
+}

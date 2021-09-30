@@ -24,14 +24,17 @@ import java.net.URL
  */
 object HttpUtils {
 
-    private const val DEFAULT_AGENT = "Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/67.0.3396.99 Safari/537.36"
+    private const val DEFAULT_AGENT =
+        "Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/67.0.3396.99 Safari/537.36"
 
     init {
         HttpURLConnection.setFollowRedirects(true)
     }
 
-    fun make(url: String, method: String, data: String="",
-             agent: String = DEFAULT_AGENT): HttpURLConnection {
+    fun make(
+        url: String, method: String, data: String = "",
+        agent: String = DEFAULT_AGENT
+    ): HttpURLConnection {
         val httpConnection = URL(url).openConnection() as HttpURLConnection
 
         httpConnection.requestMethod = method
@@ -43,7 +46,7 @@ object HttpUtils {
         httpConnection.instanceFollowRedirects = true
         httpConnection.doOutput = true
 
-        if(data.isNotEmpty()){
+        if (data.isNotEmpty()) {
             val dataOutputStream = DataOutputStream(httpConnection.outputStream)
             dataOutputStream.writeBytes(data)
             dataOutputStream.flush()
@@ -52,20 +55,24 @@ object HttpUtils {
         return httpConnection
     }
 
-    fun request(url: String, method: String, data: String="",
-                agent: String = DEFAULT_AGENT): String {
+    fun request(
+        url: String, method: String, data: String = "",
+        agent: String = DEFAULT_AGENT
+    ): String {
         val connection = make(url, method, data, agent)
 
         return connection.inputStream.reader().readText()
     }
 
-    fun requestStream(url: String, method: String,
-                      agent: String = DEFAULT_AGENT): InputStream? {
+    fun requestStream(
+        url: String, method: String,
+        agent: String = DEFAULT_AGENT
+    ): InputStream? {
         val connection = make(url, method, agent)
 
         return connection.inputStream
     }
-    
+
     fun download(url: String, file: File) {
         ClientUtils.logWarn("Downloading $url to ${file.absolutePath}")
         FileOutputStream(file).use { ByteStreams.copy(make(url, "GET").inputStream, it) }
@@ -73,5 +80,5 @@ object HttpUtils {
 
     fun get(url: String) = request(url, "GET")
 
-    fun post(url: String, data: String) = request(url, "POST", data=data)
+    fun post(url: String, data: String) = request(url, "POST", data = data)
 }

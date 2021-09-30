@@ -58,19 +58,19 @@ public class GuiDirectLogin extends GuiScreen {
         username.drawTextBox();
         password.drawTextBox();
 
-        if(username.getText().isEmpty() && !username.isFocused())
+        if (username.getText().isEmpty() && !username.isFocused())
             drawCenteredString(Fonts.font20, "§7%ui.alt.loginUsername%", width / 2 - 55, 66, 0xffffff);
 
-        if(password.getText().isEmpty() && !password.isFocused())
+        if (password.getText().isEmpty() && !password.isFocused())
             drawCenteredString(Fonts.font20, "§7%ui.alt.loginPassword%", width / 2 - 74, 91, 0xffffff);
         super.drawScreen(mouseX, mouseY, partialTicks);
     }
 
     @Override
     protected void actionPerformed(GuiButton button) throws IOException {
-        if(!button.enabled) return;
+        if (!button.enabled) return;
 
-        switch(button.id) {
+        switch (button.id) {
             case 0:
                 mc.displayGuiScreen(prevGui);
                 break;
@@ -132,10 +132,10 @@ public class GuiDirectLogin extends GuiScreen {
                 return;
         }
 
-        if(username.isFocused())
+        if (username.isFocused())
             username.textboxKeyTyped(typedChar, keyCode);
 
-        if(password.isFocused())
+        if (password.isFocused())
             password.textboxKeyTyped(typedChar, keyCode);
 
         super.keyTyped(typedChar, keyCode);

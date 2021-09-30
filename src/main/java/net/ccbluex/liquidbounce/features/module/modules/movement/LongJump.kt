@@ -23,52 +23,87 @@ import net.minecraft.util.EnumFacing
 
 @ModuleInfo(name = "LongJump", category = ModuleCategory.MOVEMENT, autoDisable = EnumAutoDisableType.FLAG)
 class LongJump : Module() {
-    private val modeValue = ListValue("Mode", arrayOf("NCP", "AACv1", "AACv2", "AACv3", "Mineplex", "Mineplex2", "Mineplex3", "RedeSkyTest", "RedeSky", "RedeSky2", "RedeSky3", "BlocksMC", "BlocksMC2", "HYT4v4"), "NCP")
+    private val modeValue = ListValue(
+        "Mode",
+        arrayOf(
+            "NCP",
+            "AACv1",
+            "AACv2",
+            "AACv3",
+            "Mineplex",
+            "Mineplex2",
+            "Mineplex3",
+            "RedeSkyTest",
+            "RedeSky",
+            "RedeSky2",
+            "RedeSky3",
+            "BlocksMC",
+            "BlocksMC2",
+            "HYT4v4"
+        ),
+        "NCP"
+    )
     private val ncpBoostValue = FloatValue("NCPBoost", 4.25f, 1f, 10f)
 
     // redesky
-    private val rsJumpMovementValue = FloatValue("RedeSkyJumpMovement",0.13F,0.05F,0.25F).displayable { modeValue.equals("RedeSky") }
-    private val rsMotionYValue = FloatValue("RedeSkyMotionY",0.81F,0.05F,1F).displayable { modeValue.equals("RedeSky") }
-    private val rsMoveReducerValue = BoolValue("RedeSkyMovementReducer", true).displayable { modeValue.equals("RedeSky") }
-    private val rsReduceMovementValue = FloatValue("RedeSkyReduceMovement",0.08F,0.05F,0.25F).displayable { modeValue.equals("RedeSky") }
-    private val rsMotYReducerValue = BoolValue("RedeSkyMotionYReducer", true).displayable { modeValue.equals("RedeSky") }
-    private val rsReduceYMotionValue = FloatValue("RedeSkyReduceYMotion",0.15F,0.01F,0.20F).displayable { modeValue.equals("RedeSky") }
+    private val rsJumpMovementValue =
+        FloatValue("RedeSkyJumpMovement", 0.13F, 0.05F, 0.25F).displayable { modeValue.equals("RedeSky") }
+    private val rsMotionYValue =
+        FloatValue("RedeSkyMotionY", 0.81F, 0.05F, 1F).displayable { modeValue.equals("RedeSky") }
+    private val rsMoveReducerValue =
+        BoolValue("RedeSkyMovementReducer", true).displayable { modeValue.equals("RedeSky") }
+    private val rsReduceMovementValue =
+        FloatValue("RedeSkyReduceMovement", 0.08F, 0.05F, 0.25F).displayable { modeValue.equals("RedeSky") }
+    private val rsMotYReducerValue =
+        BoolValue("RedeSkyMotionYReducer", true).displayable { modeValue.equals("RedeSky") }
+    private val rsReduceYMotionValue =
+        FloatValue("RedeSkyReduceYMotion", 0.15F, 0.01F, 0.20F).displayable { modeValue.equals("RedeSky") }
     private val rsUseTimerValue = BoolValue("RedeSkyTimer", true).displayable { modeValue.equals("RedeSky") }
-    private val rsTimerValue = FloatValue("RedeSkyTimer",0.30F,0.1F,1F).displayable { modeValue.equals("RedeSky") }
+    private val rsTimerValue = FloatValue("RedeSkyTimer", 0.30F, 0.1F, 1F).displayable { modeValue.equals("RedeSky") }
 
     // redesky2
-    private val rs2AirSpeedValue = FloatValue("RedeSky2AirSpeed",0.1F,0.05F,0.25F).displayable { modeValue.equals("RedeSky2") }
-    private val rs2MinAirSpeedValue = FloatValue("RedeSky2MinAirSpeed",0.08F,0.05F,0.25F).displayable { modeValue.equals("RedeSky2") }
-    private val rs2ReduceAirSpeedValue = FloatValue("RedeSky2ReduceAirSpeed",0.16F,0.05F,0.25F).displayable { modeValue.equals("RedeSky2") }
-    private val rs2AirSpeedReducerValue = BoolValue("RedeSky2AirSpeedReducer", true).displayable { modeValue.equals("RedeSky2") }
-    private val rs2YMotionValue = FloatValue("RedeSky2YMotion",0.08F,0.01F,0.20F).displayable { modeValue.equals("RedeSky2") }
-    private val rs2MinYMotionValue = FloatValue("RedeSky2MinYMotion",0.04F,0.01F,0.20F).displayable { modeValue.equals("RedeSky2") }
-    private val rs2ReduceYMotionValue = FloatValue("RedeSky2ReduceYMotion",0.15F,0.01F,0.20F).displayable { modeValue.equals("RedeSky2") }
-    private val rs2YMotionReducerValue = BoolValue("RedeSky2YMotionReducer", true).displayable { modeValue.equals("RedeSky2") }
-    private val rs3JumpTimeValue= IntegerValue("RedeSky3JumpTime",500,300,1500).displayable { modeValue.equals("RedeSky3") }
-    private val rs3BoostValue= FloatValue("RedeSky3Boost",1F,0.3F,1.5F).displayable { modeValue.equals("RedeSky3") }
-    private val rs3HeightValue= FloatValue("RedeSky3Height",1F,0.3F,1.5F).displayable { modeValue.equals("RedeSky3") }
-    private val rs3TimerValue = FloatValue("RedeSky3Timer",1F,0.1F,5F).displayable { modeValue.equals("RedeSky3") }
+    private val rs2AirSpeedValue =
+        FloatValue("RedeSky2AirSpeed", 0.1F, 0.05F, 0.25F).displayable { modeValue.equals("RedeSky2") }
+    private val rs2MinAirSpeedValue =
+        FloatValue("RedeSky2MinAirSpeed", 0.08F, 0.05F, 0.25F).displayable { modeValue.equals("RedeSky2") }
+    private val rs2ReduceAirSpeedValue =
+        FloatValue("RedeSky2ReduceAirSpeed", 0.16F, 0.05F, 0.25F).displayable { modeValue.equals("RedeSky2") }
+    private val rs2AirSpeedReducerValue =
+        BoolValue("RedeSky2AirSpeedReducer", true).displayable { modeValue.equals("RedeSky2") }
+    private val rs2YMotionValue =
+        FloatValue("RedeSky2YMotion", 0.08F, 0.01F, 0.20F).displayable { modeValue.equals("RedeSky2") }
+    private val rs2MinYMotionValue =
+        FloatValue("RedeSky2MinYMotion", 0.04F, 0.01F, 0.20F).displayable { modeValue.equals("RedeSky2") }
+    private val rs2ReduceYMotionValue =
+        FloatValue("RedeSky2ReduceYMotion", 0.15F, 0.01F, 0.20F).displayable { modeValue.equals("RedeSky2") }
+    private val rs2YMotionReducerValue =
+        BoolValue("RedeSky2YMotionReducer", true).displayable { modeValue.equals("RedeSky2") }
+    private val rs3JumpTimeValue =
+        IntegerValue("RedeSky3JumpTime", 500, 300, 1500).displayable { modeValue.equals("RedeSky3") }
+    private val rs3BoostValue = FloatValue("RedeSky3Boost", 1F, 0.3F, 1.5F).displayable { modeValue.equals("RedeSky3") }
+    private val rs3HeightValue =
+        FloatValue("RedeSky3Height", 1F, 0.3F, 1.5F).displayable { modeValue.equals("RedeSky3") }
+    private val rs3TimerValue = FloatValue("RedeSky3Timer", 1F, 0.1F, 5F).displayable { modeValue.equals("RedeSky3") }
 
     // settings
     private val autoJumpValue = BoolValue("AutoJump", true)
     private val autoDisableValue = BoolValue("AutoDisable", true)
     private var jumped = false
-    private var hasJumped=false
+    private var hasJumped = false
     private var canBoost = false
     private var teleported = false
     private var canMineplexBoost = false
-    private var timer=MSTimer()
-    var airTicks=0
+    private var timer = MSTimer()
+    var airTicks = 0
 
     override fun onEnable() {
-        airTicks=0
-        hasJumped=false
+        airTicks = 0
+        hasJumped = false
     }
 
     override fun onDisable() {
         mc.timer.timerSpeed = 1F
-        when(modeValue.get().lowercase()){
+        when (modeValue.get().lowercase()) {
             "redesky2" -> {
                 mc.thePlayer.speedInAir = 0.02F
             }
@@ -82,10 +117,10 @@ class LongJump : Module() {
         if (jumped) {
             val mode = modeValue.get()
 
-            if(!mc.thePlayer.onGround){
+            if (!mc.thePlayer.onGround) {
                 airTicks++
-            }else{
-                airTicks=0
+            } else {
+                airTicks = 0
             }
 
             if (mc.thePlayer.onGround || mc.thePlayer.capabilities.isFlying) {
@@ -157,13 +192,14 @@ class LongJump : Module() {
                     "redesky" -> {
                         if (!mc.thePlayer.onGround) {
                             if (rsMoveReducerValue.get()) {
-                                mc.thePlayer.jumpMovementFactor = rsJumpMovementValue.get() -(airTicks*(rsReduceMovementValue.get()/100))
+                                mc.thePlayer.jumpMovementFactor =
+                                    rsJumpMovementValue.get() - (airTicks * (rsReduceMovementValue.get() / 100))
                             } else {
                                 mc.thePlayer.jumpMovementFactor = rsJumpMovementValue.get()
                             }
-                            if (rsMotYReducerValue.get()){
-                                mc.thePlayer.motionY += (rsMotionYValue.get() / 10F)-(airTicks*(rsReduceYMotionValue.get()/100))
-                            }else{
+                            if (rsMotYReducerValue.get()) {
+                                mc.thePlayer.motionY += (rsMotionYValue.get() / 10F) - (airTicks * (rsReduceYMotionValue.get() / 100))
+                            } else {
                                 mc.thePlayer.motionY += rsMotionYValue.get() / 10F
                             }
                             if (rsUseTimerValue.get()) {
@@ -173,37 +209,38 @@ class LongJump : Module() {
                     }
 
                     "redesky2" -> {
-                        if (!mc.thePlayer.onGround){
-                            if(rs2YMotionReducerValue.get()){
-                                val motY=rs2YMotionValue.get()-(airTicks*(rs2ReduceYMotionValue.get()/100))
-                                if(motY<rs2MinYMotionValue.get()){
+                        if (!mc.thePlayer.onGround) {
+                            if (rs2YMotionReducerValue.get()) {
+                                val motY = rs2YMotionValue.get() - (airTicks * (rs2ReduceYMotionValue.get() / 100))
+                                if (motY < rs2MinYMotionValue.get()) {
                                     mc.thePlayer.motionY += rs2MinYMotionValue.get()
-                                }else{
+                                } else {
                                     mc.thePlayer.motionY += motY
                                 }
-                            }else{
+                            } else {
                                 mc.thePlayer.motionY += rs2YMotionValue.get()
                             }
                             //as reduce
-                            if(rs2AirSpeedReducerValue.get()){
-                                val airSpeed=rs2AirSpeedValue.get()-(airTicks*(rs2ReduceAirSpeedValue.get()/100))
-                                if(airSpeed<rs2MinAirSpeedValue.get()){
+                            if (rs2AirSpeedReducerValue.get()) {
+                                val airSpeed =
+                                    rs2AirSpeedValue.get() - (airTicks * (rs2ReduceAirSpeedValue.get() / 100))
+                                if (airSpeed < rs2MinAirSpeedValue.get()) {
                                     mc.thePlayer.speedInAir = rs2MinAirSpeedValue.get()
-                                }else{
+                                } else {
                                     mc.thePlayer.speedInAir = airSpeed
                                 }
-                            }else{
+                            } else {
                                 mc.thePlayer.speedInAir = rs2AirSpeedValue.get()
                             }
                         }
                     }
 
                     "redesky3" -> {
-                        if(!timer.hasTimePassed(rs3JumpTimeValue.get().toLong())){
-                            mc.thePlayer.motionY+=rs3HeightValue.get()/10F
-                            MovementUtils.move(rs3BoostValue.get()/10F)
+                        if (!timer.hasTimePassed(rs3JumpTimeValue.get().toLong())) {
+                            mc.thePlayer.motionY += rs3HeightValue.get() / 10F
+                            MovementUtils.move(rs3BoostValue.get() / 10F)
                             mc.timer.timerSpeed = rs3TimerValue.get()
-                        }else{
+                        } else {
                             mc.timer.timerSpeed = 1F
                         }
                     }
@@ -221,7 +258,7 @@ class LongJump : Module() {
                         MovementUtils.strafe(MovementUtils.getSpeed() * 1.114514f)
                         mc.timer.timerSpeed = 0.917555f
                     }
-                    
+
                     "redeskytest" -> {
                         mc.thePlayer.motionY = 0.42
                         MovementUtils.strafe(MovementUtils.getSpeed() * 1.12f)
@@ -239,12 +276,12 @@ class LongJump : Module() {
 
         if (autoJumpValue.get() && mc.thePlayer.onGround && MovementUtils.isMoving()) {
             jumped = true
-            if(hasJumped&&autoDisableValue.get()){
-                state=false
+            if (hasJumped && autoDisableValue.get()) {
+                state = false
                 return
             }
             mc.thePlayer.jump()
-            hasJumped=true
+            hasJumped = true
         }
     }
 

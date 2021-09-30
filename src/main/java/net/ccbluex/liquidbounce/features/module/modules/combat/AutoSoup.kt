@@ -44,11 +44,19 @@ class AutoSoup : Module() {
         val soupInHotbar = InventoryUtils.findItem(36, 45, Items.mushroom_stew)
         if (mc.thePlayer.health <= healthValue.get() && soupInHotbar != -1) {
             mc.netHandler.addToSendQueue(C09PacketHeldItemChange(soupInHotbar - 36))
-            mc.netHandler.addToSendQueue(C08PacketPlayerBlockPlacement(mc.thePlayer.inventoryContainer
-                    .getSlot(soupInHotbar).stack))
+            mc.netHandler.addToSendQueue(
+                C08PacketPlayerBlockPlacement(
+                    mc.thePlayer.inventoryContainer
+                        .getSlot(soupInHotbar).stack
+                )
+            )
             if (bowlValue.equals("Drop"))
-                mc.netHandler.addToSendQueue(C07PacketPlayerDigging(C07PacketPlayerDigging.Action.DROP_ITEM,
-                        BlockPos.ORIGIN, EnumFacing.DOWN))
+                mc.netHandler.addToSendQueue(
+                    C07PacketPlayerDigging(
+                        C07PacketPlayerDigging.Action.DROP_ITEM,
+                        BlockPos.ORIGIN, EnumFacing.DOWN
+                    )
+                )
             mc.netHandler.addToSendQueue(C09PacketHeldItemChange(mc.thePlayer.inventory.currentItem))
             timer.reset()
             return

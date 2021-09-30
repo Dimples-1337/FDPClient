@@ -26,11 +26,10 @@ public class MixinResourcePackRepository {
 
     @Shadow
     @Final
-    private File dirServerResourcepacks;
-
+    private static Logger logger;
     @Shadow
     @Final
-    private static Logger logger;
+    private File dirServerResourcepacks;
 
     /**
      * @author Mojang
@@ -44,14 +43,14 @@ public class MixinResourcePackRepository {
             int lvt_2_1_ = 0;
             Iterator lvt_3_1_ = lvt_1_1_.iterator();
 
-            while(lvt_3_1_.hasNext()) {
+            while (lvt_3_1_.hasNext()) {
                 File lvt_4_1_ = (File) lvt_3_1_.next();
-                if(lvt_2_1_++ >= 10) {
+                if (lvt_2_1_++ >= 10) {
                     logger.info("Deleting old server resource pack " + lvt_4_1_.getName());
                     FileUtils.deleteQuietly(lvt_4_1_);
                 }
             }
-        }catch(final Throwable e) {
+        } catch (final Throwable e) {
             e.printStackTrace();
         }
     }

@@ -67,8 +67,8 @@ class Config {
                             element.y = jsonObject["Y"].asInt.toDouble()
                             element.scale = jsonObject["Scale"].asFloat
                             element.side = Side(
-                                    Side.Horizontal.getByName(jsonObject["HorizontalFacing"].asString)!!,
-                                    Side.Vertical.getByName(jsonObject["VerticalFacing"].asString)!!
+                                Side.Horizontal.getByName(jsonObject["HorizontalFacing"].asString)!!,
+                                Side.Vertical.getByName(jsonObject["VerticalFacing"].asString)!!
                             )
 
                             for (value in element.values) {

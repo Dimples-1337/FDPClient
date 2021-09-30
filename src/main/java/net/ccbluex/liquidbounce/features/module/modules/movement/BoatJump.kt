@@ -32,7 +32,7 @@ class BoatJump : Module() {
     private val timer = MSTimer()
     private val hitTimer = MSTimer()
     private var lastRide = false
-    private var hasStopped = false;
+    private var hasStopped = false
 
     override fun onEnable() {
         jumpState = 1

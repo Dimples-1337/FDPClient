@@ -37,17 +37,17 @@ public class AccountsConfig extends FileConfig {
     protected void loadConfig() throws IOException {
         final List<String> accountList = new Gson().fromJson(new BufferedReader(new FileReader(getFile())), List.class);
 
-        if(accountList == null)
+        if (accountList == null)
             return;
 
         altManagerMinecraftAccounts.clear();
 
-        for(final String account : accountList) {
+        for (final String account : accountList) {
             final String[] information = account.split(":");
 
-            if(information.length >= 3)
+            if (information.length >= 3)
                 altManagerMinecraftAccounts.add(new MinecraftAccount(information[0], information[1], information[2]));
-            else if(information.length == 2)
+            else if (information.length == 2)
                 altManagerMinecraftAccounts.add(new MinecraftAccount(information[0], information[1]));
             else
                 altManagerMinecraftAccounts.add(new MinecraftAccount(information[0]));
@@ -63,7 +63,7 @@ public class AccountsConfig extends FileConfig {
     protected void saveConfig() throws IOException {
         final List<String> accountList = new ArrayList<>();
 
-        for(final MinecraftAccount minecraftAccount : altManagerMinecraftAccounts)
+        for (final MinecraftAccount minecraftAccount : altManagerMinecraftAccounts)
             accountList.add(minecraftAccount.getName() + ":" + (minecraftAccount.getPassword() == null ? "" : minecraftAccount.getPassword()) + ":" + (minecraftAccount.getAccountName() == null ? "" : minecraftAccount.getAccountName()));
 
         Writer writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(getFile()), StandardCharsets.UTF_8));

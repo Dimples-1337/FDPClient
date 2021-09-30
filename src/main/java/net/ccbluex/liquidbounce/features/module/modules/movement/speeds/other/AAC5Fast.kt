@@ -6,7 +6,7 @@ import net.ccbluex.liquidbounce.utils.MovementUtils
 class AAC5Fast : SpeedMode("AAC5Fast") {
     override fun onUpdate() {
         if (!MovementUtils.isMoving())
-            return;
+            return
         if (mc.thePlayer.onGround) {
             mc.thePlayer.jump()
             mc.thePlayer.speedInAir = 0.0201F

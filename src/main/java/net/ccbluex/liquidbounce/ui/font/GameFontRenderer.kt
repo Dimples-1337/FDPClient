@@ -19,8 +19,10 @@ import org.lwjgl.opengl.GL11
 import java.awt.Color
 import java.awt.Font
 
-class GameFontRenderer(font: Font) : FontRenderer(Minecraft.getMinecraft().gameSettings,
-        ResourceLocation("textures/font/ascii.png"), Minecraft.getMinecraft().textureManager, false) {
+class GameFontRenderer(font: Font) : FontRenderer(
+    Minecraft.getMinecraft().gameSettings,
+    ResourceLocation("textures/font/ascii.png"), Minecraft.getMinecraft().textureManager, false
+) {
 
     var defaultFont = AWTFontRenderer(font)
     private var boldFont = AWTFontRenderer(font.deriveFont(Font.BOLD))
@@ -39,12 +41,14 @@ class GameFontRenderer(font: Font) : FontRenderer(Minecraft.getMinecraft().gameS
 
     fun drawString(s: String, x: Float, y: Float, color: Int) = drawString(s, x, y, color, false)
 
-    override fun drawStringWithShadow(text: String, x: Float, y: Float, color: Int) = drawString(text, x, y, color, true)
+    override fun drawStringWithShadow(text: String, x: Float, y: Float, color: Int) =
+        drawString(text, x, y, color, true)
 
-    fun drawCenteredString(s: String, x: Float, y: Float, color: Int, shadow: Boolean) = drawString(s, x - getStringWidth(s) / 2F, y, color, shadow)
+    fun drawCenteredString(s: String, x: Float, y: Float, color: Int, shadow: Boolean) =
+        drawString(s, x - getStringWidth(s) / 2F, y, color, shadow)
 
     fun drawCenteredString(s: String, x: Float, y: Float, color: Int) =
-            drawStringWithShadow(s, x - getStringWidth(s) / 2F, y, color)
+        drawStringWithShadow(s, x - getStringWidth(s) / 2F, y, color)
 
     override fun drawString(text: String, x: Float, y: Float, color: Int, shadow: Boolean): Int {
         var currentText = text
@@ -65,7 +69,7 @@ class GameFontRenderer(font: Font) : FontRenderer(Minecraft.getMinecraft().gameS
         if (rawText.isNullOrEmpty())
             return x.toInt()
 
-        val text=LanguageManager.replace(rawText)
+        val text = LanguageManager.replace(rawText)
 
         GlStateManager.translate(x - 1.5, y + 0.5, 0.0)
         GlStateManager.enableAlpha()
@@ -143,17 +147,26 @@ class GameFontRenderer(font: Font) : FontRenderer(Minecraft.getMinecraft().gameS
                     else
                         defaultFont
 
-                    currentFont.drawString(if (randomCase) ColorUtils.randomMagicText(words) else words, width, 0.0, hexColor)
+                    currentFont.drawString(
+                        if (randomCase) ColorUtils.randomMagicText(words) else words,
+                        width,
+                        0.0,
+                        hexColor
+                    )
 
                     if (strikeThrough)
-                        RenderUtils.drawLine(width / 2.0 + 1, currentFont.height / 3.0,
-                                (width + currentFont.getStringWidth(words)) / 2.0 + 1, currentFont.height / 3.0,
-                                FONT_HEIGHT / 16F)
+                        RenderUtils.drawLine(
+                            width / 2.0 + 1, currentFont.height / 3.0,
+                            (width + currentFont.getStringWidth(words)) / 2.0 + 1, currentFont.height / 3.0,
+                            FONT_HEIGHT / 16F
+                        )
 
                     if (underline)
-                        RenderUtils.drawLine(width / 2.0 + 1, currentFont.height / 2.0,
-                                (width + currentFont.getStringWidth(words)) / 2.0 + 1, currentFont.height / 2.0,
-                                FONT_HEIGHT / 16F)
+                        RenderUtils.drawLine(
+                            width / 2.0 + 1, currentFont.height / 2.0,
+                            (width + currentFont.getStringWidth(words)) / 2.0 + 1, currentFont.height / 2.0,
+                            FONT_HEIGHT / 16F
+                        )
 
                     width += currentFont.getStringWidth(words) / 2
                 }
@@ -169,7 +182,7 @@ class GameFontRenderer(font: Font) : FontRenderer(Minecraft.getMinecraft().gameS
     }
 
     override fun getColorCode(charCode: Char) =
-            ColorUtils.hexColors[getColorIndex(charCode)]
+        ColorUtils.hexColors[getColorIndex(charCode)]
 
     override fun getStringWidth(text: String): Int {
         var currentText = LanguageManager.replace(text)

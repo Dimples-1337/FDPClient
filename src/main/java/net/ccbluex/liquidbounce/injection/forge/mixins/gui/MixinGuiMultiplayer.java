@@ -27,7 +27,7 @@ public abstract class MixinGuiMultiplayer extends MixinGuiScreen {
 
     @Inject(method = "actionPerformed", at = @At("HEAD"))
     private void actionPerformed(GuiButton button, CallbackInfo callbackInfo) {
-        switch(button.id) {
+        switch (button.id) {
             case 997:
                 mc.displayGuiScreen(new GuiAntiForge((GuiScreen) (Object) this));
                 break;

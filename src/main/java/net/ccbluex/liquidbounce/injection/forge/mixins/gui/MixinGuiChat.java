@@ -38,14 +38,13 @@ public abstract class MixinGuiChat extends MixinGuiScreen {
     private boolean waitingOnAutocomplete;
     private float yPosOfInputField;
     private float fade = 0;
+    @Shadow
+    private int sentHistoryCursor;
+    @Shadow
+    private String historyBuffer;
 
     @Shadow
     public abstract void onAutocompleteResponse(String[] p_onAutocompleteResponse_1_);
-
-    @Shadow
-    private int sentHistoryCursor;
-
-    @Shadow private String historyBuffer;
 
     /**
      * @author Liuli
@@ -72,8 +71,8 @@ public abstract class MixinGuiChat extends MixinGuiScreen {
         }
     }
 
-    private void setText(String text){
-        if(text.startsWith(String.valueOf(LiquidBounce.commandManager.getPrefix()))) {
+    private void setText(String text) {
+        if (text.startsWith(String.valueOf(LiquidBounce.commandManager.getPrefix()))) {
             this.inputField.setMaxStringLength(114514);
         } else {
             this.inputField.setMaxStringLength(100);
@@ -92,16 +91,16 @@ public abstract class MixinGuiChat extends MixinGuiScreen {
      */
     @Inject(method = "keyTyped", at = @At("HEAD"), cancellable = true)
     private void keyTyped(char typedChar, int keyCode, CallbackInfo callbackInfo) {
-        String text=inputField.getText();
-        if(text.startsWith(String.valueOf(LiquidBounce.commandManager.getPrefix()))) {
+        String text = inputField.getText();
+        if (text.startsWith(String.valueOf(LiquidBounce.commandManager.getPrefix()))) {
             this.inputField.setMaxStringLength(114514);
             if (keyCode == 28 || keyCode == 156) {
                 LiquidBounce.commandManager.executeCommands(text);
                 callbackInfo.cancel();
                 mc.ingameGUI.getChatGUI().addToSentMessages(text);
-                if(mc.currentScreen instanceof GuiChat)
+                if (mc.currentScreen instanceof GuiChat)
                     Minecraft.getMinecraft().displayGuiScreen(null);
-            }else{
+            } else {
                 LiquidBounce.commandManager.autoComplete(text);
             }
         } else {
@@ -114,8 +113,8 @@ public abstract class MixinGuiChat extends MixinGuiScreen {
      */
     @Inject(method = "setText", at = @At("HEAD"), cancellable = true)
     private void setText(String newChatText, boolean shouldOverwrite, CallbackInfo callbackInfo) {
-        if(shouldOverwrite&&newChatText.startsWith(String.valueOf(LiquidBounce.commandManager.getPrefix()))){
-            setText(LiquidBounce.commandManager.getPrefix()+"say "+newChatText);
+        if (shouldOverwrite && newChatText.startsWith(String.valueOf(LiquidBounce.commandManager.getPrefix()))) {
+            setText(LiquidBounce.commandManager.getPrefix() + "say " + newChatText);
             callbackInfo.cancel();
         }
     }
@@ -177,11 +176,11 @@ public abstract class MixinGuiChat extends MixinGuiScreen {
         if (LiquidBounce.commandManager.getLatestAutoComplete().length > 0 && !inputField.getText().isEmpty() && inputField.getText().startsWith(String.valueOf(LiquidBounce.commandManager.getPrefix()))) {
             String[] latestAutoComplete = LiquidBounce.commandManager.getLatestAutoComplete();
             String[] textArray = inputField.getText().split(" ");
-            String text=textArray[textArray.length - 1];
-            Object[] result=Arrays.stream(latestAutoComplete).filter((str) -> str.toLowerCase().startsWith(text.toLowerCase())).toArray();
-            String resultText="";
-            if(result.length>0)
-                resultText=((String)result[0]).substring(Math.min(((String)result[0]).length(),text.length()));
+            String text = textArray[textArray.length - 1];
+            Object[] result = Arrays.stream(latestAutoComplete).filter((str) -> str.toLowerCase().startsWith(text.toLowerCase())).toArray();
+            String resultText = "";
+            if (result.length > 0)
+                resultText = ((String) result[0]).substring(Math.min(((String) result[0]).length(), text.length()));
 
             mc.fontRendererObj.drawStringWithShadow(resultText, inputField.xPosition + mc.fontRendererObj.getStringWidth(inputField.getText()), inputField.yPosition, new Color(165, 165, 165).getRGB());
         }

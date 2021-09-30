@@ -28,7 +28,7 @@ public class RivensFullMath {
     }
 
     public float sin(float rad) {
-        return BF_sinFull[(int)(rad * BF_radToIndex) & BF_SIN_MASK];
+        return BF_sinFull[(int) (rad * BF_radToIndex) & BF_SIN_MASK];
     }
 
     public float cos(float rad) {
