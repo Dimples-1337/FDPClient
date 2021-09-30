@@ -36,13 +36,13 @@ class Velocity : Module() {
      */
     private val horizontalValue = FloatValue("Horizontal", 0F, 0F, 1F)
     private val verticalValue = FloatValue("Vertical", 0F, 0F, 1F)
-    private val modeValue = ListValue("Mode", arrayOf("Simple", "Vanilla", "AACPush", "AACZero", "AAC4Reduce", "AAC5Reduce",
+    private val modeValue = ListValue("Mode", arrayOf("Simple", "Vanilla", "AACPush", "AACZero", "AAC4Reduce", "AAC5Reduce","AAC5Reduce2",
                                                       "Redesky1", "Redesky2", 
                                                       "AAC5.2.0", "AAC5.2.0Combat",
                                                       "MatrixReduce", "MatrixSimple", "MatrixGround",
                                                       "Reverse", "SmoothReverse", 
                                                       "Jump", 
-                                                      "Phase", "PacketPhase", "Glitch", "Spoof",
+                                                      "Phase", "PacketPhase", "Glitch", "Spoof","OldAC"
                                                       "Legit"), "Simple")
 
     // Reverse
@@ -147,7 +147,9 @@ class Velocity : Module() {
                     reverseHurt = false
                 }
             }
-
+            "oldac" -> if (mc.thePlayer.hurtTime > 0 && mc.thePlayer.onGround) {
+                mc.thePlayer.onGround=true
+            }
             "aac4reduce" -> {
                 if (mc.thePlayer.hurtTime>0 && !mc.thePlayer.onGround && velocityInput && velocityTimer.hasTimePassed(80L)){
                     mc.thePlayer.motionX *= 0.62
@@ -167,7 +169,20 @@ class Velocity : Module() {
                     velocityInput = false
                 }
             }
-            
+            "aac5reduce2" -> {
+                if (mc.thePlayer.hurtTime==9){
+                    val AAC5MotiX=mc.thePlayer.motionX
+                    val AAC5MotiZ=mc.thePlayer.motionZ
+                }
+                
+                if (mc.thePlayer.hurtTime==4 && velocityInput){
+                    mc.thePlayer.motionX = AAC5MotiX*0.6
+                    mc.thePlayer.motionZ = AAC5MotiZ*0.6
+                }
+                if(velocityInput && (mc.thePlayer.hurtTime<5 || mc.thePlayer.onGround) && velocityTimer.hasTimePassed(120L)) {
+                    velocityInput = false
+                }
+            }
             "aac5.2.0combat" -> {
                 if(LiquidBounce.moduleManager[Fly::class.java].state) return
                 if (mc.thePlayer.hurtTime>0 && velocityInput){
@@ -315,7 +330,7 @@ class Velocity : Module() {
                     mc.netHandler.addToSendQueue(C03PacketPlayer.C04PacketPlayerPosition(mc.thePlayer.posX,1.7976931348623157E+308,mc.thePlayer.posZ,true))
                 }
                 
-                "aac5reduce", "reverse", "smoothreverse", "aaczero" -> velocityInput = true
+                "aac5reduce","aac5reduce2", "reverse", "smoothreverse", "aaczero" -> velocityInput = true
 
                 "phase" -> {
                     if (!mc.thePlayer.onGround&&phaseOnlyGround.get())
