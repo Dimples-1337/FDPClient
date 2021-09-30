@@ -11,11 +11,11 @@ public class LibGDXMath {
     private static final int BF_SIN_BITS = 14;
     private static final int BF_SIN_MASK = ~(-1 << BF_SIN_BITS);
     private static final int BF_SIN_COUNT = BF_SIN_MASK + 1;
+    private static final float BF_degFull = 360;
     private static final float BF_degToIndex = BF_SIN_COUNT / BF_degFull;
     private static final float[] BF_table = new float[BF_SIN_COUNT];
     private static final float BF_radFull = BF_PI * 2;
     private static final float BF_radToIndex = BF_SIN_COUNT / BF_radFull;
-    private static final float BF_degFull = 360;
 
     static {
         for (int i = 0; i < BF_SIN_COUNT; i++)
