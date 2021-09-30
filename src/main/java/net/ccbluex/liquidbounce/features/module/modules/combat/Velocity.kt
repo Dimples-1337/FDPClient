@@ -95,6 +95,9 @@ class Velocity : Module() {
     private var templateY = 0
     private var templateZ = 0
     
+    private var AAC5Reduce2OldMotiX = 0
+    private var AAC5Reduce2OldMotiZ = 0
+    
     private var isMatrixOnGround = false
     
     override val tag: String
@@ -171,13 +174,13 @@ class Velocity : Module() {
             }
             "aac5reduce2" -> {
                 if (mc.thePlayer.hurtTime==9){
-                    val AAC5MotiX = mc.thePlayer.motionX
-                    val AAC5MotiZ = mc.thePlayer.motionZ
+                    AAC5Reduce2OldMotiX = mc.thePlayer.motionX
+                    AAC5Reduce2OldMotiZ = mc.thePlayer.motionZ
                 }
                 
                 if (mc.thePlayer.hurtTime==4 && velocityInput){
-                    mc.thePlayer.motionX = AAC5MotiX * 0.6
-                    mc.thePlayer.motionZ = AAC5MotiZ * 0.6
+                    mc.thePlayer.motionX = AAC5Reduce2OldMotiX * 0.6
+                    mc.thePlayer.motionZ = AAC5Reduce2OldMotiZ * 0.6
                 }
                 if(velocityInput && (mc.thePlayer.hurtTime<5 || mc.thePlayer.onGround) && velocityTimer.hasTimePassed(120L)) {
                     velocityInput = false
