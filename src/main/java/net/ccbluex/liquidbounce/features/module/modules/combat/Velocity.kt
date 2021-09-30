@@ -95,8 +95,8 @@ class Velocity : Module() {
     private var templateY = 0
     private var templateZ = 0
     
-    private var AAC5Reduce2OldMotiX = 0
-    private var AAC5Reduce2OldMotiZ = 0
+    private var aac5Reduce2OldMotiX = 0
+    private var aac5Reduce2OldMotiZ = 0
     
     private var isMatrixOnGround = false
     
@@ -175,14 +175,14 @@ class Velocity : Module() {
                 }
             }
             "aac5reduce2" -> {
-                if (mc.thePlayer.hurtTime==9){
-                    AAC5Reduce2OldMotiX = mc.thePlayer.motionX
-                    AAC5Reduce2OldMotiZ = mc.thePlayer.motionZ
+                if (mc.thePlayer.hurtTime == 9){
+                    aac5Reduce2OldMotiX = mc.thePlayer.motionX
+                    aac5Reduce2OldMotiZ = mc.thePlayer.motionZ
                 }
                 
-                if (mc.thePlayer.hurtTime==4 && velocityInput){
-                    mc.thePlayer.motionX = AAC5Reduce2OldMotiX * 0.6
-                    mc.thePlayer.motionZ = AAC5Reduce2OldMotiZ * 0.6
+                if (mc.thePlayer.hurtTime == 4 && velocityInput){
+                    mc.thePlayer.motionX = aac5Reduce2OldMotiX * 0.6
+                    mc.thePlayer.motionZ = aac5Reduce2OldMotiZ * 0.6
                 }
                 if(velocityInput && (mc.thePlayer.hurtTime<5 || mc.thePlayer.onGround) && velocityTimer.hasTimePassed(120L)) {
                     velocityInput = false
