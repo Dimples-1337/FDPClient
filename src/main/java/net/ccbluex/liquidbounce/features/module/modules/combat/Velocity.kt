@@ -171,13 +171,13 @@ class Velocity : Module() {
             }
             "aac5reduce2" -> {
                 if (mc.thePlayer.hurtTime==9){
-                    val AAC5MotiX=mc.thePlayer.motionX
-                    val AAC5MotiZ=mc.thePlayer.motionZ
+                    val AAC5MotiX = mc.thePlayer.motionX
+                    val AAC5MotiZ = mc.thePlayer.motionZ
                 }
                 
                 if (mc.thePlayer.hurtTime==4 && velocityInput){
-                    mc.thePlayer.motionX = AAC5MotiX*0.6
-                    mc.thePlayer.motionZ = AAC5MotiZ*0.6
+                    mc.thePlayer.motionX = AAC5MotiX * 0.6
+                    mc.thePlayer.motionZ = AAC5MotiZ * 0.6
                 }
                 if(velocityInput && (mc.thePlayer.hurtTime<5 || mc.thePlayer.onGround) && velocityTimer.hasTimePassed(120L)) {
                     velocityInput = false
