@@ -27,7 +27,7 @@ import net.minecraft.stats.StatList
 @ModuleInfo(name = "Criticals", category = ModuleCategory.COMBAT)
 class Criticals : Module() {
 
-    val modeValue = ListValue("Mode", arrayOf("Packet", "NCPPacket", "Hypixel", "Hypixel2","AACPacket", "AAC4.3.11OldHYT", "NoGround", "Visual", "TPHop", "FakeCollide", "Mineplex", "More", "TestMinemora", "Motion", "Hover"), "packet")
+    val modeValue = ListValue("Mode", arrayOf("Packet","Packet2", "NCPPacket", "Hypixel", "Hypixel2","AACPacket", "AAC4.3.11OldHYT", "NoGround", "Visual", "TPHop", "FakeCollide", "Mineplex", "More", "TestMinemora", "Motion", "Hover"), "packet")
     val motionValue = ListValue("MotionMode", arrayOf("RedeSkyLowHop", "Hop", "Jump", "LowJump", "MinemoraTest"), "Jump")
     val hoverValue = ListValue("HoverMode", arrayOf("AAC4", "AAC4Other", "OldRedesky", "Normal1", "Normal2", "Minis", "Minis2", "TPCollide", "2b2t"), "AAC4")
     val hoverNoFall = BoolValue("HoverNoFall",true)
@@ -42,6 +42,7 @@ class Criticals : Module() {
 
     private var target = 0
     var jState = 0
+    var offsets = 0
     var aacLastState = false
     override fun onEnable() {
         if (modeValue.equals("NoGround"))
@@ -78,7 +79,21 @@ class Criticals : Module() {
                     sendCriticalPacket(yOffset=1.1E-5,ground = false)
                     sendCriticalPacket(ground = false)
                 }
-
+                "packet2" -> {
+                    sendCriticalPacket(yOffset=0.05000000074505806,ground = false)
+                    sendCriticalPacket(ground = false)
+                    sendCriticalPacket(yOffset=0.012511000037193298,ground = false)
+                    sendCriticalPacket(ground = false)
+                }
+                                "packet3" -> {
+                    sendCriticalPacket(yOffset=0.2,ground = false)
+                    sendCriticalPacket(yOffset=0.0051423957,ground = false)
+                    mc.netHandler.addToSendQueue(C03PacketPlayer(false))
+                    sendCriticalPacket(yOffset=0.4,ground = false)
+                    sendCriticalPacket(yOffset=0.4,ground = false)
+                    sendCriticalPacket(yOffset=0.4,ground = false)
+                    sendCriticalPacket(yOffset=0.4,ground = false)
+                }
                 "ncppacket" -> {
                     sendCriticalPacket(yOffset=0.11,ground = false)
                     sendCriticalPacket(yOffset=0.1100013579,ground = false)
@@ -91,7 +106,15 @@ class Criticals : Module() {
                     sendCriticalPacket(yOffset=0.01,ground = false)
                     sendCriticalPacket(yOffset=0.0011,ground = false)
                 }
-                
+                "hypixeltest1" -> {
+                    offsets++
+                    when(offsets) {
+                        1 -> sendCriticalPacket(yOffset=0.0011,ground = false)
+                        2 -> sendCriticalPacket(yOffset=0.0011,ground = false)
+                        3 -> sendCriticalPacket(yOffset=0.0011,ground = false)
+                        else -> offsets = 1
+                    }
+                }
                 "aac4.3.11oldhyt" -> {
                     sendCriticalPacket(yOffset=0.042487,ground = false)
                     sendCriticalPacket(yOffset=0.0104649713461000007,ground = false)
