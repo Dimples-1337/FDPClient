@@ -30,7 +30,6 @@ class PointerESP : Module() {
     private val blueValue = IntegerValue("Blue",255,0,255)
     private val alphaValue = IntegerValue("Alpha",255,0,255)
     private val sizeValue = IntegerValue("Size", 100, 50, 200)
-    private val radiusValue = FloatValue("TriangleRadius", 2.2F, 1F, 10F)
 
     @EventTarget
     fun onRender2D(event : Render2DEvent) {
@@ -64,7 +63,6 @@ class PointerESP : Module() {
                     GlStateManager.scale(1.5, 1.0, 1.0)
                     when(modeValue.get().lowercase()){
                         "solid" -> {
-                            drawTriAngle(0F, 0F, radiusValue.get(), 3F, color, modeValue.get().equals("solid", true)
                             drawTriAngle(0F, 0F, 2.2F, 3F, color)
                             drawTriAngle(0F, 0F, 1.5F, 3F, color)
                             drawTriAngle(0F, 0F, 1.0F, 3F, color)
