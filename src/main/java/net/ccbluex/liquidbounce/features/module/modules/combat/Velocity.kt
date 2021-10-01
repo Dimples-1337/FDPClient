@@ -151,12 +151,12 @@ class Velocity : Module() {
                 }
             }
             "oldac" -> {
-                if (mc.thePlayer.hurtTime > 0 && mc.thePlayer.onGround) {
+                if (mc.thePlayer.hurtTime > 0) {
                 mc.thePlayer.onGround = true
                 }
             }
             "aac4reduce" -> {
-                if (mc.thePlayer.hurtTime>0 && !mc.thePlayer.onGround && velocityInput && velocityTimer.hasTimePassed(80L)){
+                if (mc.thePlayer.hurtTime > 0 && !mc.thePlayer.onGround && velocityInput && velocityTimer.hasTimePassed(80L)){
                     mc.thePlayer.motionX *= 0.62
                     mc.thePlayer.motionZ *= 0.62
                 }
@@ -335,7 +335,7 @@ class Velocity : Module() {
                     mc.netHandler.addToSendQueue(C03PacketPlayer.C04PacketPlayerPosition(mc.thePlayer.posX,1.7976931348623157E+308,mc.thePlayer.posZ,true))
                 }
                 
-                "aac5reduce","aac5reduce2", "reverse", "smoothreverse", "aaczero" -> velocityInput = true
+                "aac5reduce", "aac5reduce2", "reverse", "smoothreverse", "aaczero" -> velocityInput = true
 
                 "phase" -> {
                     if (!mc.thePlayer.onGround&&phaseOnlyGround.get())
