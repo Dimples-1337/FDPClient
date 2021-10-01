@@ -16,6 +16,7 @@ import net.minecraft.world.Explosion
 
 class PacketFixer : Listenable,MinecraftInstance() {
     private var serversideSlot=0
+    private val canBlockServer=System.getProperty("no-server-block")==null
 
     @EventTarget
     fun onPacket(event: PacketEvent){
@@ -50,6 +51,11 @@ class PacketFixer : Listenable,MinecraftInstance() {
             if(!packetEvent.isCancelled) {
                 PacketUtils.handlePacket(velocityPacket)
             }
+        }else if(canBlockServer && packet is C00PacketKeepAlive){
+                if(ServerUtils.serverData?.serverIP?.contains("59.111.137.99", true) == true){
+                    PacketUtils.handlePacket(S40PacketDisconnect(ChatComponentText("§cKono sābā wa burokkusareteimasu!\n"+" Kono kenshutsu o baipasu suru ni wa, JVM paramētā ni Dno-server-block o tsuika shimasu.")))
+                    return
+                }
         }
     }
 
