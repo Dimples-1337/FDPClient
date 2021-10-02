@@ -49,7 +49,7 @@ import java.util.*
 import kotlin.math.cos
 import kotlin.math.max
 import kotlin.math.sin
-
+import kotlin.math.min
 
 @ModuleInfo(name = "KillAura", category = ModuleCategory.COMBAT, keyBind = Keyboard.KEY_R)
 class KillAura : Module() {
@@ -867,7 +867,7 @@ class KillAura : Module() {
             return
         }
 
-        val reach = maxRange.toDouble()
+        val reach = min(maxRange.toDouble(), mc.thePlayer.getDistanceToEntityBox(target!!)) + 1
 
         if (raycastValue.get()) {
             val raycastedEntity = RaycastUtils.raycastEntity(reach) {
