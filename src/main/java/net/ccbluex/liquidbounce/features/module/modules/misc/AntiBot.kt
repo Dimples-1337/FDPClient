@@ -45,6 +45,7 @@ object AntiBot : Module() {
     private val duplicateInTabValue = BoolValue("DuplicateInTab", false)
     private val fastDamageValue = BoolValue("FastDamage", false)
     private val fastDamageTicksValue = IntegerValue("FastDamageTicks", 5, 1, 20).displayable { fastDamageValue.get() }
+    private val matrixValue = BoolValue("MatrixBot", false)
     private val alwaysInRadiusValue = BoolValue("AlwaysInRadius", false)
     private val alwaysRadiusValue = FloatValue("AlwaysInRadiusBlocks", 20f, 5f, 30f).displayable { alwaysInRadiusValue.get() }
 
@@ -54,6 +55,7 @@ object AntiBot : Module() {
     private val swing = mutableListOf<Int>()
     private val invisible = mutableListOf<Int>()
     private val hitted = mutableListOf<Int>()
+    private val hurtted = mutableListOf<Int>()
     private val notAlwaysInRadius = mutableListOf<Int>()
     private val lastDamage = mutableMapOf<Int, Int>()
     private val lastDamageVl = mutableMapOf<Int, Float>()
@@ -95,6 +97,9 @@ object AntiBot : Module() {
             return true
 
         if (wasInvisibleValue.get() && invisible.contains(entity.entityId))
+            return true
+
+        if (matrixValue.get() && !hurtted.contains(entity.entityId))
             return true
 
         if (armorValue.get()) {
@@ -183,6 +188,9 @@ object AntiBot : Module() {
 
                 if ((!livingTimeValue.get() || entity.ticksExisted > livingTimeTicksValue.get()) && !notAlwaysInRadius.contains(entity.entityId) && mc.thePlayer!!.getDistanceToEntity(entity) > alwaysRadiusValue.get())
                     notAlwaysInRadius.add(entity.entityId);
+
+                if ((!livingTimeValue.get() || entity.ticksExisted > livingTimeTicksValue.get()) && !hurtted.contains(entity.entityId) && entity.hurtResistantTime>0)
+                    hurtted.add(entity.entityId);
             }
         }else if(packet is S19PacketEntityStatus && packet.opCode.toInt()==2 || packet is S0BPacketAnimation && packet.animationType==1){
             val entity = if(packet is S19PacketEntityStatus) { packet.getEntity(mc.theWorld) }
@@ -223,6 +231,7 @@ object AntiBot : Module() {
 
     private fun clearAll() {
         hitted.clear()
+        hurtted.clear()
         swing.clear()
         ground.clear()
         invalidGround.clear()
