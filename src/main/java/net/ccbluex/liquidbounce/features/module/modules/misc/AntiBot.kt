@@ -37,6 +37,7 @@ object AntiBot : Module() {
     private val armorValue = BoolValue("Armor", false)
     private val pingValue = BoolValue("Ping", false)
     private val needHitValue = BoolValue("NeedHit", false)
+    private val needDamageDelayValue = BoolValue("NeedDamageDelay", false)
     private val duplicateInWorldValue = BoolValue("DuplicateInWorld", false)
     private val duplicateInTabValue = BoolValue("DuplicateInTab", false)
     private val duplicateCompareModeValue = ListValue("DuplicateCompareMode", arrayOf("OnTime", "WhenSpawn"), "OnTime").displayable { duplicateInTabValue.get() || duplicateInWorldValue.get() }
@@ -51,6 +52,7 @@ object AntiBot : Module() {
     private val swing = mutableListOf<Int>()
     private val invisible = mutableListOf<Int>()
     private val hitted = mutableListOf<Int>()
+    private val hurtted = mutableListOf<Int>()
     private val notAlwaysInRadius = mutableListOf<Int>()
     private val lastDamage = mutableMapOf<Int, Int>()
     private val lastDamageVl = mutableMapOf<Int, Float>()
@@ -75,6 +77,9 @@ object AntiBot : Module() {
             return true
 
         if (groundValue.get() && !ground.contains(entity.entityId))
+            return true
+
+        if (needDamageDelayValue.get() && !hurtted.contains(entity.entityId))
             return true
 
         if (airValue.get() && !air.contains(entity.entityId))
@@ -182,6 +187,9 @@ object AntiBot : Module() {
                 if (entity.isInvisible && !invisible.contains(entity.entityId))
                     invisible.add(entity.entityId)
 
+                if (entity.hurtResistantTime>5 && !hurtted.contains(entity.entityId))
+                    hurtted.add(entity.entityId)
+
                 if ((!livingTimeValue.get() || entity.ticksExisted > livingTimeTicksValue.get()) && !notAlwaysInRadius.contains(entity.entityId) && mc.thePlayer.getDistanceToEntity(entity) > alwaysRadiusValue.get())
                     notAlwaysInRadius.add(entity.entityId);
             }
@@ -234,6 +242,7 @@ object AntiBot : Module() {
 
     private fun clearAll() {
         hitted.clear()
+        hurtted.clear()
         swing.clear()
         ground.clear()
         invalidGround.clear()
