@@ -31,6 +31,7 @@ object AntiBot : Module() {
     private val livingTimeValue = BoolValue("LivingTime", false)
     private val livingTimeTicksValue = IntegerValue("LivingTimeTicks", 40, 1, 200).displayable { livingTimeValue.get() }
     private val groundValue = BoolValue("Ground", true)
+    private val matrixBotValue = BoolValue("MatrixBot", false)
     private val airValue = BoolValue("Air", false)
     private val invalidGroundValue = BoolValue("InvalidGround", true)
     private val swingValue = BoolValue("Swing", false)
@@ -40,8 +41,6 @@ object AntiBot : Module() {
     private val armorValue = BoolValue("Armor", false)
     private val pingValue = BoolValue("Ping", false)
     private val needHitValue = BoolValue("NeedHit", false)
-    private val needDamageDelayValue = BoolValue("MatrixBot", false)
-    private val godHealthValue = BoolValue("SyuuBot", false)
     private val duplicateInWorldValue = BoolValue("DuplicateInWorld", false)
     private val duplicateInTabValue = BoolValue("DuplicateInTab", false)
     private val duplicateCompareModeValue = ListValue("DuplicateCompareMode", arrayOf("OnTime", "WhenSpawn"), "OnTime").displayable { duplicateInTabValue.get() || duplicateInWorldValue.get() }
@@ -51,12 +50,12 @@ object AntiBot : Module() {
     private val alwaysRadiusValue = FloatValue("AlwaysInRadiusBlocks", 20f, 5f, 30f).displayable { alwaysInRadiusValue.get() }
 
     private val ground = mutableListOf<Int>()
+    private val raped = mutableListOf<Int>()
     private val air = mutableListOf<Int>()
     private val invalidGround = mutableMapOf<Int, Int>()
     private val swing = mutableListOf<Int>()
     private val invisible = mutableListOf<Int>()
     private val hitted = mutableListOf<Int>()
-    private val hurtted = mutableListOf<Int>()
     private val notAlwaysInRadius = mutableListOf<Int>()
     private val lastDamage = mutableMapOf<Int, Int>()
     private val lastDamageVl = mutableMapOf<Int, Float>()
@@ -83,7 +82,7 @@ object AntiBot : Module() {
         if (groundValue.get() && !ground.contains(entity.entityId))
             return true
 
-        if (needDamageDelayValue.get() && !hurtted.contains(entity.entityId))
+        if (matrixBotValue.get() && !raped.contains(entity.entityId))
             return true
 
         if (airValue.get() && !air.contains(entity.entityId))
@@ -94,10 +93,7 @@ object AntiBot : Module() {
 
         if (healthValue.get() && entity.health > 20F)
             return true
-        
-        if (godHealthValue.get() && entity.health > 1000F)
-            return true
-        
+
         if (entityIDValue.get() && (entity.entityId >= 1000000000 || entity.entityId <= -1))
             return true
 
@@ -177,6 +173,9 @@ object AntiBot : Module() {
                 if (packet.onGround && !ground.contains(entity.entityId))
                     ground.add(entity.entityId)
 
+                if (entity.hurtResistantTime > 5 && !raped.contains(entity.entityId))
+                    raped.add(entity.entityId)
+
                 if (!packet.onGround && !air.contains(entity.entityId))
                     air.add(entity.entityId)
 
@@ -193,9 +192,6 @@ object AntiBot : Module() {
 
                 if (entity.isInvisible && !invisible.contains(entity.entityId))
                     invisible.add(entity.entityId)
-
-                if (entity.hurtResistantTime>5 && !hurtted.contains(entity.entityId))
-                    hurtted.add(entity.entityId)
 
                 if ((!livingTimeValue.get() || entity.ticksExisted > livingTimeTicksValue.get()) && !notAlwaysInRadius.contains(entity.entityId) && mc.thePlayer.getDistanceToEntity(entity) > alwaysRadiusValue.get())
                     notAlwaysInRadius.add(entity.entityId);
@@ -249,9 +245,9 @@ object AntiBot : Module() {
 
     private fun clearAll() {
         hitted.clear()
-        hurtted.clear()
         swing.clear()
         ground.clear()
+        raped.clear()
         invalidGround.clear()
         invisible.clear()
         lastDamage.clear()
