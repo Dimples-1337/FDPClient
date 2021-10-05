@@ -37,7 +37,8 @@ object AntiBot : Module() {
     private val armorValue = BoolValue("Armor", false)
     private val pingValue = BoolValue("Ping", false)
     private val needHitValue = BoolValue("NeedHit", false)
-    private val needDamageDelayValue = BoolValue("AntiBotDEVTest1145141919810th", false)
+    private val needDamageDelayValue = BoolValue("MatrixBot", false)
+    private val godHealthValue = BoolValue("SyuuBot", false)
     private val duplicateInWorldValue = BoolValue("DuplicateInWorld", false)
     private val duplicateInTabValue = BoolValue("DuplicateInTab", false)
     private val duplicateCompareModeValue = ListValue("DuplicateCompareMode", arrayOf("OnTime", "WhenSpawn"), "OnTime").displayable { duplicateInTabValue.get() || duplicateInWorldValue.get() }
@@ -90,7 +91,10 @@ object AntiBot : Module() {
 
         if (healthValue.get() && entity.health > 20F)
             return true
-
+        
+        if (godHealthValue.get() && entity.health > 1000F)
+            return true
+        
         if (entityIDValue.get() && (entity.entityId >= 1000000000 || entity.entityId <= -1))
             return true
 
