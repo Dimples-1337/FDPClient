@@ -16,7 +16,7 @@ class AntiAim : Module() {
     private val yawMode=ListValue("YawMove", arrayOf("Jitter","Spin","Back","BackJitter"),"Spin")
     private val pitchMode=ListValue("PitchMode", arrayOf("Down","Up","Jitter","AnotherJitter"),"Down")
     private val rotateValue=BoolValue("SilentRotate",true)
-private val spinSpeedValue = FloatValue("SpinSpeed", 20f, 0f, 180f).displayable { yawMode.equals("Spin")}
+private val spinSpeedValue = FloatValue("SpinSpeed", 20f, -360f, 360f).displayable { yawMode.equals("Spin")}
     private var yaw = 0f
     private var pitch = 0f
 
