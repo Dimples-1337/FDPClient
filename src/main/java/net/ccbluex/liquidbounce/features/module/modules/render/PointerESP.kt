@@ -30,6 +30,8 @@ class PointerESP : Module() {
     private val blueValue = IntegerValue("Blue",255,0,255)
     private val alphaValue = IntegerValue("Alpha",255,0,255)
     private val sizeValue = IntegerValue("Size", 100, 50, 200)
+    private val radiusValue = FloatValue("TriangleRadius", 2.2F, 1F, 10F)
+    private val noInViewValue = BoolValue("NoEntityInView", true)
 
     @EventTarget
     fun onRender2D(event : Render2DEvent) {
