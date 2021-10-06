@@ -105,6 +105,7 @@ class KillAura : Module() {
     private val swingValue = ListValue("Swing", arrayOf("Normal", "Packet", "None"), "Normal")
     private val attackTimingValue = ListValue("AttackTiming", arrayOf("All","Pre","Post","Both"), "All")
     private val keepSprintValue = BoolValue("KeepSprint", true)
+    private val multiRotations = BoolValue("MultiRotations", true)
 
     // AutoBlock
     val autoBlockValue = ListValue("AutoBlock", arrayOf("Range"/*, "Fake"*/, "Off"),"Off")
@@ -162,6 +163,7 @@ class KillAura : Module() {
     private val keepDirectionTickValue = IntegerValue("KeepDirectionTick", 15, 1, 20).displayable { !rotationModeValue.equals("None") }
     private val hitableValue = BoolValue("AlwaysHitable",true).displayable { !rotationModeValue.equals("None") }
     private val fovValue = FloatValue("FOV", 180f, 0f, 180f)
+    private val ncpMultiConfig = ListValue("NCPMultiConfig", arrayOf("Normal", "Bypass"), "Normal")
 
     // Predict
     private val predictValue = BoolValue("Predict", true).displayable { !rotationModeValue.equals("None") }
@@ -627,6 +629,8 @@ class KillAura : Module() {
         // Settings
         val failRate = failRateValue.get()
         val swing = swingValue.get()
+        val multi = targetModeValue.get().equals("Multi", ignoreCase = true)
+        val multincp = targetModeValue.get().equals("MultiNCP", ignoreCase = true)
         val openInventory = noInventoryAttackValue.equals("Spoof") && mc.currentScreen is GuiInventory
         val failHit = failRate > 0 && Random().nextInt(100) <= failRate
 
