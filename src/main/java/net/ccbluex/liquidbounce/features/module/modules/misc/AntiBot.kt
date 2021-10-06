@@ -49,6 +49,7 @@ object AntiBot : Module() {
     private val duplicateCompareModeValue = ListValue("DuplicateCompareMode", arrayOf("OnTime", "WhenSpawn"), "OnTime").displayable { duplicateInTabValue.get() || duplicateInWorldValue.get() }
     private val fastDamageValue = BoolValue("FastDamage", false)
     private val fastDamageTicksValue = IntegerValue("FastDamageTicks", 5, 1, 20).displayable { fastDamageValue.get() }
+    private val fastDamage2Value = BoolValue("FastDamage2", false)
     private val alwaysInRadiusValue = BoolValue("AlwaysInRadius", false)
     private val alwaysRadiusValue = FloatValue("AlwaysInRadiusBlocks", 20f, 5f, 30f).displayable { alwaysInRadiusValue.get() }
     private val alwaysInRadiusRemoveValue = BoolValue("AlwaysInRadiusRemove", false).displayable { alwaysInRadiusValue.get() }
@@ -64,6 +65,7 @@ object AntiBot : Module() {
     private val notAlwaysInRadius = mutableListOf<Int>()
     private val lastDamage = mutableMapOf<Int, Int>()
     private val lastDamageVl = mutableMapOf<Int, Float>()
+    private val matrmemed = mutableListOf<Int>()
     private val duplicate = mutableListOf<UUID>()
 
     @JvmStatic
@@ -159,6 +161,9 @@ object AntiBot : Module() {
         if(fastDamageValue.get() && lastDamageVl.getOrDefault(entity.entityId, 0f) > 0)
             return true
 
+        if(fastDamage2Value.get() && matrmemed.contains(entity.entityId))
+            return true
+
         if (alwaysInRadiusValue.get() && !notAlwaysInRadius.contains(entity.entityId))
             return true
 
@@ -186,6 +191,9 @@ object AntiBot : Module() {
 
                 if (entity.hurtResistantTime > 5 && !raped.contains(entity.entityId))
                     raped.add(entity.entityId)
+
+                if (entity.hurtTime >= 9 && entity.hurtResistantTime < 5 && !matrmemed.contains(entity.entityId))
+                    matrmemed.add(entity.entityId)
 
                 if (!packet.onGround && !air.contains(entity.entityId))
                     air.add(entity.entityId)
@@ -266,6 +274,7 @@ object AntiBot : Module() {
         invisible.clear()
         lastDamage.clear()
         lastDamageVl.clear()
+        matrmemed.clear()
         notAlwaysInRadius.clear()
         duplicate.clear()
     }
