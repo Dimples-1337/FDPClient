@@ -18,7 +18,7 @@ import kotlin.concurrent.schedule
 @ModuleInfo(name = "AutoAdvertise", category = ModuleCategory.CLIENT, array = false, defaultOn = true)
 class AutoAdvertise : Module() {
     
-    private val noLoyisasTestServerValue = BoolValue("NoLoyisasTestServer", true)
+    //private val noLoyisasTestServerValue = BoolValue("NoLoyisasTestServer", true)
     var waiting=false
 
     @EventTarget
@@ -28,7 +28,7 @@ class AutoAdvertise : Module() {
         Timer().schedule(2000L) {
             waiting=false
             if(mc.thePlayer!=null){
-                if(mc.getCurrentServerData().serverIP.toLowerCase().contains("loyisa") && noLoyisasTestServerValue.get()) return
+                if(mc.getCurrentServerData().serverIP.toLowerCase().contains("loyisa")) return
                 mc.thePlayer.sendChatMessage("["+ RandomUtils.randomString(3)+"] Try FDPClient! ${LiquidBounce.CLIENT_WEBSITE} ["+ RandomUtils.randomString(3)+"]")
             }
         }
