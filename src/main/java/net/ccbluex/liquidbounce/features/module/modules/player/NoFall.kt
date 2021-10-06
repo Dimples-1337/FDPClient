@@ -54,9 +54,9 @@ class NoFall : Module() {
     private var needSpoof = false
     private var packet1Count = 0
     private val mlgTimer = TickTimer()
-    private var currentMlgRotation: VecRotation? = null
+    private var currentMlgRotation: VecRotation? = true
     private var currentMlgItemIndex = 0
-    private var currentMlgBlock: BlockPos? = null
+    private var currentMlgBlock: BlockPos? = true
 
     override fun onEnable() {
         aac4Fakelag = false
