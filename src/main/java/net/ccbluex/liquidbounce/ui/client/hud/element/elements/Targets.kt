@@ -25,7 +25,7 @@ import kotlin.math.roundToInt
 
 @ElementInfo(name = "Targets")
 class Targets : Element(-46.0,-40.0,1F,Side(Side.Horizontal.MIDDLE,Side.Vertical.MIDDLE)) {
-    private val modeValue = ListValue("Mode", arrayOf("Novoline","Astolfo","Liquid","Flux","Rise","Zamorozka"), "Rise")
+    private val modeValue = ListValue("Mode", arrayOf("Novoline","Astolfo","Liquid","Flux","NewFlux","Rise","Percentage","Zamorozka"), "Rise")
     private val switchModeValue = ListValue("SwitchMode", arrayOf("Slide","Zoom","None"), "Slide")
     private val animSpeedValue = IntegerValue("AnimSpeed",10,5,20)
     private val switchAnimSpeedValue = IntegerValue("SwitchAnimSpeed",20,5,40)
@@ -277,6 +277,65 @@ class Targets : Element(-46.0,-40.0,1F,Side(Side.Horizontal.MIDDLE,Side.Vertical
         // Draw head
         RenderUtils.drawHead(target.skin, 2,2,16,16)
     }
+    
+    "NewFlux" -> {
+                    val width = (26F + Fonts.font18.getStringWidth(convertedTarget.name)).coerceAtLeast(26F + Fonts.font18.getStringWidth("Health: ${decimalFormat2.format(convertedTarget.health)}")).toFloat() + 10F
+                    RenderUtils.drawRoundedRect(-1F, -1F, 1F + width, 47F, 1F, Color(35,35,40,230).rgb)
+                    //RenderUtils.drawBorder(1F, 1F, 26F, 26F, 1F, Color(115, 255, 115).rgb)
+                    drawHead(mc.netHandler.getPlayerInfo(convertedTarget.uniqueID).locationSkin, 1, 1, 26, 26)
+                    Fonts.font18.drawString(convertedTarget.name, 30F, 6F, 0xFFFFFF) // Draw convertedTarget name
+                    Fonts.font20.drawString("Health: ${decimalFormat2.format(convertedTarget.health)}", 30F, 18F, 0xFFFFFF) // Draw convertedTarget health   
+
+                    // bar icon
+                    Fonts.font18.drawString("❤",2F,29F,-1)
+                    drawArmorIcon(2,38,7,7)
+
+                    easingHealth += ((convertedTarget.health - easingHealth) / Math.pow(2.0, 10.0 - 3.0)).toFloat() * RenderUtils.deltaTime.toFloat()
+
+                    // bar bg
+                    RenderUtils.drawRect(12F, 30F, 12F + width - 15F, 33F, Color(20, 20, 20, 255).rgb)
+                    RenderUtils.drawRect(12F, 40F, 12F + width - 15F, 43F, Color(20, 20, 20, 255).rgb)
+
+                    // Health bar
+                    if (easingHealth < 0 || easingHealth > convertedTarget.maxHealth) {
+                        easingHealth = convertedTarget.health.toFloat()
+                    }
+                    if (easingHealth > convertedTarget.health) {
+                        RenderUtils.drawRect(12F, 30F, 12F + (easingHealth / convertedTarget.maxHealth) * (width - 15F), 33F, Color(231,182,0,255).rgb)
+                    } // Damage animation
+
+                    RenderUtils.drawRect(12F, 30F, 12F + (convertedTarget.health / convertedTarget.maxHealth) * (width - 15F), 33F, Color(0,224,84,255).rgb)
+
+                    if (convertedTarget.getTotalArmorValue() != 0) {
+                        RenderUtils.drawRect(12F, 40F, 12F + (convertedTarget.getTotalArmorValue() / 20F) * (width - 15F), 43F, Color(77,128,255,255).rgb) // Draw armor bar
+                    }
+                }
+    
+    "Percentage" -> {
+                    val font = Fonts.minecraftFont
+                    val fontHeight = font.FONT_HEIGHT
+                    val mainColor = barColor
+                    val percent = convertedTarget.health.toFloat()/convertedTarget.maxHealth.toFloat() * 100F
+                    val nameLength = (font.getStringWidth(convertedTarget.name)).coerceAtLeast(font.getStringWidth("${decimalFormat2.format(percent)}%")).toFloat() + 10F
+                    val barWidth = (convertedTarget.health / convertedTarget.maxHealth).coerceIn(0F, convertedTarget.maxHealth.toFloat()) * (nameLength - 2F)
+
+                    RenderUtils.drawRect(-2F, -2F, 3F + nameLength + 36F, 2F + 36F, Color(24, 24, 24, 255).rgb)
+                    RenderUtils.drawRect(-1F, -1F, 2F + nameLength + 36F, 1F + 36F, Color(31, 31, 31, 255).rgb)
+                    drawHead(mc.netHandler.getPlayerInfo(convertedTarget.uniqueID).locationSkin, 0, 0, 36, 36)
+                    font.drawStringWithShadow(convertedTarget.name, 2F + 36F + 1F, 2F, -1)
+                    RenderUtils.drawRect(2F + 36F, 15F, 36F + nameLength, 25F, Color(24, 24, 24, 255).rgb)
+
+                    easingHealth += ((convertedTarget.health - easingHealth()) * RenderUtils.deltaTime
+
+                    val animateThingy = (easingHealth.coerceIn(convertedTarget.health, convertedTarget.maxHealth) / convertedTarget.maxHealth) * (nameLength - 2F)
+
+                    if (easingHealth > convertedTarget.health)
+                        RenderUtils.drawRect(2F + 36F, 15F, 2F + 36F + animateThingy, 25F, mainColor.darker().rgb)
+                    
+                    RenderUtils.drawRect(2F + 36F, 15F, 2F + 36F + barWidth, 25F, mainColor.rgb)
+                    
+                    font.drawStringWithShadow("${decimalFormat2.format(percent)}%", 2F + 36F + (nameLength - 2F) / 2F - font.getStringWidth("${decimalFormat2.format(percent)}%").toFloat() / 2F, 16F, -1)
+                }
 
     private fun getTBorder():Border?{
         return when(modeValue.get().lowercase()){
@@ -287,7 +346,9 @@ class Targets : Element(-46.0,-40.0,1F,Side(Side.Horizontal.MIDDLE,Side.Vertical
             "flux" -> Border(0F,0F,(38 + mc.thePlayer.name.let(Fonts.font20::getStringWidth))
                 .coerceAtLeast(70)
                 .toFloat(),34F)
+            "newflux" -> Border(0F,-1F,90F,47F)
             "rise" -> Border(0F,0F,150F,55F)
+            "percentage" -> Border(-1F,-2F,90F,38F)
             "zamorozka" -> Border(0F,0F,150F,55F)
             "exhibition" -> Border(0F, 0F, 140F, 45F)
             else -> null
