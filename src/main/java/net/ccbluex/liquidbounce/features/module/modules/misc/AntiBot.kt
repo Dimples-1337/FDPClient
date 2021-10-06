@@ -32,16 +32,14 @@ object AntiBot : Module() {
     private val livingTimeTicksValue = IntegerValue("LivingTimeTicks", 40, 1, 200).displayable { livingTimeValue.get() }
     private val groundValue = BoolValue("Ground", true)
     private val matrixBotValue = BoolValue("MatrixBot", false)
+    private val matrixBot2Value = BoolValue("MatrixBot2", false)
     private val airValue = BoolValue("Air", false)
     private val invalidGroundValue = BoolValue("InvalidGround", true)
     private val swingValue = BoolValue("Swing", false)
     private val healthValue = BoolValue("Health", false)
-    private val maxHealthValue = IntegerValue("MaxHealth", 20f, 0f, 100f).displayable { healthValueValue.get() }
     private val derpValue = BoolValue("Derp", true)
     private val wasInvisibleValue = BoolValue("WasInvisible", false)
     private val armorValue = BoolValue("Armor", false)
-    private val hypixelBotTestValue = BoolValue("HypixelBotTest", false)
-    private val mineplexBotTestValue = BoolValue("MineplexBotTest", false)
     private val pingValue = BoolValue("Ping", false)
     private val needHitValue = BoolValue("NeedHit", false)
     private val duplicateInWorldValue = BoolValue("DuplicateInWorld", false)
@@ -49,7 +47,6 @@ object AntiBot : Module() {
     private val duplicateCompareModeValue = ListValue("DuplicateCompareMode", arrayOf("OnTime", "WhenSpawn"), "OnTime").displayable { duplicateInTabValue.get() || duplicateInWorldValue.get() }
     private val fastDamageValue = BoolValue("FastDamage", false)
     private val fastDamageTicksValue = IntegerValue("FastDamageTicks", 5, 1, 20).displayable { fastDamageValue.get() }
-    private val fastDamage2Value = BoolValue("FastDamage2", false)
     private val alwaysInRadiusValue = BoolValue("AlwaysInRadius", false)
     private val alwaysRadiusValue = FloatValue("AlwaysInRadiusBlocks", 20f, 5f, 30f).displayable { alwaysInRadiusValue.get() }
     private val alwaysInRadiusRemoveValue = BoolValue("AlwaysInRadiusRemove", false).displayable { alwaysInRadiusValue.get() }
@@ -57,6 +54,7 @@ object AntiBot : Module() {
 
     private val ground = mutableListOf<Int>()
     private val raped = mutableListOf<Int>()
+    private val matrsxed = mutableListOf<Int>()
     private val air = mutableListOf<Int>()
     private val invalidGround = mutableMapOf<Int, Int>()
     private val swing = mutableListOf<Int>()
@@ -65,7 +63,6 @@ object AntiBot : Module() {
     private val notAlwaysInRadius = mutableListOf<Int>()
     private val lastDamage = mutableMapOf<Int, Int>()
     private val lastDamageVl = mutableMapOf<Int, Float>()
-    private val matrmemed = mutableListOf<Int>()
     private val duplicate = mutableListOf<UUID>()
 
     @JvmStatic
@@ -92,13 +89,16 @@ object AntiBot : Module() {
         if (matrixBotValue.get() && !raped.contains(entity.entityId))
             return true
 
+        if (matrixBot2Value.get() && matrsxed.contains(entity.entityId))
+            return true
+
         if (airValue.get() && !air.contains(entity.entityId))
             return true
 
         if (swingValue.get() && !swing.contains(entity.entityId))
             return true
 
-        if (healthValue.get() && entity.health > maxHealthValue.get())
+        if (healthValue.get() && entity.health > 20F)
             return true
 
         if (entityIDValue.get() && (entity.entityId >= 1000000000 || entity.entityId <= -1))
@@ -108,12 +108,6 @@ object AntiBot : Module() {
             return true
 
         if (wasInvisibleValue.get() && invisible.contains(entity.entityId))
-            return true
-
-        if (hypixelBotTestValue.get() && (!entity.getDisplayName().getFormattedText().startsWith("\u00a7") && entity.isInvisible() && entity.getDisplayName().getFormattedText().toLowerCase().contains("npc")) )
-            return true
-
-        if (mineplexBotTestValue.get() && (entity.getName().startsWith("Body #") && entity.getMaxHealth() == 20.0f) )
             return true
 
         if (armorValue.get()) {
@@ -161,9 +155,6 @@ object AntiBot : Module() {
         if(fastDamageValue.get() && lastDamageVl.getOrDefault(entity.entityId, 0f) > 0)
             return true
 
-        if(fastDamage2Value.get() && matrmemed.contains(entity.entityId))
-            return true
-
         if (alwaysInRadiusValue.get() && !notAlwaysInRadius.contains(entity.entityId))
             return true
 
@@ -192,8 +183,8 @@ object AntiBot : Module() {
                 if (entity.hurtResistantTime > 5 && !raped.contains(entity.entityId))
                     raped.add(entity.entityId)
 
-                if (entity.hurtTime >= 9 && entity.hurtResistantTime < 5 && !matrmemed.contains(entity.entityId))
-                    matrmemed.add(entity.entityId)
+                if (entity.hurtTime >= 9 && entity.hurtResistantTime < 3 && !matrsxed.contains(entity.entityId))
+                    matrsxed.add(entity.entityId)
 
                 if (!packet.onGround && !air.contains(entity.entityId))
                     air.add(entity.entityId)
@@ -274,7 +265,7 @@ object AntiBot : Module() {
         invisible.clear()
         lastDamage.clear()
         lastDamageVl.clear()
-        matrmemed.clear()
+        matrsxed.clear()
         notAlwaysInRadius.clear()
         duplicate.clear()
     }
