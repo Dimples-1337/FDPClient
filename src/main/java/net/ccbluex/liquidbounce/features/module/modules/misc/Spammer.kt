@@ -53,7 +53,7 @@ class Spammer : Module() {
 
     @EventTarget
     fun onUpdate(event: UpdateEvent) {
-        if(mc.currentScreen!=null && mc.currentScreen is GuiChat)
+        if((mc.currentScreen!=null && mc.currentScreen is GuiChat) || mc.getCurrentServerData().serverIP.toLowerCase().contains("loyisa"))
             return
 
         if (msTimer.hasTimePassed(delay)) {
