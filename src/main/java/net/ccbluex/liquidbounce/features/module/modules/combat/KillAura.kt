@@ -76,8 +76,9 @@ class KillAura : Module() {
             attackDelay = getAttackDelay(this.get(), maxCPS.get())
         }
     }
-
+   
     private val hurtTimeValue = IntegerValue("HurtTime", 10, 0, 10)
+    private val multiAPS = IntegerValue("MultiAPS", 10, 0, 20)
     private val combatDelayValue = BoolValue("1.9CombatDelay", false)
 
     // Range
@@ -97,8 +98,8 @@ class KillAura : Module() {
     private val rangeSprintReducementValue = FloatValue("RangeSprintReducement", 0f, 0f, 0.4f)
 
     // Modes
-    private val priorityValue = ListValue("Priority", arrayOf("Health", "Distance", "Fov", "LivingTime", "Armor","HurtResistantTime"), "Distance")
-    private val targetModeValue = ListValue("TargetMode", arrayOf("Single", "Switch", "Multi"), "Single")
+    private val priorityValue = ListValue("Priority", arrayOf("Health", "Distance", "Fov", "LivingTime", "Armor", "InWeb", "HurtResistantTime"), "Distance")
+    private val targetModeValue = ListValue("TargetMode", arrayOf("Single", "Switch", "Multi", "MultiNCP"), "Switch")
 
     // Bypass
     private val swingValue = ListValue("Swing", arrayOf("Normal", "Packet", "None"), "Normal")
@@ -187,6 +188,7 @@ class KillAura : Module() {
     private val noInventoryDelayValue = IntegerValue("NoInvDelay", 200, 0, 500)
     private val switchDelayValue = IntegerValue("SwitchDelay",300 ,1, 2000).displayable { targetModeValue.equals("Switch") }
     private val limitedMultiTargetsValue = IntegerValue("LimitedMultiTargets", 0, 0, 50).displayable { targetModeValue.equals("Multi") }
+    private val limitedMultiNCPTargetsValue = IntegerValue("LimitedNCPMultiTargets", 0, 0, 50).displayable { targetModeValue.equals("MultiNCP") }
 
     // Visuals
     private val markValue = ListValue("Mark", arrayOf("Liquid","FDP","Block","Jello","Sims","None"),"FDP")
@@ -447,6 +449,7 @@ class KillAura : Module() {
             clicks++
             attackTimer.reset()
             attackDelay = getAttackDelay(minCPS.get(), maxCPS.get())
+            TimeUtils.randomClickDelay(APS.get(), APS.get())
         }
 
         discoveredTargets.forEach {
@@ -641,15 +644,56 @@ class KillAura : Module() {
                 }
             }
         } else {
-            // Attack
-            if (!targetModeValue.equals("Multi")) {
+           // Attack
+            if (!multi && !multincp) {
                 attackEntity(currentTarget!!)
-            } else {
-                inRangeDiscoveredTargets.forEachIndexed { index, entity ->
-                    if(limitedMultiTargetsValue.get()==0 || index<limitedMultiTargetsValue.get())
+            } else if(multi) {
+                var targets = 0
+
+
+                for (entity in mc.theWorld.loadedEntityList) {
+                    val distance = mc.thePlayer.getDistanceToEntityBox(entity)
+
+                    if (entity is EntityLivingBase && isEnemy(entity) && distance <= getRange(entity)) {
                         attackEntity(entity)
+
+                        targets += 1
+
+                        if (limitedMultiTargetsValue.get() != 0 && limitedMultiTargetsValue.get() <= targets)
+                            break
+                    }
                 }
-            }
+            } else if (multincp) {
+                var targets = 0
+                val fov = fovValue.get()
+
+                for (entity in mc.theWorld.loadedEntityList) {
+                    val entityFov = RotationUtils.getRotationDifference(entity)
+                    val distance = mc.thePlayer.getDistanceToEntityBox(entity)
+                    if (entity !is EntityLivingBase || !isEnemy(entity))
+                        continue
+
+                    if (distance <= maxRange && (fov == 180F || entityFov <= fov) && entity.hurtTime <= hurtTimeValue.get())
+                        if (isEnemy(entity) && distance <= getRange(entity)) {
+                            if(ncpMultiConfig.get() == "Bypass") {
+                                APS.set(multiAPS.get() / (targets+1))
+                                if(debugValue.get())
+                                    ClientUtils.displayChatMessage("§a§lMultiAPS: ${multiAPS.get()}, APS: ${APS.get()},  targets: ${targets+1}")
+                            }
+
+                            attackEntity(entity)
+
+                            if (multiRotations.get())
+                                updateRotations(entity)
+
+                            targets += 1
+
+                            if (limitedMultiNCPTargetsValue.get() != 0 && limitedMultiNCPTargetsValue.get() <= targets)
+                                break
+
+
+                        }
+                }
 
             if(targetModeValue.equals("Switch")){
                 if(switchTimer.hasTimePassed(switchDelayValue.get().toLong())){
@@ -679,6 +723,7 @@ class KillAura : Module() {
         // Settings
         val hurtTime = hurtTimeValue.get()
         val fov = fovValue.get()
+        val multincp = targetModeValue.get().equals("MultiNCP", ignoreCase = true)
         val switchMode = targetModeValue.equals("Switch")
 
         // Find possible targets
@@ -702,6 +747,7 @@ class KillAura : Module() {
             "fov" -> discoveredTargets.sortBy { RotationUtils.getRotationDifference(it) } // Sort by FOV
             "livingtime" -> discoveredTargets.sortBy { -it.ticksExisted } // Sort by existence
             "armor" -> discoveredTargets.sortBy { it.totalArmorValue } // Sort by armor
+            "CobWeb" -> targets.sortBy { it.isInWeb } // Sort By Entity in web
             "hurtresistanttime" -> discoveredTargets.sortBy { it.hurtResistantTime } // Sort by armor
         }
 
