@@ -36,9 +36,12 @@ object AntiBot : Module() {
     private val invalidGroundValue = BoolValue("InvalidGround", true)
     private val swingValue = BoolValue("Swing", false)
     private val healthValue = BoolValue("Health", false)
+    private val maxHealthValue = IntegerValue("MaxHealth", 20f, 0f, 100f).displayable { healthValueValue.get() }
     private val derpValue = BoolValue("Derp", true)
     private val wasInvisibleValue = BoolValue("WasInvisible", false)
     private val armorValue = BoolValue("Armor", false)
+    private val hypixelBotTestValue = BoolValue("HypixelBotTest", false)
+    private val mineplexBotTestValue = BoolValue("MineplexBotTest", false)
     private val pingValue = BoolValue("Ping", false)
     private val needHitValue = BoolValue("NeedHit", false)
     private val duplicateInWorldValue = BoolValue("DuplicateInWorld", false)
@@ -93,7 +96,7 @@ object AntiBot : Module() {
         if (swingValue.get() && !swing.contains(entity.entityId))
             return true
 
-        if (healthValue.get() && entity.health > 20F)
+        if (healthValue.get() && entity.health > maxHealthValue.get())
             return true
 
         if (entityIDValue.get() && (entity.entityId >= 1000000000 || entity.entityId <= -1))
@@ -103,6 +106,12 @@ object AntiBot : Module() {
             return true
 
         if (wasInvisibleValue.get() && invisible.contains(entity.entityId))
+            return true
+
+        if (hypixelBotTestValue.get() && (!entity.getDisplayName().getFormattedText().startsWith("\u00a7") && entity.isInvisible() && entity.getDisplayName().getFormattedText().toLowerCase().contains("npc")) )
+            return true
+
+        if (mineplexBotTestValue.get() && (entity.getName().startsWith("Body #") && entity.getMaxHealth() == 20.0f) )
             return true
 
         if (armorValue.get()) {
