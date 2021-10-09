@@ -6,10 +6,12 @@
 package net.ccbluex.liquidbounce.utils
 
 import net.ccbluex.liquidbounce.event.MoveEvent
+import net.minecraft.network.play.client.C03PacketPlayer.C04PacketPlayerPosition
 import net.minecraft.util.AxisAlignedBB
 import kotlin.math.cos
 import kotlin.math.sin
 import kotlin.math.sqrt
+
 
 object MovementUtils : MinecraftInstance() {
     @JvmStatic
@@ -171,7 +173,6 @@ object MovementUtils : MinecraftInstance() {
         }
     }
 
-    @JvmStatic
     fun calculateGround(): Double {
         val playerBoundingBox = mc.thePlayer.entityBoundingBox
         var blockHeight = 1.0
@@ -186,5 +187,25 @@ object MovementUtils : MinecraftInstance() {
             ground -= blockHeight
         }
         return 0.0
+    }
+
+    fun handleVanillaKickBypass() {
+        val ground = calculateGround()
+        run {
+            var posY = mc.thePlayer.posY
+            while (posY > ground) {
+                mc.netHandler.addToSendQueue(C04PacketPlayerPosition(mc.thePlayer.posX, posY, mc.thePlayer.posZ, true))
+                if (posY - 8.0 < ground) break // Prevent next step
+                posY -= 8.0
+            }
+        }
+        mc.netHandler.addToSendQueue(C04PacketPlayerPosition(mc.thePlayer.posX, ground, mc.thePlayer.posZ, true))
+        var posY = ground
+        while (posY < mc.thePlayer.posY) {
+            mc.netHandler.addToSendQueue(C04PacketPlayerPosition(mc.thePlayer.posX, posY, mc.thePlayer.posZ, true))
+            if (posY + 8.0 > mc.thePlayer.posY) break // Prevent next step
+            posY += 8.0
+        }
+        mc.netHandler.addToSendQueue(C04PacketPlayerPosition(mc.thePlayer.posX, mc.thePlayer.posY, mc.thePlayer.posZ, true))
     }
 }

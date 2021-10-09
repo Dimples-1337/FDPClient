@@ -210,20 +210,6 @@ class Step : Module() {
                     return
                 }
             }
-            // Some fly modes should disable step
-            val fly = LiquidBounce.moduleManager[Fly::class.java]!!
-            if (fly.state) {
-                val flyMode = fly.modeValue.get()
-
-                if (flyMode.equals("Hypixel", ignoreCase = true) ||
-                    flyMode.equals("OtherHypixel", ignoreCase = true) ||
-                    flyMode.equals("LatestHypixel", ignoreCase = true) ||
-                    flyMode.equals("Rewinside", ignoreCase = true) ||
-                    flyMode.equals("Mineplex", ignoreCase = true) && mc.thePlayer.inventory.getCurrentItem() == null) {
-                    event.stepHeight = 0F
-                    return
-                }
-            }
 
             // Set step to default in some cases
             if (!mc.thePlayer.onGround || !timer.hasTimePassed(delayValue.get().toLong()) ||
