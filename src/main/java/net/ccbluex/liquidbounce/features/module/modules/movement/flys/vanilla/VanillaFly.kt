@@ -9,8 +9,9 @@ import net.ccbluex.liquidbounce.value.FloatValue
 import net.minecraft.network.play.client.C03PacketPlayer
 
 class VanillaFly : FlyMode("Vanilla") {
-    private val vanillaSpeedValue = FloatValue("${valuePrefix}Speed", 2f, 0f, 5f)
-    private val vanillaKickBypassValue = BoolValue("${valuePrefix}KickBypass", false)
+    private val speedValue = FloatValue("${valuePrefix}Speed", 2f, 0f, 5f)
+    private val kickBypassValue = BoolValue("${valuePrefix}KickBypass", false)
+    private val keepAliveValue = BoolValue("${valuePrefix}KeepAlive", false) // old KeepAlive fly combined
 
     private var packets=0
 
@@ -24,11 +25,11 @@ class VanillaFly : FlyMode("Vanilla") {
         mc.thePlayer.motionX = 0.0
         mc.thePlayer.motionZ = 0.0
         if (mc.gameSettings.keyBindJump.isKeyDown)
-            mc.thePlayer.motionY += vanillaSpeedValue.get() * 0.5
+            mc.thePlayer.motionY += speedValue.get() * 0.5
         if (mc.gameSettings.keyBindSneak.isKeyDown)
-            mc.thePlayer.motionY -= vanillaSpeedValue.get() * 0.5
+            mc.thePlayer.motionY -= speedValue.get() * 0.5
 
-        MovementUtils.strafe(vanillaSpeedValue.get())
+        MovementUtils.strafe(speedValue.get())
     }
 
     override fun onPacket(event: PacketEvent) {
@@ -36,8 +37,10 @@ class VanillaFly : FlyMode("Vanilla") {
 
         if(packet is C03PacketPlayer) {
             packets++
-            if(packets>40 && vanillaKickBypassValue.get())
+            if(packets==40 && kickBypassValue.get()) {
                 MovementUtils.handleVanillaKickBypass()
+                packets=0
+            }
         }
     }
 }

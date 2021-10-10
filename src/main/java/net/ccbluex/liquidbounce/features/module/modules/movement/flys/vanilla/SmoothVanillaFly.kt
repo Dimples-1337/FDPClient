@@ -9,8 +9,8 @@ import net.ccbluex.liquidbounce.value.FloatValue
 import net.minecraft.network.play.client.C03PacketPlayer
 
 class SmoothVanillaFly : FlyMode("SmoothVanilla") {
-    private val vanillaSpeedValue = FloatValue("${valuePrefix}Speed", 2f, 0f, 5f)
-    private val vanillaKickBypassValue = BoolValue("${valuePrefix}KickBypass", false)
+    private val speedValue = FloatValue("${valuePrefix}Speed", 2f, 0f, 5f)
+    private val kickBypassValue = BoolValue("${valuePrefix}KickBypass", false)
 
     private var packets=0
 
@@ -20,7 +20,7 @@ class SmoothVanillaFly : FlyMode("SmoothVanilla") {
 
     override fun onUpdate(event: UpdateEvent) {
         mc.thePlayer.capabilities.isFlying = true
-        mc.thePlayer.capabilities.flySpeed = vanillaSpeedValue.get() * 0.05f
+        mc.thePlayer.capabilities.flySpeed = speedValue.get() * 0.05f
     }
 
     override fun onPacket(event: PacketEvent) {
@@ -28,8 +28,10 @@ class SmoothVanillaFly : FlyMode("SmoothVanilla") {
 
         if(packet is C03PacketPlayer) {
             packets++
-            if(packets>40 && vanillaKickBypassValue.get())
+            if(packets==40 && kickBypassValue.get()) {
                 MovementUtils.handleVanillaKickBypass()
+                packets=0
+            }
         }
     }
 }
