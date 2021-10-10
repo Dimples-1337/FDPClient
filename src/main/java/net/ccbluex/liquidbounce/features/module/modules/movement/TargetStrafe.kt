@@ -38,7 +38,6 @@ class TargetStrafe : Module() {
     private val blueValue = IntegerValue("Blue", 255, 0, 255)
     private val saturationValue = FloatValue("Saturation", 0.7F, 0F, 1F)
     private val brightnessValue = FloatValue("Brightness", 1F, 0F, 1F)
-    private val mixerSecondsValue = IntegerValue("Mixer-Seconds", 2, 1, 10)
     private val accuracyValue = IntegerValue("Accuracy", 0, 0, 59)
     private val thicknessValue = FloatValue("Thickness", 1F, 0.1F, 5F)
     private val outLine = BoolValue("Outline", true)
