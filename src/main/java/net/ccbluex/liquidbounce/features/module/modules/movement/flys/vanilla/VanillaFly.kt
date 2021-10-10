@@ -6,6 +6,7 @@ import net.ccbluex.liquidbounce.features.module.modules.movement.flys.FlyMode
 import net.ccbluex.liquidbounce.utils.MovementUtils
 import net.ccbluex.liquidbounce.value.BoolValue
 import net.ccbluex.liquidbounce.value.FloatValue
+import net.minecraft.network.play.client.C00PacketKeepAlive
 import net.minecraft.network.play.client.C03PacketPlayer
 
 class VanillaFly : FlyMode("Vanilla") {
@@ -20,9 +21,13 @@ class VanillaFly : FlyMode("Vanilla") {
     }
 
     override fun onUpdate(event: UpdateEvent) {
+        if(keepAliveValue.get())
+            mc.netHandler.addToSendQueue(C00PacketKeepAlive())
+
         mc.thePlayer.capabilities.isFlying = false
-        mc.thePlayer.motionY = 0.0
+
         mc.thePlayer.motionX = 0.0
+        mc.thePlayer.motionY = 0.0
         mc.thePlayer.motionZ = 0.0
         if (mc.gameSettings.keyBindJump.isKeyDown)
             mc.thePlayer.motionY += speedValue.get() * 0.5

@@ -10,7 +10,7 @@ class OldNCPFly : FlyMode("OldNCP") {
         if (!mc.thePlayer.onGround)
             return
 
-        for (i in 0..3) {
+        repeat(3) {
             mc.netHandler.addToSendQueue(C04PacketPlayerPosition(mc.thePlayer.posX, mc.thePlayer.posY + 1.01, mc.thePlayer.posZ, false))
             mc.netHandler.addToSendQueue(C04PacketPlayerPosition(mc.thePlayer.posX, mc.thePlayer.posY, mc.thePlayer.posZ, false))
         }

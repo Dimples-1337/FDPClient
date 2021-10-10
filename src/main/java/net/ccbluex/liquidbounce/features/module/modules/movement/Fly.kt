@@ -44,6 +44,8 @@ class Fly : Module() {
     var launchX=0.0
     var launchY=0.0
     var launchZ=0.0
+    var launchYaw = 0f
+    var launchPitch = 0f
 
     override fun onEnable() {
         if (mc.thePlayer.onGround && fakeDamageValue.get()) {
@@ -57,6 +59,8 @@ class Fly : Module() {
         launchX = mc.thePlayer.posX
         launchY = mc.thePlayer.posY
         launchZ = mc.thePlayer.posZ
+        launchYaw = mc.thePlayer.rotationYaw
+        launchPitch = mc.thePlayer.rotationPitch
 
         mode.onEnable()
     }
