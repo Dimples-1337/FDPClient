@@ -12,8 +12,9 @@ import net.minecraft.network.play.client.C03PacketPlayer
 class VanillaFly : FlyMode("Vanilla") {
     private val speedValue = FloatValue("${valuePrefix}Speed", 2f, 0f, 5f)
     private val kickBypassValue = BoolValue("${valuePrefix}KickBypass", false)
+    private val kickBypassDelayValue = IntegerValue("${valuePrefix}KickBypassDelay", 40, 0, 100).displayable { kickBypassValue.get() }
     private val keepAliveValue = BoolValue("${valuePrefix}KeepAlive", false) // old KeepAlive fly combined
-    private val fastStopValue = BoolValue("${valuePrefix}FastStop", false)
+    private val fastStopValue = BoolValue("${valuePrefix}FastStop", true)
 
     private var packets=0
 
