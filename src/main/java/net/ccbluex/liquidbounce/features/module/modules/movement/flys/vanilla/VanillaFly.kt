@@ -13,11 +13,20 @@ class VanillaFly : FlyMode("Vanilla") {
     private val speedValue = FloatValue("${valuePrefix}Speed", 2f, 0f, 5f)
     private val kickBypassValue = BoolValue("${valuePrefix}KickBypass", false)
     private val keepAliveValue = BoolValue("${valuePrefix}KeepAlive", false) // old KeepAlive fly combined
+    private val fastStopValue = BoolValue("${valuePrefix}FastStop", false)
 
     private var packets=0
 
     override fun onEnable() {
         packets=0
+    }
+
+    override fun onDisable() {
+    if(fastStopValue.get()){
+        mc.thePlayer.motionX = 0.00
+        mc.thePlayer.motionY = -0.05
+        mc.thePlayer.motionZ = 0.0
+    }
     }
 
     override fun onUpdate(event: UpdateEvent) {
