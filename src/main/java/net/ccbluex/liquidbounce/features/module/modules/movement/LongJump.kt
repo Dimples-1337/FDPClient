@@ -55,6 +55,7 @@ class LongJump : Module() {
     // settings
     private val autoJumpValue = BoolValue("AutoJump", true)
     private val autoDisableValue = BoolValue("AutoDisable", true)
+    private val onDamageValue = BoolValue("OnDamage", true)
     private var jumped = false
     private var hasJumped=false
     private var canBoost = false
@@ -94,7 +95,8 @@ class LongJump : Module() {
     @EventTarget
     fun onUpdate(event: UpdateEvent) {
         mc.thePlayer ?: return
-
+        if(onDamageValue.get() && mc.thePlayer.hurtTime == 0 && !modeValue.equals("ncpdamage"))
+            return
         if (modeValue.equals("ncpdamage")) {
             if(!damageStat){
                 mc.thePlayer.setPosition(x,y,z)
