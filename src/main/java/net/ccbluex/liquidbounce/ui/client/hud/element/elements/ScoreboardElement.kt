@@ -14,6 +14,7 @@ import net.ccbluex.liquidbounce.ui.client.hud.element.ElementInfo
 import net.ccbluex.liquidbounce.ui.client.hud.element.Side
 import net.ccbluex.liquidbounce.ui.font.Fonts
 import net.ccbluex.liquidbounce.utils.render.ColorUtils
+import net.ccbluex.liquidbounce.utils.render.BlurUtils
 import net.ccbluex.liquidbounce.utils.render.RenderUtils
 import net.ccbluex.liquidbounce.value.BoolValue
 import net.ccbluex.liquidbounce.value.FontValue
@@ -51,6 +52,9 @@ class ScoreboardElement(x: Double = 5.0, y: Double = 0.0, scale: Float = 1F,
     private val rectColorGreenValue = IntegerValue("Rect-G", 111, 0, 255)
     private val rectColorBlueValue = IntegerValue("Rect-B", 255, 0, 255)
     private val rectColorBlueAlpha = IntegerValue("Rect-Alpha", 255, 0, 255)
+    
+    private val blurValue = BoolValue("Blur", false)
+    private val blurStrength = FloatValue("Blur-Strength", 0F, 0F, 10F)
 
     private val shadowValue = BoolValue("Shadow", false)
     private val serverValue = ListValue("ServerIp", arrayOf("None","ClientName","Website"),"Website")
@@ -118,6 +122,22 @@ class ScoreboardElement(x: Double = 5.0, y: Double = 0.0, scale: Float = 1F,
             val height = maxHeight - index * fontRenderer.FONT_HEIGHT
 
             GlStateManager.resetColor()
+            
+            if (blurValue.get()) {
+            GL11.glPushMatrix()
+            GL11.glScalef(1F, 1F, 1F)
+            GL11.glTranslated(-renderX, -renderY, 0.0)
+            if (side.horizontal == Side.Horizontal.LEFT) 
+                BlurUtils.blurArea((renderX.toFloat() + l1 + 2F) * scale, (renderY.toFloat() + -2F) * scale, 
+                    (renderX.toFloat() + -5F) * scale, (renderY.toFloat() + maxHeight + fontRenderer.FONT_HEIGHT) * scale, blurStrength.get())
+            else
+                BlurUtils.blurArea((renderX.toFloat() + l1 - 2F) * scale, (renderY.toFloat() + -2F) * scale, 
+                    (renderX.toFloat() + 5F) * scale, (renderY.toFloat() + maxHeight + fontRenderer.FONT_HEIGHT) * scale, blurStrength.get())
+
+            GL11.glTranslated(renderX, renderY, 0.0)
+            GL11.glScalef(scale, scale, scale)
+            GL11.glPopMatrix()
+        }
 
             var listColor=textColor
             if(!serverValue.equals("none")){
