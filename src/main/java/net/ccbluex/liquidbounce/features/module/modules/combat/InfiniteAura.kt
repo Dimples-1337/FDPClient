@@ -12,6 +12,7 @@ import net.ccbluex.liquidbounce.event.UpdateEvent
 import net.ccbluex.liquidbounce.features.module.Module
 import net.ccbluex.liquidbounce.features.module.ModuleCategory
 import net.ccbluex.liquidbounce.features.module.ModuleInfo
+import net.ccbluex.liquidbounce.features.module.modules.combat.Criticals
 import net.ccbluex.liquidbounce.utils.EntityUtils
 import net.ccbluex.liquidbounce.utils.PathUtils
 import net.ccbluex.liquidbounce.utils.RaycastUtils
@@ -44,6 +45,8 @@ class InfiniteAura : Module() {
     private val noRegen=BoolValue("NoRegen",true)
     private val tpBack=BoolValue("TPBack",true)
     private val doSwing=BoolValue("Swing",true).displayable { modeValue.equals("Aura") }
+    private val criticals=BoolValue("Criticals",true)
+    private val speedAttackValue = FloatValue("SpeedAttack", 2F, 0.1F, 10F)
     //private val AutoBlock=BoolValue("AutoBlock",true).displayable { modeValue.equals("Aura") }
     private val voidCheck=BoolValue("IgnoreInVoid",true)
     private val path=BoolValue("PathRender",true)
@@ -199,6 +202,19 @@ class InfiniteAura : Module() {
         	mc.thePlayer.setPositionAndUpdate(path[path.size].xCoord, path[path.size].yCoord, path[path.size].zCoord);
         }
     }
+    
+    // Critical Effect
+            if (mc.thePlayer.fallDistance > 0F && !mc.thePlayer.onGround && !mc.thePlayer.isOnLadder &&
+                !mc.thePlayer.isInWater && !mc.thePlayer.isPotionActive(Potion.blindness) && !mc.thePlayer.isRiding)
+                mc.thePlayer.onCriticalHit(entity)
+
+            // Enchant Effect
+            if (EnchantmentHelper.getModifierForCreature(mc.thePlayer.heldItem, entity.creatureAttribute) > 0F)
+                mc.thePlayer.onEnchantmentCritical(entity)
+        } else {
+            if (mc.playerController.currentGameType != WorldSettings.GameType.SPECTATOR)
+                mc.thePlayer.attackTargetEntityWithCurrentItem(entity)
+        }
 
     @EventTarget
     fun onPacket(event: PacketEvent){
