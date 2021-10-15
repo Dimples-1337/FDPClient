@@ -63,10 +63,15 @@ class GameFontRenderer(font: Font) : FontRenderer(Minecraft.getMinecraft().gameS
         val text=LanguageManager.replace(rawText)
 
         GlStateManager.translate(x - 1.5, y + 0.5, 0.0)
-        GlStateManager.enableAlpha()
-        GlStateManager.enableBlend()
-        GlStateManager.tryBlendFuncSeparate(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA, GL11.GL_ONE, GL11.GL_ZERO)
-        GlStateManager.enableTexture2D()
+
+        GL11.glPushAttrib(GL11.GL_ENABLE_BIT)
+
+        GL11.glEnable(GL11.GL_BLEND)
+        GL11.glDisable(GL11.GL_TEXTURE_2D)
+        GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA)
+        GL11.glEnable(GL11.GL_LINE_SMOOTH)
+        GL11.glEnable(GL11.GL_POLYGON_SMOOTH)
+        GL11.glHint(GL11.GL_POLYGON_SMOOTH_HINT, GL11.GL_NICEST)
 
         var hexColor = colorHex
         if (hexColor and -67108864 == 0)
@@ -156,7 +161,8 @@ class GameFontRenderer(font: Font) : FontRenderer(Minecraft.getMinecraft().gameS
         } else
             defaultFont.drawString(text, 0.0, 0.0, hexColor)
 
-        GlStateManager.disableBlend()
+//        GL11.glDisable(GL11.GL_POLYGON_SMOOTH)
+        GL11.glPopAttrib()
         GlStateManager.translate(-(x - 1.5), -(y + 0.5), 0.0)
         GlStateManager.color(1f, 1f, 1f, 1f)
 
