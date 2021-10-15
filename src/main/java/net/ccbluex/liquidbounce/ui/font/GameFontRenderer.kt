@@ -16,6 +16,7 @@ import net.minecraft.client.renderer.GlStateManager
 import net.minecraft.client.resources.IResourceManager
 import net.minecraft.util.ResourceLocation
 import org.lwjgl.opengl.GL11
+import org.lwjgl.opengl.GL13
 import java.awt.Color
 import java.awt.Font
 
@@ -69,9 +70,9 @@ class GameFontRenderer(font: Font) : FontRenderer(Minecraft.getMinecraft().gameS
         GL11.glEnable(GL11.GL_BLEND)
         GL11.glDisable(GL11.GL_TEXTURE_2D)
         GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA)
-        GL11.glEnable(GL11.GL_LINE_SMOOTH)
+//        GL11.glEnable(GL13.GL_MULTISAMPLE)
         GL11.glEnable(GL11.GL_POLYGON_SMOOTH)
-        GL11.glHint(GL11.GL_POLYGON_SMOOTH_HINT, GL11.GL_NICEST)
+//        GL11.glHint(GL11.GL_POLYGON_SMOOTH_HINT, GL11.GL_NICEST)
 
         var hexColor = colorHex
         if (hexColor and -67108864 == 0)

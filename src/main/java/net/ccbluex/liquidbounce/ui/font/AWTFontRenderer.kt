@@ -115,6 +115,7 @@ class AWTFontRenderer(val font: Font) {
             val cached=cachedChars[char]!!
 
             GL11.glCallList(cached.displayList)
+            GL11.glCallList(cached.displayList) // TODO: stupid solutions, find a better way
             cached.lastUsage = System.currentTimeMillis()
 
             return getCharWidth(char)
