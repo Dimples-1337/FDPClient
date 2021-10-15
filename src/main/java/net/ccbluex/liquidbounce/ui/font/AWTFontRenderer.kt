@@ -10,10 +10,8 @@ import org.lwjgl.opengl.GL11
 import java.awt.Canvas
 import java.awt.Font
 import java.awt.FontMetrics
-import java.awt.Graphics2D
 import java.awt.font.FontRenderContext
 import java.awt.geom.AffineTransform
-import java.awt.image.BufferedImage
 
 /**
  * 矢量字体渲染器
@@ -21,13 +19,45 @@ import java.awt.image.BufferedImage
  */
 class AWTFontRenderer(val font: Font) {
 
-//    private val chars=HashMap<String, FontChar>()
+    companion object {
+        val activeFontRenderers: ArrayList<AWTFontRenderer> = ArrayList()
+
+        private var gcTicks: Int = 0
+        private const val GC_TICKS = 600 // Start garbage collection every 600 frames
+        private const val CACHED_FONT_REMOVAL_TIME = 30000 // Remove cached texts after 30s of not being used
+
+        fun garbageCollectionTick() {
+            if (gcTicks++ > GC_TICKS) {
+                activeFontRenderers.forEach { it.collectGarbage() }
+
+                gcTicks = 0
+            }
+        }
+    }
+
+    private fun collectGarbage() {
+        val currentTime = System.currentTimeMillis()
+
+        cachedChars.filter { currentTime - it.value.lastUsage > CACHED_FONT_REMOVAL_TIME }.forEach {
+            GL11.glDeleteLists(it.value.displayList, 1)
+
+            it.value.deleted = true
+
+            cachedChars.remove(it.key)
+        }
+    }
+
+    private val cachedChars: HashMap<String, CachedFont> = HashMap()
 
     private val fontMetrics: FontMetrics = Canvas().getFontMetrics(font)
     private val fontHeight: Int = if (fontMetrics.height <= 0){ font.size }else{ fontMetrics.height + 3 }
 
     val height: Int
         get() = (fontHeight - 8) / 2
+
+    init {
+        activeFontRenderers.add(this)
+    }
 
     /**
      * Allows you to draw a string with the target font
@@ -81,7 +111,22 @@ class AWTFontRenderer(val font: Font) {
      * @param y        target position y to render
      */
     private fun drawChar(char: String, x: Float, y: Float): Int {
+        if(cachedChars.containsKey(char)){
+            val cached=cachedChars[char]!!
+
+            GL11.glCallList(cached.displayList)
+            cached.lastUsage = System.currentTimeMillis()
+
+            return getCharWidth(char)
+        }
+
+        val list = GL11.glGenLists(1)
+        GL11.glNewList(list, GL11.GL_COMPILE_AND_EXECUTE)
+
         RenderUtils.drawAWTShape(font.createGlyphVector(FontRenderContext(AffineTransform(), true, false), char).getOutline(x + 3, y + 1f + fontMetrics.ascent))
+
+        cachedChars[char] = CachedFont(list, System.currentTimeMillis())
+        GL11.glEndList()
 
         return getCharWidth(char)
     }
