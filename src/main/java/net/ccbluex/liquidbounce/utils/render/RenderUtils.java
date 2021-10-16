@@ -1161,15 +1161,28 @@ public final class RenderUtils extends MinecraftInstance {
     }
 
     public static void drawAWTShape(Shape shape) {
-        GLUtessellator tess = GLU.gluNewTess();
+        PathIterator path=shape.getPathIterator(new AffineTransform());
+        float[] cp=new float[2]; // 记录上次操作的点用于计算曲线
+
+        GLUtessellator tess = GLU.gluNewTess(); // 创建GLUtessellator用于渲染凹多边形（GL_POLYGON只能渲染凸多边形）
+
         tess.gluTessCallback(GLU.GLU_TESS_BEGIN, TessCallback.INSTANCE);
         tess.gluTessCallback(GLU.GLU_TESS_END, TessCallback.INSTANCE);
         tess.gluTessCallback(GLU.GLU_TESS_VERTEX, TessCallback.INSTANCE);
-        tess.gluTessProperty(GLU.GLU_TESS_WINDING_RULE, GLU.GLU_TESS_WINDING_NONZERO);
-        tess.gluTessBeginPolygon(null);
+        tess.gluTessCallback(GLU.GLU_TESS_COMBINE, TessCallback.INSTANCE);
 
-        PathIterator path=shape.getPathIterator(new AffineTransform());
-        float[] cp=new float[2]; // 记录上次操作的点用于计算曲线
+        switch (path.getWindingRule()){
+            case PathIterator.WIND_EVEN_ODD:{
+                tess.gluTessProperty(GLU.GLU_TESS_WINDING_RULE, GLU.GLU_TESS_WINDING_ODD);
+                break;
+            }
+            case PathIterator.WIND_NON_ZERO:{
+                tess.gluTessProperty(GLU.GLU_TESS_WINDING_RULE, GLU.GLU_TESS_WINDING_NONZERO);
+                break;
+            }
+        }
+
+        tess.gluTessBeginPolygon(null);
 
         while (!path.isDone()){
             float[] segment=new float[6];
