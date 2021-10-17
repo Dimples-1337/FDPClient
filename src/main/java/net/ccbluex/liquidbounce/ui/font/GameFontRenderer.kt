@@ -16,7 +16,6 @@ import net.minecraft.client.renderer.GlStateManager
 import net.minecraft.client.resources.IResourceManager
 import net.minecraft.util.ResourceLocation
 import org.lwjgl.opengl.GL11
-import org.lwjgl.opengl.GL13
 import java.awt.Color
 import java.awt.Font
 
@@ -65,14 +64,13 @@ class GameFontRenderer(font: Font) : FontRenderer(Minecraft.getMinecraft().gameS
 
         GlStateManager.translate(x - 1.5, y + 0.5, 0.0)
 
-        GL11.glPushAttrib(GL11.GL_ENABLE_BIT)
-
-        GL11.glEnable(GL11.GL_BLEND)
-        GL11.glDisable(GL11.GL_TEXTURE_2D)
-        GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA)
-//        GL11.glEnable(GL13.GL_MULTISAMPLE)
+        GlStateManager.enableColorMaterial()
+        GlStateManager.enableAlpha()
+        GlStateManager.disableTexture2D()
+        GlStateManager.enableBlend()
+        GlStateManager.tryBlendFuncSeparate(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA, GL11.GL_ONE, GL11.GL_ZERO)
         GL11.glEnable(GL11.GL_POLYGON_SMOOTH)
-//        GL11.glHint(GL11.GL_POLYGON_SMOOTH_HINT, GL11.GL_NICEST)
+        GL11.glDisable(GL11.GL_CULL_FACE) // 不要剔除模型的背面
 
         var hexColor = colorHex
         if (hexColor and -67108864 == 0)
@@ -159,12 +157,16 @@ class GameFontRenderer(font: Font) : FontRenderer(Minecraft.getMinecraft().gameS
                     width += currentFont.getStringWidth(words)
                 }
             }
-        } else
+        } else {
             defaultFont.drawString(text, 0.0, 0.0, hexColor)
+        }
 
-//        GL11.glDisable(GL11.GL_POLYGON_SMOOTH)
-        GL11.glPopAttrib()
+        GL11.glEnable(GL11.GL_CULL_FACE)
+        GL11.glDisable(GL11.GL_POLYGON_SMOOTH)
+        GlStateManager.disableBlend()
+        GlStateManager.enableTexture2D()
         GlStateManager.translate(-(x - 1.5), -(y + 0.5), 0.0)
+        GlStateManager.resetColor()
         GlStateManager.color(1f, 1f, 1f, 1f)
 
         return (x + getStringWidth(text)).toInt()
