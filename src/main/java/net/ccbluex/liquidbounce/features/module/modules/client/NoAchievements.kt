@@ -11,10 +11,10 @@ import net.ccbluex.liquidbounce.features.module.Module
 import net.ccbluex.liquidbounce.features.module.ModuleCategory
 import net.ccbluex.liquidbounce.features.module.ModuleInfo
 
-@ModuleInfo(name = "NoAchievements", category = ModuleCategory.CLIENT, array = false, canEnable = false)
+@ModuleInfo(name = "NoAchievements", category = ModuleCategory.CLIENT, array = false)
 class NoAchievements : Module() {
     @EventTarget
-    fun onTick(e: TickEvent) {
+    fun onTick(event: TickEvent) {
         mc.guiAchievement.clearAchievements()
     }
 }
