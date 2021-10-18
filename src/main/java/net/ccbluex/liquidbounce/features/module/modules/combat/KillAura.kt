@@ -115,6 +115,7 @@ class KillAura : Module() {
     }.displayable { autoBlockValue.equals("Range") }
     private val autoBlockPacketValue = ListValue("AutoBlockPacket", arrayOf("AfterTick", "AfterAttack", "Vanilla"),"AfterTick").displayable { autoBlockValue.equals("Range") }
     private val interactAutoBlockValue = BoolValue("InteractAutoBlock", true).displayable { autoBlockValue.equals("Range") }
+    private val verusAutoBlockValue = BoolValue("VerusAutoBlock", false)
     private val blockRate = IntegerValue("BlockRate", 100, 1, 100).displayable { autoBlockValue.equals("Range") }
 
     // Raycast
@@ -221,6 +222,7 @@ class KillAura : Module() {
 
     // Fake block status
     var blockingStatus = false
+    var verusBlocking = false
 
     /**
      * Enable kill aura module
@@ -230,6 +232,7 @@ class KillAura : Module() {
         mc.theWorld ?: return
 
         updateTarget()
+        verusBlocking = false
     }
 
     /**
@@ -245,6 +248,11 @@ class KillAura : Module() {
 
         stopBlocking()
         RotationUtils.setTargetRotationReverse(RotationUtils.serverRotation, 0, 0)
+        if (verusBlocking && !blockingStatus && !mc.thePlayer.isBlocking()) {
+            verusBlocking = false
+            if (verusAutoBlockValue.get())
+                PacketUtils.sendPacketNoEvent(C07PacketPlayerDigging(C07PacketPlayerDigging.Action.RELEASE_USE_ITEM, BlockPos.ORIGIN, EnumFacing.DOWN))
+        }
     }
 
     /**
@@ -358,6 +366,20 @@ class KillAura : Module() {
         if (!targetModeValue.equals("Switch") && (currentTarget!=null && EntityUtils.isSelected(currentTarget!!, true)))
             target = currentTarget
     }
+    
+     @EventTarget
+    fun onPacket(event: PacketEvent) {
+        val packet = event.packet
+        if (verusBlocking 
+            && ((packet is C07PacketPlayerDigging 
+                    && packet.getStatus() == C07PacketPlayerDigging.Action.RELEASE_USE_ITEM) 
+                    || packet is C08PacketPlayerBlockPlacement)
+            && verusAutoBlockValue.get())
+            event.cancelEvent()
+
+        if (packet is C09PacketHeldItemChange)
+            verusBlocking = false
+    }
 
     /**
      * Update event
@@ -396,6 +418,18 @@ class KillAura : Module() {
             }
         }
     }
+    
+    @EventTarget
+    fun onUpdateVerus(event: UpdateEvent) {
+        if (blockingStatus || mc.thePlayer.isBlocking())
+            verusBlocking = true
+        else if (verusBlocking) {
+            verusBlocking = false
+            if (verusAutoBlockValue.get()) 
+                PacketUtils.sendPacketNoEvent(C07PacketPlayerDigging(C07PacketPlayerDigging.Action.RELEASE_USE_ITEM, BlockPos.ORIGIN, EnumFacing.DOWN))
+        }
+    }
+
 
     /**
      * Render event
