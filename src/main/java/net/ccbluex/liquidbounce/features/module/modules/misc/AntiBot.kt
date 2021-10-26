@@ -39,6 +39,7 @@ object AntiBot : Module() {
     private val wasInvisibleValue = BoolValue("WasInvisible", false)
     private val armorValue = BoolValue("Armor", false)
     private val pingValue = BoolValue("Ping", false)
+    private val matrixBotValue = BoolValue("MatrixBot", false)
     private val needHitValue = BoolValue("NeedHit", false)
     private val duplicateInWorldValue = BoolValue("DuplicateInWorld", false)
     private val duplicateInTabValue = BoolValue("DuplicateInTab", false)
@@ -58,6 +59,7 @@ object AntiBot : Module() {
     private val hitted = mutableListOf<Int>()
     private val notAlwaysInRadius = mutableListOf<Int>()
     private val alwaysInRadius = mutableListOf<Int>()
+    private val noHitDelay = mutableListOf<Int>()
     private val lastDamage = mutableMapOf<Int, Int>()
     private val lastDamageVl = mutableMapOf<Int, Float>()
     private val duplicate = mutableListOf<UUID>()
@@ -170,6 +172,9 @@ object AntiBot : Module() {
             return true
         }
 
+        if (matrixBotValue.get() && noHitDelay.contains(entity.entityId)) {
+            return true
+        }
         return entity.name.isEmpty() || entity.name == mc.thePlayer.name
     }
 
@@ -220,6 +225,9 @@ object AntiBot : Module() {
                 }
                 if (!notAlwaysInRadius.contains(entity.entityId) && mc.thePlayer.getDistanceToEntity(entity) < alwaysRadiusValue.get() && alwaysInRadiusValue.get() && spawnInRadiusValue.get()) {
                     alwaysInRadius.add(entity.entityId)
+                }
+                if (!noHitDelay.contains(entity.entityId) && entity.hurtResistantTime < 2 && entity.hurtTime > 9) {
+                    noHitDelay.add(entity.entityId)
                 }
             }
         } else if (packet is S0BPacketAnimation) {
@@ -279,6 +287,7 @@ object AntiBot : Module() {
         lastDamageVl.clear()
         notAlwaysInRadius.clear()
         alwaysInRadius.clear()
+        noHitDelay.clear()
         duplicate.clear()
     }
 }
