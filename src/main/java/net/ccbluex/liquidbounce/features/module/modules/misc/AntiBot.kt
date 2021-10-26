@@ -47,7 +47,7 @@ object AntiBot : Module() {
     private val fastDamageTicksValue = IntegerValue("FastDamageTicks", 5, 1, 20).displayable { fastDamageValue.get() }
     private val alwaysInRadiusValue = BoolValue("AlwaysInRadius", false)
     private val alwaysRadiusValue = FloatValue("AlwaysInRadiusBlocks", 20f, 5f, 30f).displayable { alwaysInRadiusValue.get() }
-    private val alwaysInRadiusRemoveValue = BoolValue("AlwaysInRadiusRemove", false).displayable { alwaysInRadiusValue.get() }
+    private val spawnInRadiusValue = BoolValue("SpawnInRadius", false).displayable { alwaysInRadiusValue.get() }
     private val alwaysInRadiusWithTicksCheckValue = BoolValue("AlwaysInRadiusWithTicksCheck", false).displayable { alwaysInRadiusValue.get() && livingTimeValue.get() }
 
     private val ground = mutableListOf<Int>()
@@ -57,6 +57,7 @@ object AntiBot : Module() {
     private val invisible = mutableListOf<Int>()
     private val hitted = mutableListOf<Int>()
     private val notAlwaysInRadius = mutableListOf<Int>()
+    private val alwaysInRadius = mutableListOf<Int>()
     private val lastDamage = mutableMapOf<Int, Int>()
     private val lastDamageVl = mutableMapOf<Int, Float>()
     private val duplicate = mutableListOf<UUID>()
@@ -165,7 +166,7 @@ object AntiBot : Module() {
             return true
         }
 
-        if (alwaysInRadiusValue.get() && !notAlwaysInRadius.contains(entity.entityId)) {
+        if (alwaysInRadiusValue.get() && !notAlwaysInRadius.contains(entity.entityId) || alwaysInRadius.contains(entity.entityId)) {
             return true
         }
 
@@ -217,8 +218,8 @@ object AntiBot : Module() {
                 if ((!livingTimeValue.get() || entity.ticksExisted > livingTimeTicksValue.get() || !alwaysInRadiusWithTicksCheckValue.get()) && !notAlwaysInRadius.contains(entity.entityId) && mc.thePlayer.getDistanceToEntity(entity) > alwaysRadiusValue.get()) {
                     notAlwaysInRadius.add(entity.entityId)
                 }
-                if (!notAlwaysInRadius.contains(entity.entityId) && mc.thePlayer.getDistanceToEntity(entity) < alwaysRadiusValue.get() && alwaysInRadiusValue.get() && alwaysInRadiusRemoveValue.get()) {
-                    mc.theWorld.removeEntity(entity)
+                if (!notAlwaysInRadius.contains(entity.entityId) && mc.thePlayer.getDistanceToEntity(entity) < alwaysRadiusValue.get() && alwaysInRadiusValue.get() && spawnInRadiusValue.get()) {
+                    alwaysInRadius.add(entity.entityId)
                 }
             }
         } else if (packet is S0BPacketAnimation) {
@@ -277,6 +278,7 @@ object AntiBot : Module() {
         lastDamage.clear()
         lastDamageVl.clear()
         notAlwaysInRadius.clear()
+        alwaysInRadius.clear()
         duplicate.clear()
     }
 }
