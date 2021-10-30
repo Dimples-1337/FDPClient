@@ -122,6 +122,7 @@ class KillAura : Module() {
     private val autoBlockPacketValue = ListValue("AutoBlockPacket", arrayOf("AfterTick", "AfterAttack", "Vanilla"), "AfterTick").displayable { autoBlockValue.equals("Range") }
     private val interactAutoBlockValue = BoolValue("InteractAutoBlock", true).displayable { autoBlockValue.equals("Range") }
     private val blockRate = IntegerValue("BlockRate", 100, 1, 100).displayable { autoBlockValue.equals("Range") }
+    private val reblockDelayValue = IntegerValue("ReblockDelay", 100, 0, 850).displayable { autoBlockValue.equals("Range") }
 
     // Raycast
     private val raycastValue = BoolValue("RayCast", true)
@@ -218,6 +219,7 @@ class KillAura : Module() {
     // Attack delay
     private val attackTimer = MSTimer()
     private val switchTimer = MSTimer()
+    private val autoBlockTimer = MSTimer()
     private var attackDelay = 0L
     private var clicks = 0
 
@@ -254,7 +256,7 @@ class KillAura : Module() {
         clicks = 0
         canSwing = false
         swingTimer.reset()
-
+        autoBlockTimer.reset()
         stopBlocking()
         RotationUtils.setTargetRotationReverse(RotationUtils.serverRotation, 0, 0)
     }
@@ -949,6 +951,10 @@ class KillAura : Module() {
             return
         }
 
+        if(!autoBlockTimer.hasTimePassed(reblockDelayValue.get().toLong())){
+            return
+        }
+        autoBlockTimer.reset()
         if (interact) {
             mc.netHandler.addToSendQueue(C02PacketUseEntity(interactEntity, interactEntity.positionVector))
             mc.netHandler.addToSendQueue(C02PacketUseEntity(interactEntity, C02PacketUseEntity.Action.INTERACT))

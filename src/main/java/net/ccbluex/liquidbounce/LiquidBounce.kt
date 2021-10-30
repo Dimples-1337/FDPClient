@@ -41,7 +41,7 @@ object LiquidBounce {
     // Client information
     const val CLIENT_NAME = "FDPClient"
     const val COLORED_NAME = "§c§lFDP§6§lClient"
-    const val CLIENT_REAL_VERSION = "v2.0.0"
+    const val CLIENT_REAL_VERSION = "v2.0.1"
     const val CLIENT_CREATOR = "CCBlueX & UnlegitMC"
     const val CLIENT_WEBSITE = "GetFDP.Today"
     const val CLIENT_STORAGE = "https://res.getfdp.today/"
@@ -62,6 +62,7 @@ object LiquidBounce {
     lateinit var scriptManager: ScriptManager
     lateinit var tipSoundManager: TipSoundManager
     lateinit var combatManager: CombatManager
+    lateinit var PacketFixer: PacketFixer
     lateinit var macroManager: MacroManager
     lateinit var configManager: ConfigManager
 
@@ -103,7 +104,6 @@ object LiquidBounce {
 //        }else{
 //            launchFilters.add(EnumLaunchFilter.ULTRALIGHT)
 //        }
-        mainMenu = GuiLaunchOptionSelectMenu()
     }
 
     /**
@@ -171,9 +171,12 @@ object LiquidBounce {
         combatManager = CombatManager()
         eventManager.registerListener(combatManager)
 
+        PacketFixer = PacketFixer()
         eventManager.registerListener(PacketFixer())
 
         GuiCapeManager.load()
+
+        mainMenu = GuiLaunchOptionSelectMenu()
 
         ClientUtils.logInfo("$CLIENT_NAME $CLIENT_VERSION loaded in ${(System.currentTimeMillis() - startTime)}ms!")
     }

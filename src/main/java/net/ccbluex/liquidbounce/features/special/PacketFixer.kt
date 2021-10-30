@@ -12,15 +12,28 @@ import net.minecraft.network.play.client.C09PacketHeldItemChange
 import net.minecraft.network.play.server.S09PacketHeldItemChange
 import net.minecraft.network.play.server.S12PacketEntityVelocity
 import net.minecraft.network.play.server.S27PacketExplosion
+import net.ccbluex.liquidbounce.utils.timer.MSTimer
 import net.minecraft.world.Explosion
 
 class PacketFixer : Listenable, MinecraftInstance() {
     private var serversideSlot = 0
-
+    private val packetsTimer = MSTimer()
+    var outPackets = 0
+        private set
+    var inPackets = 0
+        private set
     @EventTarget
     fun onPacket(event: PacketEvent) {
         val packet = event.packet
-
+        if (packetsTimer.hasTimePassed(1000)) {
+            outPackets = 0
+            inPackets = 0
+        }
+        if(PacketUtils.getPacketType(packet) == PacketUtils.PacketType.SERVERSIDE){
+            inPackets++
+        }else{
+            outPackets++
+        }
         if (packet is C09PacketHeldItemChange) {
             if (packet.slotId == serversideSlot) {
                 event.cancelEvent()

@@ -21,6 +21,7 @@ class NoRotateSet : Module() {
     private val confirmValue = BoolValue("Confirm", true)
     private val illegalRotationValue = BoolValue("ConfirmIllegalRotation", false)
     private val noZeroValue = BoolValue("NoZero", false)
+    private val joinCheckValue = BoolValue("JoinCheck", false)
 
     @EventTarget
     fun onPacket(event: PacketEvent) {
@@ -32,13 +33,16 @@ class NoRotateSet : Module() {
             if (noZeroValue.get() && packet.getYaw() == 0F && packet.getPitch() == 0F) {
                 return
             }
-
+            if (joinCheckValue.get()&& mc.thePlayer.ticksExisted > 5) {
+                return
+            }
             if (illegalRotationValue.get() || packet.getPitch() <= 90 && packet.getPitch() >= -90 &&
                     RotationUtils.serverRotation != null && packet.getYaw() != RotationUtils.serverRotation.yaw &&
                     packet.getPitch() != RotationUtils.serverRotation.pitch) {
 
                 if (confirmValue.get()) {
                     mc.netHandler.addToSendQueue(C05PacketPlayerLook(packet.getYaw(), packet.getPitch(), mc.thePlayer.onGround))
+                    mc.netHandler.addToSendQueue(C05PacketPlayerLook(packet.getYaw()+1, packet.getPitch(), mc.thePlayer.onGround))
                 }
             }
 

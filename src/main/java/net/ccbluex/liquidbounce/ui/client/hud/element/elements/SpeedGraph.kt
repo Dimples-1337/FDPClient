@@ -5,9 +5,9 @@ import net.ccbluex.liquidbounce.ui.client.hud.element.Element
 import net.ccbluex.liquidbounce.ui.client.hud.element.ElementInfo
 import net.ccbluex.liquidbounce.ui.client.hud.element.Side
 import net.ccbluex.liquidbounce.utils.render.RenderUtils
-import net.ccbluex.liquidbounce.value.BoolValue
-import net.ccbluex.liquidbounce.value.FloatValue
-import net.ccbluex.liquidbounce.value.IntegerValue
+import net.ccbluex.liquidbounce.LiquidBounce
+import net.ccbluex.liquidbounce.features.special.PacketFixer
+import net.ccbluex.liquidbounce.value.*
 import net.minecraft.client.renderer.GlStateManager
 import org.lwjgl.opengl.GL11
 import kotlin.math.sqrt
@@ -25,6 +25,7 @@ class SpeedGraph(
     side: Side = Side(Side.Horizontal.MIDDLE, Side.Vertical.DOWN)
 ) : Element(x, y, scale, side) {
 
+    private val modeValue = ListValue("Mode", arrayOf("Motion","InPacket","OutPacket"), "Motion")
     private val yMultiplier = FloatValue("yMultiplier", 7F, 1F, 20F)
     private val height = IntegerValue("Height", 50, 30, 150)
     private val width = IntegerValue("Width", 150, 100, 300)
@@ -54,17 +55,27 @@ class SpeedGraph(
         val width = width.get()
         if (lastTick != mc.thePlayer.ticksExisted) {
             lastTick = mc.thePlayer.ticksExisted
-            val z2 = mc.thePlayer.posZ
-            val z1 = mc.thePlayer.prevPosZ
-            val x2 = mc.thePlayer.posX
-            val x1 = mc.thePlayer.prevPosX
-            var speed = sqrt((z2 - z1) * (z2 - z1) + (x2 - x1) * (x2 - x1))
-            if (speed < 0) {
-                speed = -speed
+            when (modeValue.get().lowercase()) {
+            "motion" -> {
+                val z2 = mc.thePlayer.posZ
+                val z1 = mc.thePlayer.prevPosZ
+                val x2 = mc.thePlayer.posX
+                val x1 = mc.thePlayer.prevPosX
+                var speed = sqrt((z2 - z1) * (z2 - z1) + (x2 - x1) * (x2 - x1))
+                if (speed < 0) {
+                    speed = -speed
+                }
+                speed = (lastSpeed * 0.9 + speed * 0.1) * smoothness.get() + speed * (1 - smoothness.get())
+                lastSpeed = speed
+                speedList.add(speed)
             }
-            speed = (lastSpeed * 0.9 + speed * 0.1) * smoothness.get() + speed * (1 - smoothness.get())
-            lastSpeed = speed
-            speedList.add(speed)
+            "inpackets" -> {
+                speedList.add(LiquidBounce.PacketFixer.inPackets.toDouble())
+            }
+            "outpackets" -> {
+                speedList.add(LiquidBounce.PacketFixer.outPackets.toDouble())
+            }
+        }
             while (speedList.size > width) {
                 speedList.removeAt(0)
             }

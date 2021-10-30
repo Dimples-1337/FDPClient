@@ -39,7 +39,7 @@ class Velocity : Module() {
                                                       "Redesky1", "Redesky2",
                                                       "AAC5.2.0", "AAC5.2.0Combat",
                                                       "MatrixReduce", "MatrixSimple", "MatrixGround",
-                                                      "Reverse", "SmoothReverse",
+                                                      "Reverse", "SmoothReverse","OldAC",
                                                       "Jump",
                                                       "Phase", "PacketPhase", "Glitch", "Spoof",
                                                       "Legit"), "Simple")
@@ -69,7 +69,7 @@ class Velocity : Module() {
 
     private val onlyGroundValue = BoolValue("OnlyGround", false)
     private val onlyCombatValue = BoolValue("OnlyCombat", false)
-    // private val onlyHitVelocityValue = BoolValue("OnlyHitVelocity",false)
+    private val onlyHitVelocityValue = BoolValue("OnlyHitVelocity",false)
     private val noFireValue = BoolValue("noFire", false)
     /**
      * VALUES
@@ -119,7 +119,9 @@ class Velocity : Module() {
             "jump" -> if (mc.thePlayer.hurtTime > 0 && mc.thePlayer.onGround) {
                 mc.thePlayer.motionY = 0.42
             }
-
+            "oldac" -> if (mc.thePlayer.hurtTime > 5) {
+                mc.thePlayer.onGround = true
+            }
             "reverse" -> {
                 if (!velocityInput) {
                     return
@@ -275,7 +277,7 @@ class Velocity : Module() {
             if (mc.thePlayer == null || (mc.theWorld?.getEntityByID(packet.entityID) ?: return) != mc.thePlayer) {
                 return
             }
-            // if(onlyHitVelocityValue.get() && packet.getMotionY()<400.0) return
+            if(onlyHitVelocityValue.get() && packet.getMotionY()<400.0) return
             if (noFireValue.get() && mc.thePlayer.isBurning) return
             velocityTimer.reset()
 

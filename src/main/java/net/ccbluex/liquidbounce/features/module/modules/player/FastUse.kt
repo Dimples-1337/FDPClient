@@ -22,7 +22,7 @@ import net.minecraft.network.play.client.C03PacketPlayer
 @ModuleInfo(name = "FastUse", category = ModuleCategory.PLAYER)
 class FastUse : Module() {
     private val modeValue = ListValue("Mode", arrayOf("Instant", "Timer", "CustomDelay", "DelayedInstant", "MinemoraTest", "AAC", "NewAAC"), "DelayedInstant")
-    private val timerValue = FloatValue("Timer", 1.22F, 0.1F, 2.0F).displayable { modeValue.equals("Timer") }
+    private val timerValue = FloatValue("Timer", 1.22F, 0.1F, 2.0F).displayable { modeValue.equals("Timer") || modeValue.equals("CustomDelay") }
     private val durationValue = IntegerValue("InstantDelay", 14, 0, 35).displayable { modeValue.equals("DelayedInstant") }
     private val delayValue = IntegerValue("CustomDelay", 0, 0, 300).displayable { modeValue.equals("CustomDelay") }
 
@@ -93,6 +93,8 @@ class FastUse : Module() {
                 }
 
                 "customdelay" -> {
+                    mc.timer.timerSpeed = timerValue.get()
+                    usedTimer = true
                     if (!msTimer.hasTimePassed(delayValue.get().toLong())) {
                         return
                     }
