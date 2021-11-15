@@ -5,6 +5,7 @@ import net.ccbluex.liquidbounce.features.module.ModuleCategory
 import net.ccbluex.liquidbounce.features.module.ModuleInfo
 import net.ccbluex.liquidbounce.value.ListValue
 import net.minecraft.entity.EntityLivingBase
+import net.minecraft.entity.passive.EntityVillager
 
 @ModuleInfo(name = "AntiShop", category = ModuleCategory.MISC)
 object AntiShop: Module() {
@@ -21,10 +22,10 @@ object AntiShop: Module() {
         // if this.enabled == false then directly return true
         if (!this.enabled) return true
         return when (this.modeValue.get().lowercase()) {
-            "blocksmc" -> {
-                "CIT-.*".toRegex().matches(input = target.name)
-            }
-            else -> false
+            "blocksmc" -> "CIT-.*".toRegex().matches(input = target.name)
+                            || target.name == "SHOP"
+                            || target.name == "UPGRADES"
+            else -> target is EntityVillager
         }
     }
 }
