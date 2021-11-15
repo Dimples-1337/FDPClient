@@ -467,6 +467,7 @@ class KillAura : Module() {
         }
 
         discoveredTargets.forEach {
+            if (AntiShop.enabled && AntiShop.isShop(it)) return@forEach
             when (markValue.get().lowercase()) {
                 "liquid" -> {
                     RenderUtils.drawPlatform(it, if (it.hurtTime <= 0) Color(37, 126, 255, 170) else Color(255, 0, 0, 170))
@@ -650,9 +651,6 @@ class KillAura : Module() {
         target ?: return
         currentTarget ?: return
 
-        // Check AntiShop
-        if (AntiShop.isShop(target = target!!)) return
-
         // Settings
         val failRate = failRateValue.get()
         val openInventory = noInventoryAttackValue.equals("Spoof") && mc.currentScreen is GuiInventory
@@ -775,6 +773,8 @@ class KillAura : Module() {
      * Attack [entity]
      */
     private fun attackEntity(entity: EntityLivingBase) {
+        if (AntiShop.enabled && AntiShop.isShop(entity)) return
+
         // Call attack event
         val event = AttackEvent(entity)
         LiquidBounce.eventManager.callEvent(event)
