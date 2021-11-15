@@ -11,6 +11,7 @@ import net.ccbluex.liquidbounce.features.module.Module
 import net.ccbluex.liquidbounce.features.module.ModuleCategory
 import net.ccbluex.liquidbounce.features.module.ModuleInfo
 import net.ccbluex.liquidbounce.features.module.modules.client.HUD
+import net.ccbluex.liquidbounce.features.module.modules.misc.AntiShop
 import net.ccbluex.liquidbounce.utils.EntityUtils
 import net.ccbluex.liquidbounce.utils.MovementUtils
 import net.ccbluex.liquidbounce.utils.RaycastUtils
@@ -648,6 +649,9 @@ class KillAura : Module() {
     private fun runAttack() {
         target ?: return
         currentTarget ?: return
+
+        // Check if target is Shop or not
+        if (AntiShop.isShop(target = target)) return
 
         // Settings
         val failRate = failRateValue.get()
