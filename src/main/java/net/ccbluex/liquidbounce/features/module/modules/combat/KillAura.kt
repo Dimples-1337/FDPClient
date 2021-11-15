@@ -650,7 +650,7 @@ class KillAura : Module() {
         target ?: return
         currentTarget ?: return
 
-        // Check if target is Shop or not
+        // Check AntiShop
         if (AntiShop.isShop(target = target!!)) return
 
         // Settings
