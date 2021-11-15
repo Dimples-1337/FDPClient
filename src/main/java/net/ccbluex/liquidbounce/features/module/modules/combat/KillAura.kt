@@ -651,7 +651,7 @@ class KillAura : Module() {
         currentTarget ?: return
 
         // Check if target is Shop or not
-        if (AntiShop.isShop(target = target)) return
+        if (AntiShop.isShop(target = target!!)) return
 
         // Settings
         val failRate = failRateValue.get()
