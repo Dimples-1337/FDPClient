@@ -107,6 +107,9 @@ module.AntiBot.description=防止杀戮光环攻击假人
 module.AntiFireBall.name=防火焰弹
 module.AntiFireBall.description=自动将火焰弹打回去
 
+module.AntiShop.name=防攻击商店
+module.AntiShop.description=防止杀戮光环攻击商店
+
 module.AntiStuck.name=防卡回弹
 module.AntiStuck.description=自动帮你解除卡住的状态
 

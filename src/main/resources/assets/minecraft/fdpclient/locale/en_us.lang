@@ -107,6 +107,9 @@ module.AntiBot.description=Prevents KillAura from attacking AntiCheat bots
 module.AntiFireBall.name=AntiFireball
 module.AntiFireBall.description=Hits fireballs so you dont receive damage.
 
+module.AntiShop.name=AntiShop
+module.AntiShop.description=Prevents KillAura from hitting shop entities
+
 module.AntiStuck.name=AntiStuck
 module.AntiStuck.description=automatic freeze you when setback
 

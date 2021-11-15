@@ -22,7 +22,7 @@ object AntiShop: Module() {
         if (!this.enabled) return true
         return when (this.modeValue.get().lowercase()) {
             "blocksmc" -> {
-                "CIT-.*".toRegex().matches(input = target.name)
+                "CIT-.*".toRegex().matches(input = target.name) || "CIT-.*".toRegex().matches(input = target.displayName.unformattedText))
             }
             else -> false
         }

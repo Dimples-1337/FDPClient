@@ -107,6 +107,9 @@ module.AntiBot.description=Impede que o KillAura ataque bots do AntiCheat
 module.AntiFireBall.name=AntiFireBall
 module.AntiFireBall.description=Acerte a bola de fogo automaticamente para deixá-la voltar
 
+module.AntiShop.name=AntiShop
+module.AntiShop.description=Impedir que KillAura atinja entidades da loja
+
 module.AntiStuck.name=AntiStuck
 module.AntiStuck.description=Destrava você quando você está preso
 
