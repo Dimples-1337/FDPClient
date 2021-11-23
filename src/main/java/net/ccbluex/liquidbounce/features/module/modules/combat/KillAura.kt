@@ -11,7 +11,6 @@ import net.ccbluex.liquidbounce.features.module.Module
 import net.ccbluex.liquidbounce.features.module.ModuleCategory
 import net.ccbluex.liquidbounce.features.module.ModuleInfo
 import net.ccbluex.liquidbounce.features.module.modules.client.HUD
-import net.ccbluex.liquidbounce.features.module.modules.misc.AntiShop
 import net.ccbluex.liquidbounce.utils.EntityUtils
 import net.ccbluex.liquidbounce.utils.MovementUtils
 import net.ccbluex.liquidbounce.utils.RaycastUtils
@@ -467,7 +466,6 @@ class KillAura : Module() {
         }
 
         discoveredTargets.forEach {
-            if (AntiShop.enabled && AntiShop.isShop(it)) return@forEach
             when (markValue.get().lowercase()) {
                 "liquid" -> {
                     RenderUtils.drawPlatform(it, if (it.hurtTime <= 0) Color(37, 126, 255, 170) else Color(255, 0, 0, 170))
@@ -773,8 +771,6 @@ class KillAura : Module() {
      * Attack [entity]
      */
     private fun attackEntity(entity: EntityLivingBase) {
-        if (AntiShop.enabled && AntiShop.isShop(entity)) return
-
         // Call attack event
         val event = AttackEvent(entity)
         LiquidBounce.eventManager.callEvent(event)
