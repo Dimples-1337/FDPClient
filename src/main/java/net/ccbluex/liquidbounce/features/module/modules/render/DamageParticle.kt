@@ -23,8 +23,8 @@ import kotlin.math.abs
 
 @ModuleInfo(name = "DamageParticle", category = ModuleCategory.RENDER)
 class DamageParticle : Module() {
-    private val healthData = HashMap<Int, Float>()
-    private val particles = ArrayList<SingleParticle>()
+    private val healthData = HashMap<Int, Float> ()
+    private val particles = ArrayList<SingleParticle> ()
 
     private val aliveTicks = IntegerValue("AliveTicks", 20, 10, 50)
     private val sizeValue = IntegerValue("Size", 3, 1, 7)
@@ -34,15 +34,15 @@ class DamageParticle : Module() {
     private val colorRainbow = BoolValue("Rainbow", false)
 
     @EventTarget
-    fun onUpdate(event: UpdateEvent){
-        synchronized(particles){
-            for(entity in mc.theWorld.loadedEntityList){
-                if(entity is EntityLivingBase && EntityUtils.isSelected(entity,true)){
-                    val lastHealth=healthData.getOrDefault(entity.entityId,entity.maxHealth)
+    fun onUpdate(event: UpdateEvent) {
+        synchronized(particles ) {
+            for(entity in mc.theWorld.loadedEntityList) {
+                if(entity is EntityLivingBase && EntityUtils.isSelected(entity,true)) {
+                    val lastHealth = healthData.getOrDefault(entity.entityId,entity.maxHealth)
                     healthData[entity.entityId] = entity.health
-                    if(lastHealth==entity.health) continue
+                    if(lastHealth == entity.health) continue
 
-                    val prefix=if (!colorRainbow.get()) (if(lastHealth>entity.health){"§c❤"}else{"§a§l❤"}) else (if(lastHealth>entity.health){"-"}else{"+"})
+                    val prefix = if (!colorRainbow.get()) (if(lastHealth>entity.health){"§c❤"}else{"§a§l❤"}) else (if(lastHealth>entity.health){"-"}else{"+"})
                     particles.add(SingleParticle(prefix+BigDecimal(abs(lastHealth-entity.health).toDouble()).setScale(1,BigDecimal.ROUND_HALF_UP).toDouble()
                         ,entity.posX - 0.5 + Random(System.currentTimeMillis()).nextInt(5).toDouble() * 0.1
                         ,entity.entityBoundingBox.minY + (entity.entityBoundingBox.maxY - entity.entityBoundingBox.minY) / 2.0
@@ -51,26 +51,26 @@ class DamageParticle : Module() {
                 }
             }
 
-            val needRemove=ArrayList<SingleParticle>()
-            for(particle in particles){
+            val needRemove = ArrayList<SingleParticle> ()
+            for (particle in particles) {
                 particle.ticks++
-                if(particle.ticks>aliveTicks.get()){
+                if (particle.ticks>aliveTicks.get()) {
                     needRemove.add(particle)
                 }
             }
-            for(particle in needRemove){
+            for (particle in needRemove) {
                 particles.remove(particle)
             }
         }
     }
 
     @EventTarget
-    fun onRender3d(event: Render3DEvent){
-        synchronized(particles){
-            val renderManager=mc.renderManager
+    fun onRender3d(event: Render3DEvent) {
+        synchronized(particles) {
+            val renderManager = mc.renderManager
             val size = sizeValue.get()*0.01
 
-            for(particle in particles){
+            for (particle in particles) {
                 val n: Double = particle.posX - renderManager.renderPosX
                 val n2: Double = particle.posY - renderManager.renderPosY
                 val n3: Double = particle.posZ - renderManager.renderPosZ
