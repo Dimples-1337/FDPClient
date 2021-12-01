@@ -12,6 +12,7 @@ import net.ccbluex.liquidbounce.event.WorldEvent
 import net.ccbluex.liquidbounce.features.module.Module
 import net.ccbluex.liquidbounce.features.module.ModuleCategory
 import net.ccbluex.liquidbounce.features.module.ModuleInfo
+import net.ccbluex.liquidbounce.utils.render.ColorUtils
 import net.ccbluex.liquidbounce.utils.EntityUtils
 import net.ccbluex.liquidbounce.value.IntegerValue
 import net.minecraft.client.renderer.GlStateManager
@@ -28,9 +29,10 @@ class DamageParticle : Module() {
 
     private val aliveTicks = IntegerValue("AliveTicks", 20, 10, 50)
     private val sizeValue = IntegerValue("Size", 3, 1, 7)
-    private val colorRedValue = IntegerValue("R", 255, 0, 255).displayable { !colorRainbow.get() }
-    private val colorGreenValue = IntegerValue("G", 255, 0, 255).displayable { !colorRainbow.get() }
-    private val colorBlueValue = IntegerValue("B", 255, 0, 255).displayable { !colorRainbow.get() }
+    private val colorRedValue = IntegerValue("Red", 68, 0, 255)
+    private val colorGreenValue = IntegerValue("Green", 117, 0, 255)
+    private val colorBlueValue = IntegerValue("Blue", 255, 0, 255)
+    private val colorAlphaValue = IntegerValue("Alpha", 100, 0, 255)
     private val colorRainbow = BoolValue("Rainbow", false)
 
     @EventTarget
@@ -68,7 +70,7 @@ class DamageParticle : Module() {
     fun onRender3d(event: Render3DEvent) {
         synchronized(particles) {
             val renderManager = mc.renderManager
-            val size = sizeValue.get()*0.01
+            val size = sizeValue.get() * 0.01
 
             for (particle in particles) {
                 val n: Double = particle.posX - renderManager.renderPosX
@@ -88,19 +90,20 @@ class DamageParticle : Module() {
                     particle.str,
                     (-(mc.fontRendererObj.getStringWidth(particle.str) / 2)).toFloat(),
                     (-(mc.fontRendererObj.FONT_HEIGHT - 1)).toFloat(),
-                    if (customColor.get()) Color(red.get(), green.get(), blue.get()).rgb else 0
+                    if (colorRainbow.get()) ColorUtils.rainbowWithAlpha(colorAlphaValue.get()) else Color(colorRedValue.get(), colorGreenValue.get(), colorBlueValue.get(), colorAlphaValue.get())
                 )
                 GL11.glColor4f(187.0f, 255.0f, 255.0f, 1.0f)
                 GL11.glDepthMask(true)
                 GlStateManager.doPolygonOffset(1.0f, 1500000.0f)
                 GlStateManager.disablePolygonOffset()
+                GlStateManager.resetColor()
                 GlStateManager.popMatrix()
             }
         }
     }
 
     @EventTarget
-    fun onWorld(event: WorldEvent){
+    fun onWorld(event: WorldEvent) {
         particles.clear()
         healthData.clear()
     }
