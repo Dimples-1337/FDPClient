@@ -76,6 +76,7 @@ class KillAura : Module() {
     }
 
     private val hurtTimeValue = IntegerValue("HurtTime", 10, 0, 10)
+    private val noHitCheck = BoolValue("NoHitCheck", false)
     private val combatDelayValue = BoolValue("1.9CombatDelay", false)
 
     // Range
@@ -897,7 +898,7 @@ class KillAura : Module() {
             return
         }
         // Disable hitable check if turn speed is zero
-        if (maxTurnSpeed.get() <= 0F) {
+        if(maxTurnSpeed.get() <= 0F || noHitCheck.get()) {
             hitable = true
             return
         }
