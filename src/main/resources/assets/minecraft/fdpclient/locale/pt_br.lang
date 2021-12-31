@@ -5,7 +5,7 @@ ui.background=Fundo
 ui.serverSpoof=ServerSpoof
 ui.antiForge=AntiForge
 ui.reconnect=Reconectar
-ui.changelog=Log de Mudanças
+ui.changelog=Alterações
 
 ui.back=Voltar
 ui.status=Status
@@ -15,16 +15,16 @@ ui.off=Desligado
 ui.serverSpoof.address=Endereço do servidor
 
 ui.background.particles=Partículas
-ui.background.change=Alterar papel de parede
-ui.background.reset=Redefinir papel de parede
+ui.background.change=Alterar
+ui.background.reset=Redefinir
 
-ui.chest.stealing=Coletar baú 
+ui.chest.stealing=Coletar
 ui.chest.disable=Desativar %s
 
-ui.gameover.close=Ocultar esta tela
+ui.gameover.close=Ocultar tela
 
-ui.disconnect.randomAlt=Alt aleatório
-ui.disconnect.randomOffline=Random Offline
+ui.disconnect.randomAlt=randomAlt
+ui.disconnect.randomOffline=randomOffline
 
 ui.update.released=FDP Client %s foi lançado!
 ui.update.dismiss=Dispensar
@@ -39,7 +39,7 @@ ui.keybind.search=Pesquisar ...
 
 ui.alt.idle=Inativo ...
 ui.alt.nameChanged=§cSeu nome agora é §8 %s §c.
-ui.alt.error=Occoreu um erro: %s
+ui.alt.error=Ocorreu um erro: %s
 ui.alt.login=Login
 ui.alt.add=Adicionar
 ui.alt.remove=Remover
@@ -49,14 +49,14 @@ ui.alt.msLogin=Microsoft Login
 ui.alt.copy=Copiar
 ui.alt.alts=%d Alts
 ui.alt.username=§7User: §a %s
-ui.alt.type=§7Tipo: §a %s
-ui.alt.type.premium=Premium
-ui.alt.type.cracked=Rachado
-ui.alt.removed=A conta foi removida.
-ui.alt.needSelect=Selecione uma conta.
+ui.alt.type=§7Tipo: %a %s
+ui.alt.type.premium=premium
+ui.alt.type.cracked=cracked
+ui.alt.removed=removed
+ui.alt.needSelect=Selecione uma conta
 ui.alt.copied=Conta copiada para sua área de transferência.
 ui.alt.imported=As contas foram importadas com sucesso.
-ui.alt.emptyList=A lista está vazia.
+ui.alt.emptyList=A lista está vazia
 ui.alt.loggingIn=Fazendo login ...
 ui.alt.clipBoardLogin=Login da área de transferência
 ui.alt.fillBoth=Você deve preencher os dois campos!
@@ -75,17 +75,17 @@ notify.module.title=Módulo
 notify.module.enable=Ativado %s
 notify.module.disable=Desativado %s
 
-module.category.combat=Combate
-module.category.player=Jogador
-module.category.movement=Movimento
+module.category.combat=Combat
+module.category.player=Player
+module.category.movement=Movement
 module.category.render=Render
-module.category.client=Cliente
-module.category.world=Mundo
+module.category.client=Client
+module.category.world=World
 module.category.misc=Misc
-module.category.exploit=Explorar
+module.category.exploit=Exploit
 
 module.Aimbot.name=Aimbot
-module.Aimbot.description=Enfrenta automaticamente entidades selecionadas ao seu redor
+module.Aimbot.description=Auxiliam a mirar com maior precisão
 
 module.Ambience.name=Ambience
 module.Ambience.description=Mudar o tempo do ambiente
