@@ -18,7 +18,7 @@ ui.background.particles=Partículas
 ui.background.change=Alterar papel de parede
 ui.background.reset=Redefinir papel de parede
 
-ui.chest.stealing=Coletar bau 
+ui.chest.stealing=Coletar baú 
 ui.chest.disable=Desativar %s
 
 ui.gameover.close=Ocultar esta tela
@@ -94,13 +94,13 @@ module.Animations.name=Animations
 module.Animations.description=Permite alterar as animações da espada enquanto bloqueia e animação de inventário
 
 module.AntiAim.name=AntiAim
-module.AntiAim.description=Anti visando como CS:GO
+module.AntiAim.description=Igual os cheats de CS:GO
 
 module.AntiBlind.name=AntiBlind
-module.AntiBlind.description=Cancela efeitos de cegueira
+module.AntiBlind.description=Cancela efeitos
 
 module.AntiBot.name=AntiBot
-module.AntiBot.description=Impede que o KillAura ataque bots do AntiCheat
+module.AntiBot.description=Impede atacar bots do AntiCheat
 
 module.AntiFireBall.name=AntiFireBall
 module.AntiFireBall.description=Acerte a bola de fogo automaticamente para deixá-la voltar
@@ -211,7 +211,7 @@ module.Clip.name=Clip
 module.Clip.description=Permite que você recorte blocos
 
 module.Criticals.name=Criticals
-module.Criticals.description=Lida automaticamente com ocorrências críticas
+module.Criticals.description=Permite que você dê danos criticos
 
 module.DamageParticle.name=DamageParticle
 module.DamageParticle.description=Permite que você veja os danos dos alvos
@@ -251,7 +251,7 @@ module.Freeze.description=Permite que você fique preso no ar
 module.Fucker.name=Fucker
 module.Fucker.description=Destrói os blocos selecionados ao seu redor
 
-module.Gapple.name=Maças
+module.Gapple.name=AutoGapple
 module.Gapple.description=Comer Maças
 
 module.GhostHand.name=GhostHand
@@ -281,10 +281,10 @@ module.HurtCam.description=Altera o efeito da câmera danificada
 module.InfiniteAura.name=InfiniteAura
 module.InfiniteAura.description=Atingir inimigos de longe
 
-module.InventoryCleaner.name=InventoryCleaner
+module.InventoryCleaner.name=InvCleaner
 module.InventoryCleaner.description=Automaticamente joga fora itens inúteis e classifica seu inventário
 
-module.InventoryMove.name=MoverInventario
+module.InventoryMove.name=InvMove
 module.InventoryMove.description=Permite que você ande enquanto um inventário é aberto
 
 module.ItemESP.name=ItemESP
@@ -311,17 +311,17 @@ module.Jesus.description=Permite que você ande sobre a água
 module.LongJump.name=LongJump
 module.LongJump.description=Permite que você vá mais longe
 
-module.MessageSpam.name=SpammarMensagens
+module.MessageSpam.name=MessageSpam
 module.MessageSpam.description=Mensagens de spam (apenas redesenhado)
 
-module.MidClick.name=AdicionarAmigo
+module.MidClick.name=MidClick
 module.MidClick.description=Permite que você adicione um jogador como amigo clicando com o botão direito nele.
 
 module.NameProtect.name=NameProtect
 module.NameProtect.description=Altera os nomes dos jogadores do lado do cliente
 
-module.NameTags.name=Crachas
-module.NameTags.description=Altera a escala dos crachás para que você possa sempre lê-los
+module.NameTags.name=NameTags
+module.NameTags.description=Permite lê o nome dos oponentes
 
 module.NoBob.name=NoBob
 module.NoBob.description=Desativa o efeito de oscilação da vista
@@ -369,7 +369,7 @@ module.Projectiles.name=Projectiles
 module.Projectiles.description=Permite que você veja onde as setas irão parar
 
 module.Reach.name=Reach
-module.Reach.description=Aumenta seu alcance
+module.Reach.description=Aumente seu alcance
 
 module.Regen.name=Regen
 module.Regen.description=Regenera sua saúde muito mais rápido
@@ -438,5 +438,4 @@ module.IRC.name=IRC
 module.IRC.description=Permitir que você converse com outros usuários
 
 module.Crosshair.name=CrossHair
-module.Crosshair.description=Alterar uma cruz melhor
-
+module.Crosshair.description=Permite customizar a mira
