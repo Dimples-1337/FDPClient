@@ -60,7 +60,7 @@ class Tracers : Module() {
                     else -> Color(255, 255, 255, 150)
                 }
 
-                drawTraces(entity, color)
+                drawTraces(entity, color, true)
             }
         }
 
