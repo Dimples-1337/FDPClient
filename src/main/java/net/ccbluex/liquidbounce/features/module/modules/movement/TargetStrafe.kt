@@ -25,6 +25,7 @@ class TargetStrafe : Module() {
     private val radiusValue = FloatValue("Radius", 2.0f, 0.1f, 4.0f)
     private val airRotateValue = FloatValue("AirRotate", 0.0f, 0.0f, 180f)
     private val airInstaRotateValue = FloatValue("AirInstaRotate", 180f, 0.0f, 180f)
+    private val safewalk = BoolValue("SafeWalk", true)
     private val holdSpaceValue = BoolValue("HoldSpace", false)
     private val onlySpeedValue = BoolValue("OnlySpeed", false)
     private val velocityChangeValue = BoolValue("VelocityChange", true)
@@ -65,6 +66,16 @@ class TargetStrafe : Module() {
             }
             yaw %= 360
             MovementUtils.setSpeed(event, MovementUtils.getSpeed().toDouble(), yaw, if (direction) 1.0 else -1.0, if (mc.thePlayer.getDistanceToEntity(target) <= radiusValue.get()) 0.0 else 1.0)
+        }
+    }
+    
+    @EventTarget
+    fun onMove(event: MoveEvent) {
+        if (canStrafe) {
+            strafe(event, MovementUtils.getSpeed(event.x, event.z))
+            
+            if (safewalk.get() && checkVoid())
+                event.isSafeWalk = true
         }
     }
 
