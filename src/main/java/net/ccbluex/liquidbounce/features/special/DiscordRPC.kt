@@ -44,7 +44,9 @@ object DiscordRPC {
         builder.setLargeImage("cfb8fe2fe9169dc68f7f8c1236b885")
         builder.setDetails(LiquidBounce.CLIENT_VERSION)
         ServerUtils.getRemoteIp().also {
-            builder.setState(if(it.equals("idling", true)) "Idling" else "Server: $it IGN: ${Minecraft.getMinecraft().session.username}")
+            builder.setState(if(it.equals("idling", true)) "Idling" else "IGN: ${Minecraft.getMinecraft().session.username}")
+            builder.setDetails("Server: ${if (mc.isIntegratedServerRunning || serverData == null) "Singleplayer" else serverData.serverIP}")
+            builder.setState("Enabled ${LiquidBounce.moduleManager.modules.count { it.state }} of ${LiquidBounce.moduleManager.modules.size} modules")
         }
 
         // Check ipc client is connected and send rpc
