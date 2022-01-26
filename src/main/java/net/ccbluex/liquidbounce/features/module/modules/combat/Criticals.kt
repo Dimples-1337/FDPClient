@@ -27,7 +27,7 @@ import net.minecraft.stats.StatList
 @ModuleInfo(name = "Criticals", category = ModuleCategory.COMBAT)
 class Criticals : Module() {
 
-    val modeValue = ListValue("Mode", arrayOf("Packet", "NCPPacket", "LitePacket", "Hypixel", "Hypixel2", "AACPacket", "AAC4.3.11OldHYT", "AAC5.0.4", "NoGround", "Visual", "TPHop", "FakeCollide", "Mineplex", "More", "TestMinemora", "Motion", "Hover"), "packet")
+    val modeValue = ListValue("Mode", arrayOf("Packet", "NCPPacket", "LitePacket", "Hypixel", "Hypixel2", "AACPacket", "AAC4.3.11OldHYT", "AAC5.0.4", "NoGround", "Visual", "TPHop", "FakeCollide", "Mineplex", "More", "TestMinemora", "Motion", "Hover", "VerusSmart"), "packet")
     val motionValue = ListValue("MotionMode", arrayOf("RedeSkyLowHop", "Hop", "Jump", "LowJump", "MinemoraTest"), "Jump")
     val hoverValue = ListValue("HoverMode", arrayOf("AAC4", "AAC4Other", "OldRedesky", "Normal1", "Normal2", "Minis", "Minis2", "TPCollide", "2b2t"), "AAC4")
     val hoverNoFall = BoolValue("HoverNoFall", true)
@@ -40,6 +40,9 @@ class Criticals : Module() {
 
     val msTimer = MSTimer()
 
+    private var readyCrits = false
+    private var canCrits = true
+    private var counter = 0
     private var target = 0
     var jState = 0
     var aacLastState = false
@@ -155,6 +158,16 @@ class Criticals : Module() {
                     mc.thePlayer.triggerAchievement(StatList.jumpStat)
                     sendCriticalPacket(xOffset = motionX / 3, yOffset = 0.20000004768372, zOffset = motionZ / 3, ground = false)
                     sendCriticalPacket(xOffset = motionX / 1.5, yOffset = 0.12160004615784, zOffset = motionZ / 1.5, ground = false)
+                }
+                
+                "verussmart" -> {
+                    counter++
+                    if (counter == 1) {
+                        mc.netHandler.addToSendQueue(C04PacketPlayerPosition(x, y + 0.001, z, true))
+                        mc.netHandler.addToSendQueue(C04PacketPlayerPosition(x, y, z, false))
+                    }
+                    if (counter >= 5)
+                        counter = 0
                 }
 
                 "tphop" -> {
