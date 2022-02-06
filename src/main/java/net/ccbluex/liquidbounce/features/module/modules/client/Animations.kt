@@ -14,7 +14,7 @@ object Animations : Module() {
     val blockingModeValue = ListValue(
         "BlockingMode", arrayOf(
             "Akrien", "Avatar", "ETB", "Exhibition", "Push", "Reverse",
-            "Shield", "SigmaNew", "SigmaOld", "Slide", "SlideDown", "HSlide", "Swong", "VisionFX",
+            "Shield", "SigmaNew", "SigmaOld", "Slide", "SlideDown", "SlideDown2", "HSlide", "Swong", "VisionFX",
             "Swank", "Jello", "Rotate", "Liquid", "None"
         ),
         "SlideDown"
