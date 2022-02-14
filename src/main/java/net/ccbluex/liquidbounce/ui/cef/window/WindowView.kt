@@ -53,7 +53,7 @@ class WindowView : MinecraftInstance() {
 
     init {
         cefRenderer = CefRendererLwjgl(true)
-        cefBrowser = CefBrowserCustom(CefRenderManager.cefClient, "https://getfdp.today", true, null, cefRenderer)
+        cefBrowser = CefBrowserCustom(CefRenderManager.cefClient, "https://yandex.com", true, null, cefRenderer)
         cefBrowser.setCloseAllowed()
         cefBrowser.createImmediately()
         cefBrowser.setFocus(true)

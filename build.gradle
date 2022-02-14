@@ -77,8 +77,6 @@ dependencies {
         exclude module: "authlib"
     }
 
-    include project(":ui")
-
     include fileTree(include: ["*.jar"], dir: "libs")
 }
 

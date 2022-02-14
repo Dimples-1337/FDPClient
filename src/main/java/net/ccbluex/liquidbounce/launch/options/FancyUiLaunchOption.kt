@@ -37,13 +37,15 @@ object FancyUiLaunchOption : LaunchOption() {
             mc.displayGuiScreen(LiquidBounce.mainMenu)
         })
 
-        LiquidBounce.mainMenu = GuiMainMenu()
+        // todo: add new HTML UI and Java To JS Bridge
+
+        LegacyUiLaunchOption.start()
 
         LiquidBounce.commandManager.registerCommand(BrowseCommand())
-        LiquidBounce.moduleManager.registerModule(ClickGUIModule)
     }
 
     override fun stop() {
+        LegacyUiLaunchOption.stop()
         CefRenderManager.stop()
     }
 
