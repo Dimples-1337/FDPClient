@@ -217,8 +217,17 @@ public class CefBrowserCustom extends CefBrowser_N implements CefRenderHandler {
     }
 
     public void mouseInteracted(int x, int y, int mods, int btn, boolean pressed, int ccnt) {
-        MouseEvent ev = new MouseEvent(dc_, pressed ? MouseEvent.MOUSE_PRESSED : MouseEvent.MOUSE_RELEASED, 0, mods, x, y, ccnt, false, btn);
+        MouseEvent ev = new MouseEvent(dc_, pressed ? MouseEvent.MOUSE_PRESSED : MouseEvent.MOUSE_RELEASED, 0, mods, x, y, ccnt, false, remapMouseCode(btn));
         sendMouseEvent(ev);
+    }
+
+    private static int remapMouseCode(int kc) {
+        switch (kc) {
+            case 0: return 1;
+            case 1: return 3;
+            case 2: return 2;
+            default: return 0;
+        }
     }
 
     public void mouseScrolled(int x, int y, int mods, int amount, int rot) {
@@ -263,5 +272,13 @@ public class CefBrowserCustom extends CefBrowser_N implements CefRenderHandler {
         // we already processed the char in GuiView, so we don't need to do it again like MCEF does
         KeyEvent ev = new KeyEvent(dc_, pressed ? KeyEvent.KEY_PRESSED : KeyEvent.KEY_RELEASED, 0, mods, remapKeycode(keyCode, c), c);
         sendKeyEvent(ev);
+    }
+
+    @Override
+    protected void finalize() throws Throwable {
+        if(!isClosed()) {
+            close(true); // NO FUCKING MEMORY LEAKS
+        }
+        super.finalize();
     }
 }

@@ -74,20 +74,11 @@ abstract class GuiView(private val page: Page) : GuiScreen() {
     }
 
     override fun mouseClicked(mouseX: Int, mouseY: Int, key: Int) {
-        cefBrowser!!.mouseInteracted(Mouse.getX(), Display.getHeight() - Mouse.getY(), mouseModifiers(keyModifiers(0)), keyCode(key), true, 1)
+        cefBrowser!!.mouseInteracted(Mouse.getX(), Display.getHeight() - Mouse.getY(), mouseModifiers(keyModifiers(0)), key, true, 1)
     }
 
     override fun mouseReleased(mouseX: Int, mouseY: Int, key: Int) {
-        cefBrowser!!.mouseInteracted(Mouse.getX(), Display.getHeight() - Mouse.getY(), mouseModifiers(keyModifiers(0)), keyCode(key), false, 1)
-    }
-
-    private fun keyCode(glCode: Int): Int {
-        return when(glCode) {
-            0 -> 1
-            1 -> 3
-            2 -> 2
-            else -> 0
-        }
+        cefBrowser!!.mouseInteracted(Mouse.getX(), Display.getHeight() - Mouse.getY(), mouseModifiers(keyModifiers(0)), key, false, 1)
     }
 
     override fun handleKeyboardInput() {
@@ -106,34 +97,35 @@ abstract class GuiView(private val page: Page) : GuiScreen() {
         mc.dispatchKeypresses()
     }
 
-
-    protected open fun keyModifiers(mod: Int): Int {
-        var n = mod
-        if (isCtrlKeyDown()) {
-            n = n or 0x80
-        }
-        if (isShiftKeyDown()) {
-            n = n or 0x40
-        }
-        if (isAltKeyDown()) {
-            n = n or 0x200
-        }
-        return n
-    }
-
-    protected open fun mouseModifiers(mod: Int): Int {
-        var n = mod
-        if (Mouse.isButtonDown(0)) {
-            n = n or 0x400
-        }
-        if (Mouse.isButtonDown(2)) {
-            n = n or 0x800
-        }
-        if (Mouse.isButtonDown(1)) {
-            n = n or 0x1000
-        }
-        return n
-    }
-
     override fun doesGuiPauseGame() = false
+
+    companion object {
+        fun keyModifiers(mod: Int): Int {
+            var n = mod
+            if (isCtrlKeyDown()) {
+                n = n or 0x80
+            }
+            if (isShiftKeyDown()) {
+                n = n or 0x40
+            }
+            if (isAltKeyDown()) {
+                n = n or 0x200
+            }
+            return n
+        }
+
+        fun mouseModifiers(mod: Int): Int {
+            var n = mod
+            if (Mouse.isButtonDown(0)) {
+                n = n or 0x400
+            }
+            if (Mouse.isButtonDown(2)) {
+                n = n or 0x800
+            }
+            if (Mouse.isButtonDown(1)) {
+                n = n or 0x1000
+            }
+            return n
+        }
+    }
 }

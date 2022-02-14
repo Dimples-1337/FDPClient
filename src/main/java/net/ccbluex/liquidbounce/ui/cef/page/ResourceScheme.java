@@ -87,7 +87,7 @@ public class ResourceScheme implements IScheme {
         mimeTypeMap.clear();
 
         try {
-            BufferedReader br = new BufferedReader(new InputStreamReader(ResourceScheme.class.getResourceAsStream("/assets/minecraft/fdpclient/misc/mime.types")));
+            BufferedReader br = new BufferedReader(new InputStreamReader(ResourceScheme.class.getResourceAsStream("/assets/minecraft/fdpclient/cef/mime.types")));
 
             while(true) {
                 cLine++;

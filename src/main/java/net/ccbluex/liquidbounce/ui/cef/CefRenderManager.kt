@@ -1,13 +1,16 @@
 package net.ccbluex.liquidbounce.ui.cef
 
 import me.friwi.jcefmaven.CefAppBuilder
+import me.friwi.jcefmaven.EnumProgress
 import me.friwi.jcefmaven.IProgressHandler
 import net.ccbluex.liquidbounce.LiquidBounce
 import net.ccbluex.liquidbounce.event.EventTarget
 import net.ccbluex.liquidbounce.event.Listenable
 import net.ccbluex.liquidbounce.event.Render2DEvent
+import net.ccbluex.liquidbounce.launch.options.FancyUiLaunchOption
 import net.ccbluex.liquidbounce.ui.cef.page.ResourceScheme
 import net.ccbluex.liquidbounce.utils.ClientUtils
+import net.ccbluex.liquidbounce.utils.misc.HttpUtils
 import net.minecraft.client.Minecraft
 import org.cef.CefApp
 import org.cef.CefClient
@@ -63,6 +66,7 @@ object CefRenderManager : Listenable {
         builder.cefSettings.windowless_rendering_enabled = true
         builder.cefSettings.locale = gameSettings.language
         builder.cefSettings.cache_path = cacheDir.absolutePath
+        builder.cefSettings.user_agent = HttpUtils.DEFAULT_AGENT
 
         cefApp = builder.build()
         cefClient = cefApp.createClient()
@@ -73,6 +77,8 @@ object CefRenderManager : Listenable {
              * cef query can be used to contact browser and client
              */
             override fun onQuery(browser: CefBrowser, frame: CefFrame, queryId: Long, request: String, persistent: Boolean, callback: CefQueryCallback): Boolean {
+                println("onQuery: $queryId $request")
+                callback.success("OK")
                 return super.onQuery(browser, frame, queryId, request, persistent, callback)
             }
         }, true)
@@ -98,6 +104,9 @@ object CefRenderManager : Listenable {
     fun onRender2d(event: Render2DEvent) {
         cefApp.doMessageLoopWork(0L)
         browsers.forEach(CefBrowserCustom::mcefUpdate)
+        if(Minecraft.getMinecraft().currentScreen == null) {
+            FancyUiLaunchOption.render(false)
+        }
     }
 
     override fun handleEvents() = true
