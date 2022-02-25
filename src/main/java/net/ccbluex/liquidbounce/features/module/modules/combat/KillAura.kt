@@ -76,7 +76,7 @@ class KillAura : Module() {
     }
 
     private val hurtTimeValue = IntegerValue("HurtTime", 10, 0, 10)
-    private val combatDelayValue = BoolValue("1.9CombatDelay", false)
+    private val combatDelayValue = BoolValue("CombatDelay", false)
 
     // Range
     val rangeValue = object : FloatValue("Range", 3.7f, 1f, 8f) {
@@ -101,7 +101,7 @@ class KillAura : Module() {
     private val discoverRangeValue = FloatValue("DiscoverRange", 6f, 0f, 15f)
 
     // Modes
-    private val priorityValue = ListValue("Priority", arrayOf("Health", "Distance", "Fov", "LivingTime", "Armor", "HurtResistantTime"), "Distance")
+    private val priorityValue = ListValue("Priority", arrayOf("Health", "Distance", "FOV", "LivingTime", "Armor", "HurtResistantTime"), "Distance")
     private val targetModeValue = ListValue("TargetMode", arrayOf("Single", "Switch", "Multi"), "Single")
 
     // Bypass

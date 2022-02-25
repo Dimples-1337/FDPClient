@@ -12,7 +12,8 @@ import java.time.OffsetDateTime
 import kotlin.concurrent.thread
 
 object DiscordRPC {
-    private val ipcClient = IPCClient(871606857981128724)
+    private val ipcClient = IPCClient(946659819111186442) //new lware client id
+    //private val ipcClient = IPCClient(871606857981128724)
     private val timestamp = OffsetDateTime.now()
     private var running = false
 
@@ -24,7 +25,7 @@ object DiscordRPC {
                     while (running) {
                         update()
                         try {
-                            Thread.sleep(1000L)
+                            Thread.sleep(5000L)
                         } catch (ignored: InterruptedException) {
                         }
                     }
@@ -41,7 +42,8 @@ object DiscordRPC {
     private fun update() {
         val builder = RichPresence.Builder()
         builder.setStartTimestamp(timestamp)
-        builder.setLargeImage("cfb8fe2fe9169dc68f7f8c1236b885")
+        //builder.setLargeImage("cfb8fe2fe9169dc68f7f8c1236b885")
+        builder.setLargeImage("llamaware")
         builder.setDetails(LiquidBounce.CLIENT_VERSION)
         ServerUtils.getRemoteIp().also {
             builder.setState(if(it.equals("idling", true)) "Idling" else "Server: $it IGN: ${Minecraft.getMinecraft().session.username}")

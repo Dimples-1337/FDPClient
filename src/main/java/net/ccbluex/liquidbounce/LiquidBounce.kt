@@ -42,14 +42,15 @@ import kotlin.concurrent.thread
 object LiquidBounce {
 
     // Client information
-    const val CLIENT_NAME = "FDPClient"
-    const val COLORED_NAME = "§c§lFDP§6§lClient"
-    const val CLIENT_REAL_VERSION = "v2.1.2"
-    const val CLIENT_CREATOR = "CCBlueX & UnlegitMC"
-    const val CLIENT_WEBSITE = "GetFDP.Today"
+    const val CLIENT_NAME = "LLAMAWARE"
+    const val COLORED_NAME = "§2LLAMA§4WARE"
+    const val CLIENT_REAL_VERSION = "v0.2.1.3"
+    const val CLIENT_CREATOR = "CCBlueX, UnlegitMC and rd-132211"
+    const val CLIENT_WEBSITE = "WIP.WIP"
     const val MINECRAFT_VERSION = "1.8.9"
 
     // 自动读取客户端版本
+    //bruh ^^
     @JvmField
     val CLIENT_VERSION: String
 
@@ -223,7 +224,7 @@ object LiquidBounce {
         try {
             DiscordRPC.stop()
         } catch (e: Throwable) {
-            ClientUtils.logError("Failed to shutdown DiscordRPC.", e)
+            ClientUtils.logError("Failed to shut down DiscordRPC.", e)
         }
     }
 }
