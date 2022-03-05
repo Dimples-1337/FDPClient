@@ -13,12 +13,12 @@ import net.ccbluex.liquidbounce.value.ListValue
 
 @ModuleInfo(name = "Rotations", category = ModuleCategory.CLIENT, canEnable = false)
 object Rotations : Module() {
-    val headValue = BoolValue("Head", true)
-    val bodyValue = BoolValue("Body", true)
+    val headValue = BoolValue("Head", false)
+    val bodyValue = BoolValue("Body", false)
     val fixedValue = ListValue("SensitivityFixed", arrayOf("None", "Old", "New"), "New")
 //    val rotationHumanizeType=EaseUtils.getEnumEasingList("HumanizeType")
 //    val rotationHumanizeOrder=EaseUtils.getEnumEasingOrderList("HumanizeOrder")
-    val nanValue = BoolValue("NaNCheck", true)
+    val nanValue = BoolValue("NaNCheck", false)
 
 //    fun apply(value: Double):Double{
 //        return EaseUtils.apply(toEnumType(), toEnumOrder(),value)
