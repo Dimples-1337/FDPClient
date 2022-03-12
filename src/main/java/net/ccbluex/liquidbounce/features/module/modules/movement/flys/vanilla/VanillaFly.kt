@@ -60,4 +60,10 @@ class VanillaFly : FlyMode("Vanilla") {
             }
         }
     }
+    
+    override fun onDisable() {
+        mc.thePlayer.motionX = 0.0
+        mc.thePlayer.motionY = 0.0
+        mc.thePlayer.motionZ = 0.0
+    }
 }
