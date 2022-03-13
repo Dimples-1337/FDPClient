@@ -8,9 +8,11 @@ import net.ccbluex.liquidbounce.utils.MovementUtils
 import net.ccbluex.liquidbounce.utils.block.BlockUtils
 import net.ccbluex.liquidbounce.value.FloatValue
 import net.minecraft.network.play.client.C03PacketPlayer
+import net.minecraft.network.play.client.C0BPacketEntityAction
 import net.minecraft.network.play.server.S08PacketPlayerPosLook
 import net.minecraft.stats.StatList
 import net.minecraft.util.BlockPos
+import kotlin.math.sqrt
 
 class Vulcan2Fly : FlyMode("Vulcan2") {
 
@@ -105,7 +107,7 @@ class Vulcan2Fly : FlyMode("Vulcan2") {
             packet.onGround = true
         } else if(packet is S08PacketPlayerPosLook) {
             if (stage == FlyStage.WAIT_APPLY) {
-                if(Math.sqrt((packet.x-mc.thePlayer.posX)*(packet.x-mc.thePlayer.posX)
+                if(sqrt((packet.x-mc.thePlayer.posX)*(packet.x-mc.thePlayer.posX)
                              +(packet.y-mc.thePlayer.posY)*(packet.y-mc.thePlayer.posY)
                              +(packet.z-mc.thePlayer.posZ)*(packet.z-mc.thePlayer.posZ)) < 1.0) {
                     isSuccess = true
@@ -113,6 +115,8 @@ class Vulcan2Fly : FlyMode("Vulcan2") {
                     return
                 }
             }
+            event.cancelEvent()
+        } else if(packet is C0BPacketEntityAction) {
             event.cancelEvent()
         }
     }
