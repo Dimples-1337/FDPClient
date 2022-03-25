@@ -6,8 +6,6 @@
 package net.ccbluex.liquidbounce.event
 
 import net.ccbluex.liquidbounce.utils.MinecraftInstance
-import java.util.*
-import kotlin.collections.HashMap
 
 class EventManager : MinecraftInstance() {
 
