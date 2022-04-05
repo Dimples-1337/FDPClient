@@ -2,10 +2,7 @@ package net.ccbluex.liquidbounce.utils.block;
 
 import me.liuli.path.Cell;
 import me.liuli.path.IWorldProvider;
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockFence;
-import net.minecraft.block.BlockWall;
-import net.minecraft.block.material.Material;
+import net.minecraft.block.*;
 import net.minecraft.util.BlockPos;
 import net.minecraft.world.World;
 
@@ -27,9 +24,25 @@ public class MinecraftWorldProvider implements IWorldProvider {
     }
 
     private boolean isSolid(int x, int y, int z) {
-        final Block block = world.getBlockState(new BlockPos(x, y, z)).getBlock();
-        final Material material = block.getMaterial();
-        return material.isSolid();
+        Block block=BlockUtils.getBlock(new BlockPos(x, y, z));
+        if(block==null) return false;
+
+        return block.isFullBlock() ||
+                (block instanceof BlockSlab) ||
+                (block instanceof BlockStairs)||
+                (block instanceof BlockCactus)||
+                (block instanceof BlockChest)||
+                (block instanceof BlockEnderChest)||
+                (block instanceof BlockSkull)||
+                (block instanceof BlockPane)||
+                (block instanceof BlockFence)||
+                (block instanceof BlockWall)||
+                (block instanceof BlockGlass)||
+                (block instanceof BlockPistonBase)||
+                (block instanceof BlockPistonExtension)||
+                (block instanceof BlockPistonMoving)||
+                (block instanceof BlockStainedGlass)||
+                (block instanceof BlockTrapDoor);
     }
 
     private boolean unableToStand(int x, int y, int z) {
