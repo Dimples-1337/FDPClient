@@ -86,9 +86,6 @@ class ESP : Module() {
             GL11.glLineWidth(1.0f)
         }
 
-        // Set fontrenderer local
-        val fontRenderer = fontValue.get()
-
         for (entity in mc.theWorld.loadedEntityList) {
             if (EntityUtils.isSelected(entity, true)) {
                 val entityLiving = entity as EntityLivingBase
@@ -112,7 +109,6 @@ class ESP : Module() {
 
                     "csgo", "real2d", "csgo-old" -> {
                         val renderManager = mc.renderManager
-                        val fontRenderer = fontValue.get()
                         val timer = mc.timer
                         val bb = entityLiving.entityBoundingBox
                             .offset(-entityLiving.posX, -entityLiving.posY, -entityLiving.posZ)
@@ -211,8 +207,7 @@ class ESP : Module() {
                                 if (csgoShowNameValue.get()) {
                                     GL11.glEnable(GL11.GL_TEXTURE_2D)
                                     GL11.glEnable(GL11.GL_DEPTH_TEST)
-                                    mc.fontRendererObj.drawCenteredString(entityLiving.displayName.formattedText, minX + (maxX - minX) / 2.0f, minY - 12.0f, -1)
-                                    fontRenderer.drawString(tag, (-fontRenderer.getStringWidth(tag) * 0.5F).toInt(), (-fontRenderer.FONT_HEIGHT * 1.4F).toInt(), Color.WHITE.rgb)
+                                    mc.fontRendererObj.drawCenteredString(entityLiving.displayName.formattedText, minX + (maxX - minX) / 2.0f, minY - 12.0f, -1)   
                                     GL11.glDisable(GL11.GL_TEXTURE_2D)
                                     GL11.glDisable(GL11.GL_DEPTH_TEST)
                                 }
