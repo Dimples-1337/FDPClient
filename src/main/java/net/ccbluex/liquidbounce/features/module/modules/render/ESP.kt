@@ -151,7 +151,6 @@ class ESP : Module() {
                                 if (!csgoDirectLineValue.get()) {
                                     val distX = (maxX - minX) / 3.0f
                                     val distY = (maxY - minY) / 3.0f
-                                    val width = fontRenderer.getStringWidth(tag).coerceAtLeast(30) / 2
                                     GL11.glBegin(GL11.GL_LINE_STRIP)
                                     GL11.glVertex2f(minX, minY + distY)
                                     GL11.glVertex2f(minX, minY)
