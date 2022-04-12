@@ -12,6 +12,7 @@ import net.ccbluex.liquidbounce.features.module.Module
 import net.ccbluex.liquidbounce.features.module.ModuleCategory
 import net.ccbluex.liquidbounce.features.module.ModuleInfo
 import net.ccbluex.liquidbounce.ui.font.GameFontRenderer.Companion.getColorIndex
+import net.ccbluex.liquidbounce.ui.font.Fonts
 import net.ccbluex.liquidbounce.utils.EntityUtils
 import net.ccbluex.liquidbounce.utils.extensions.drawCenteredString
 import net.ccbluex.liquidbounce.utils.render.ColorUtils
@@ -49,7 +50,8 @@ class ESP : Module() {
     private val csgoShowHealthValue = BoolValue("CSGO-ShowHealth", true).displayable { modeValue.equals("CSGO") }
     private val csgoShowHeldItemValue = BoolValue("CSGO-ShowHeldItem", true).displayable { modeValue.equals("CSGO") }
     private val csgoShowNameValue = BoolValue("CSGO-ShowName", true).displayable { modeValue.equals("CSGO") }
-    private val csgoWidthValue = FloatValue("CSGOOld-Width", 2f, 0.5f, 5f).displayable { modeValue.equals("CSGO-Old") }
+    private val csgoWidthValue = FloatValue("CSGOOld-Width", 2f, 0.5f, 5f).displayable { modeValue.equals("CSGO-Old", "CSGO") }
+    private val fontValue = FontValue("Font", Fonts.font40).displayable { modeValue.equals("CSGO") }
     private val colorModeValue = ListValue("Mode", arrayOf("Name", "Armor", "OFF"), "Name")
     private val colorRedValue = IntegerValue("R", 255, 0, 255).displayable { colorModeValue.get() == "OFF" && !colorRainbowValue.get() }
     private val colorGreenValue = IntegerValue("G", 255, 0, 255).displayable { colorModeValue.get() == "OFF" && !colorRainbowValue.get() }
@@ -84,6 +86,9 @@ class ESP : Module() {
             GL11.glLineWidth(1.0f)
         }
 
+        // Set fontrenderer local
+        val fontRenderer = fontValue.get()
+
         for (entity in mc.theWorld.loadedEntityList) {
             if (EntityUtils.isSelected(entity, true)) {
                 val entityLiving = entity as EntityLivingBase
@@ -107,6 +112,7 @@ class ESP : Module() {
 
                     "csgo", "real2d", "csgo-old" -> {
                         val renderManager = mc.renderManager
+                        val fontRenderer = fontValue.get()
                         val timer = mc.timer
                         val bb = entityLiving.entityBoundingBox
                             .offset(-entityLiving.posX, -entityLiving.posY, -entityLiving.posZ)
@@ -149,6 +155,7 @@ class ESP : Module() {
                                 if (!csgoDirectLineValue.get()) {
                                     val distX = (maxX - minX) / 3.0f
                                     val distY = (maxY - minY) / 3.0f
+                                    val width = fontRenderer.getStringWidth(tag).coerceAtLeast(30) / 2
                                     GL11.glBegin(GL11.GL_LINE_STRIP)
                                     GL11.glVertex2f(minX, minY + distY)
                                     GL11.glVertex2f(minX, minY)
@@ -205,6 +212,7 @@ class ESP : Module() {
                                     GL11.glEnable(GL11.GL_TEXTURE_2D)
                                     GL11.glEnable(GL11.GL_DEPTH_TEST)
                                     mc.fontRendererObj.drawCenteredString(entityLiving.displayName.formattedText, minX + (maxX - minX) / 2.0f, minY - 12.0f, -1)
+                                    fontRenderer.drawString(tag, (-fontRenderer.getStringWidth(tag) * 0.5F).toInt(), (-fontRenderer.FONT_HEIGHT * 1.4F).toInt(), Color.WHITE.rgb)
                                     GL11.glDisable(GL11.GL_TEXTURE_2D)
                                     GL11.glDisable(GL11.GL_DEPTH_TEST)
                                 }
